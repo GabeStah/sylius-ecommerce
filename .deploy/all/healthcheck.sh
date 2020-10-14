@@ -6,7 +6,7 @@ apk add curl
 echo "Performing healthcheck for: ${CI_ENVIRONMENT_URL}"
 
 # Perform basic up health check
-if curl -k -I "${CI_ENVIRONMENT_URL}" | grep "200 OK" > /dev/null; then
+if (curl -k -I "${CI_ENVIRONMENT_URL}" | grep "200 OK" > /dev/null;) || (curl -k -I "${CI_ENVIRONMENT_URL}" | grep "302 Found" > /dev/null; then
   echo "Health check passed."
   exit 0
 else
