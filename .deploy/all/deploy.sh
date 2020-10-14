@@ -21,16 +21,16 @@ ssh -o StrictHostKeyChecking=no "${REMOTE_USER}"@"${DEPLOY_ENDPOINT}" << EOF
   tar -zxf ${ARCHIVE_FILENAME}
   echo "Removing ${ARCHIVE_FILENAME} from remote"
   rm ${ARCHIVE_FILENAME}
-  echo "Installing Composer packages"
-  composer install
 EOF
 
 echo "Copying ${ENV_FILE} to .env."
 scp -o StrictHostKeyChecking=no "${ENV_FILE}" "${REMOTE_USER}@${DEPLOY_ENDPOINT}:${TARGET_DIRECTORY}.env"
 
-# Install Node packages and rebuild
+# Install Composer packages, Node packages, and rebuild
 ssh -o StrictHostKeyChecking=no "${REMOTE_USER}"@"${DEPLOY_ENDPOINT}" << EOF
   cd ${TARGET_DIRECTORY}
+  echo "Installing Composer packages"
+  composer install
   echo "Installing Node packages"
   yarn install
   echo "Building assets"
