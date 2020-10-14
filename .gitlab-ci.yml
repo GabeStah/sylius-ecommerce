@@ -39,7 +39,8 @@ variables:
     url: "https://ecommerce-testing.raritaneng.com"
   variables:
     SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_TESTING
-    TARGET_DIRECTORY: "/home/raritaneng/ecommerce/testing/$CI_COMMIT_SHORT_SHA/"
+    TARGET_DIRECTORY: "/home/raritaneng/ecommerce/testing/"
+    #TARGET_DIRECTORY: "/home/raritaneng/ecommerce/testing/$CI_COMMIT_SHORT_SHA/"
   before_script:
     - *all_before_script
 
@@ -53,10 +54,10 @@ testing:deploy:
     # Add BASE_URL
     #- echo -e "BASE_URL=${CI_ENVIRONMENT_URL}" >> "${ENV_FILE}"
     - *all_job_stage_script
-    - chmod +x ./.deploy/testing/create_subdomain.sh
-    - . ./.deploy/testing/create_subdomain.sh
-    - chmod +x ./.deploy/testing/cleanup.sh
-    - . ./.deploy/testing/cleanup.sh
+#    - chmod +x ./.deploy/testing/create_subdomain.sh
+#    - . ./.deploy/testing/create_subdomain.sh
+#    - chmod +x ./.deploy/testing/cleanup.sh
+#    - . ./.deploy/testing/cleanup.sh
 
 testing:healthcheck:
   stage: healthcheck
