@@ -1,12 +1,15 @@
 twig:
-    paths: ['%kernel.project_dir%/templates']
-    debug: '%kernel.debug%'
-    strict_variables: '%kernel.debug%'
+  auto_reload: '%env(bool:TWIG_AUTO_RELOAD)%'
+  form_themes:
+    - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+  paths: [ '%kernel.project_dir%/templates' ]
+  debug: '%env(bool:TWIG_DEBUG)%'
+  strict_variables: '%env(bool:TWIG_STRICT_VARIABLES)%'
 
 services:
-    _defaults:
-        public: false
-        autowire: true
-        autoconfigure: true
+  _defaults:
+    public: false
+    autowire: true
+    autoconfigure: true
 
-    Twig\Extra\Intl\IntlExtension: ~
+  Twig\Extra\Intl\IntlExtension: ~

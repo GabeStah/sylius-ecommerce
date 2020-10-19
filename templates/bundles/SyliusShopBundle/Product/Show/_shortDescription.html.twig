@@ -1,0 +1,9 @@
+<div class="ui basic segment">
+  <p>
+    {% if product.shortDescription is not empty %}
+      {{ product.shortDescription|raw }}
+    {% else %}
+      {{ 'sylius.ui.no_short_description'|trans }}.
+    {% endif %}
+  </p>
+</div>

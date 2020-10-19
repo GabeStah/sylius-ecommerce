@@ -1,0 +1,59 @@
+{
+  "$id": "schema.json",
+  "definitions": {
+    "product": {
+      "$id": "product",
+      "type": "object",
+      "required": [
+        "code",
+        "name",
+        "slug"
+      ],
+      "properties": {
+        "average_rating": {
+          "type": "number",
+          "default": 0
+        },
+        "code": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "main_taxon_id": {
+          "type": "number",
+          "required": false
+        },
+        "meta_description": {
+          "type": "string"
+        },
+        "meta_keywords": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 3
+        },
+        "variant_selection_method": {
+          "type": "string",
+          "enum": [
+            "choice",
+            "match"
+          ],
+          "default": "match"
+        }
+      }
+    },
+    "product-collection": {
+      "$id": "product-collection",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/product"
+      }
+    }
+  }
+}

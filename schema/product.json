@@ -1,0 +1,54 @@
+{
+  "$id": "product",
+  "type": "object",
+  "required": [
+    "code",
+    "name",
+    "price",
+    "slug"
+  ],
+  "properties": {
+    "average_rating": {
+      "type": "number",
+      "default": 0
+    },
+    "channel_code": {
+      "type": "string",
+      "default": "DEFAULT"
+    },
+    "code": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "main_taxon_id": {
+      "type": "number"
+    },
+    "meta_description": {
+      "type": "string"
+    },
+    "meta_keywords": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "slug": {
+      "type": "string",
+      "minLength": 3
+    },
+    "variant_selection_method": {
+      "type": "string",
+      "enum": [
+        "choice",
+        "match"
+      ],
+      "default": "match"
+    }
+  }
+}

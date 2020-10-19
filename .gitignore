@@ -347,3 +347,4 @@ fabric.properties
 .env.*
 /config/jwt/private-test.pem
 /config/jwt/public-test.pem
+/.notes/

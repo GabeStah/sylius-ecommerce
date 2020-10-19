@@ -48,6 +48,7 @@
     "gulp": "gulp build",
     "lint": "yarn lint:js",
     "lint:js": "eslint gulpfile.babel.js",
+    "serve": "symfony serve",
     "watch": "gulp watch"
   },
   "repository": {
