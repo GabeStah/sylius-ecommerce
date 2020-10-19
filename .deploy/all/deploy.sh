@@ -35,6 +35,4 @@ ssh -o StrictHostKeyChecking=no "${REMOTE_USER}"@"${DEPLOY_ENDPOINT}" << EOF
   yarn install
   echo "Building assets"
   yarn build
-  echo "Rebuilding cache"
-  php bin/console cache:clear
 EOF
