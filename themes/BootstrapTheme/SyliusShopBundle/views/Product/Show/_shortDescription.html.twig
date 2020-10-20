@@ -1,0 +1,7 @@
+<p class="pb-4">
+  {% if product.shortDescription is not empty %}
+    {{ product.shortDescription|raw }}
+  {% else %}
+    {{ 'sylius.ui.no_short_description'|trans }}.
+  {% endif %}
+</p>
