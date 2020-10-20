@@ -38,4 +38,6 @@ ssh -o StrictHostKeyChecking=no "${REMOTE_USER}"@"${DEPLOY_ENDPOINT}" << EOF
   echo "Installing assets"
   php bin/console ckeditor:install --clear=skip
   php bin/console assets:install
+  echo "Webpacking"
+  yarn encore ${SYMFONY_ENVIRONMENT}
 EOF

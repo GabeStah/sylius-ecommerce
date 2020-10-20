@@ -13,6 +13,7 @@ variables:
   DEPLOY_ENDPOINT: "srv1.vfmservers.biz"
   REMOTE_USER: raritaneng
   REPOSITORY_URL: $CI_REPOSITORY_URL
+  SYMFONY_ENVIRONMENT: "dev"
 ### End Variables
 
 ### Shared
@@ -38,6 +39,7 @@ variables:
     name: testing
     url: "https://ecommerce-testing.raritaneng.com"
   variables:
+    SYMFONY_ENVIRONMENT: "dev"
     SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_TESTING
     TARGET_DIRECTORY: "/home/raritaneng/ecommerce/testing/"
     #TARGET_DIRECTORY: "/home/raritaneng/ecommerce/testing/$CI_COMMIT_SHORT_SHA/"
@@ -77,6 +79,7 @@ testing:healthcheck:
     - echo "${CI_JOB_STAGE} complete."
   variables:
     SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_PRODUCTION
+    SYMFONY_ENVIRONMENT: "prod"
     TARGET_DIRECTORY: "/home/raritaneng/ecommerce/production/"
   before_script:
     - *all_before_script
