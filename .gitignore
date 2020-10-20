@@ -348,3 +348,10 @@ fabric.properties
 /config/jwt/private-test.pem
 /config/jwt/public-test.pem
 /.notes/
+
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###

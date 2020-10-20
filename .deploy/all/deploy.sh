@@ -35,4 +35,7 @@ ssh -o StrictHostKeyChecking=no "${REMOTE_USER}"@"${DEPLOY_ENDPOINT}" << EOF
   yarn install
   echo "Building assets"
   yarn build
+  echo "Installing assets"
+  php bin/console ckeditor:install --clear=skip
+  php bin/console assets:install
 EOF
