@@ -1,7 +1,11 @@
 /public/assets
 /public/css
 /public/js
-/public/media
+!/public/media
+/public/media/*
+!/public/media/image
+/public/media/image/*
+!/public/media/image/fileslibrary/
 !/public/media/image/.gitkeep
 
 /node_modules
