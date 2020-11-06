@@ -12,6 +12,13 @@ use Sylius\Component\Core\Model\ProductVariantInterface;
 use Sylius\Component\Product\Model\ProductInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class ProductManager
+ *
+ * @deprecated
+ *
+ * @package App\Service
+ */
 class ProductManager
 {
   /**
@@ -27,7 +34,8 @@ class ProductManager
    */
   private $container;
 
-  public function __construct(ContainerInterface $container) {
+  public function __construct(ContainerInterface $container)
+  {
     $this->container = $container;
 
     $this->attributeRepository = $this->container->get(
@@ -47,11 +55,13 @@ class ProductManager
     );
   }
 
-  public function createOption() {
+  public function createOption()
+  {
     $productOption = new ProductOption();
   }
 
-  public function createAttribute($name, $type = 'text') {
+  public function createAttribute($name, $type = 'text')
+  {
     $productAttribute = new ProductAttribute();
     $productAttribute->setCode(StringNormalizer::toSnake($name)); // foo_bar
     $productAttribute->setName(StringNormalizer::toTitle($name)); // Foo Bar
@@ -67,7 +77,8 @@ class ProductManager
    *
    * @return null
    */
-  public function createProduct($data) {
+  public function createProduct($data)
+  {
     try {
       /** @var ProductInterface $productInterface */
       $productInterface = $this->productFactoryInterface->createNew();
@@ -134,7 +145,8 @@ class ProductManager
    *
    * @param array[object] $collection
    */
-  public function import($collection) {
+  public function import($collection)
+  {
     foreach ($collection as $item) {
       $product = $this->createProduct($item);
       if ($product) {

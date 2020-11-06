@@ -1,0 +1,4 @@
+services:
+  app.importer.category:
+    class: App\Service\Importer\CategoryImporter
+  App\Service\Importer\CategoryImporter: '@app.importer.category'

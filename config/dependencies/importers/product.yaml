@@ -1,0 +1,5 @@
+services:
+  app.importer.product:
+    class: App\Service\Importer\ProductImporter
+  App\Service\Importer\ProductImporter: '@app.importer.product'
+

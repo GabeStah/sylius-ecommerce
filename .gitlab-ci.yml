@@ -79,7 +79,7 @@ testing:healthcheck:
     - echo "${CI_JOB_STAGE} complete."
   variables:
     SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_PRODUCTION
-    SYMFONY_ENVIRONMENT: "prod"
+    SYMFONY_ENVIRONMENT: "production"
     TARGET_DIRECTORY: "/home/raritaneng/ecommerce/production/"
   before_script:
     - *all_before_script

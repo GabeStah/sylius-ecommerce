@@ -1,0 +1,4 @@
+services:
+  app.importer.abstract:
+    class: App\Service\Importer\AbstractImporter
+  App\Service\Importer\AbstractImporter: '@app.importer.abstract'

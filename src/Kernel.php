@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Service\Importer\CategoryImporter;
 use PSS\SymfonyMockerContainer\DependencyInjection\MockerContainer;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\DelegatingLoader;
@@ -35,80 +36,110 @@ use Webmozart\Assert\Assert;
 
 final class Kernel extends BaseKernel
 {
-    use MicroKernelTrait;
+  use MicroKernelTrait;
 
-    private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+  private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
-    public function getCacheDir(): string
-    {
-        return $this->getProjectDir() . '/var/cache/' . $this->environment;
+  public function getCacheDir(): string
+  {
+    return $this->getProjectDir() . '/var/cache/' . $this->environment;
+  }
+
+  public function getLogDir(): string
+  {
+    return $this->getProjectDir() . '/var/log';
+  }
+
+  public function registerBundles(): iterable
+  {
+    $contents = require $this->getProjectDir() . '/config/bundles.php';
+    foreach ($contents as $class => $envs) {
+      if (isset($envs['all']) || isset($envs[$this->environment])) {
+        yield new $class();
+      }
+    }
+  }
+
+  protected function configureContainer(
+    ContainerBuilder $container,
+    LoaderInterface $loader
+  ): void {
+    $container->addResource(
+      new FileResource($this->getProjectDir() . '/config/bundles.php')
+    );
+    $container->setParameter('container.dumper.inline_class_loader', true);
+    $confDir = $this->getProjectDir() . '/config';
+
+    $loader->load($confDir . '/{packages}/*' . self::CONFIG_EXTS, 'glob');
+    $loader->load(
+      $confDir .
+        '/{packages}/' .
+        $this->environment .
+        '/**/*' .
+        self::CONFIG_EXTS,
+      'glob'
+    );
+    $loader->load($confDir . '/{services}' . self::CONFIG_EXTS, 'glob');
+    $loader->load(
+      $confDir . '/{services}_' . $this->environment . self::CONFIG_EXTS,
+      'glob'
+    );
+
+    //    $this->configureDependencyInjections($container);
+  }
+
+  protected function configureDependencyInjections(ContainerBuilder $container)
+  {
+    $container->register('importer.category', CategoryImporter::class);
+  }
+
+  protected function configureRoutes(RouteCollectionBuilder $routes): void
+  {
+    $confDir = $this->getProjectDir() . '/config';
+
+    $routes->import($confDir . '/{routes}/*' . self::CONFIG_EXTS, '/', 'glob');
+    $routes->import(
+      $confDir .
+        '/{routes}/' .
+        $this->environment .
+        '/**/*' .
+        self::CONFIG_EXTS,
+      '/',
+      'glob'
+    );
+    $routes->import($confDir . '/{routes}' . self::CONFIG_EXTS, '/', 'glob');
+  }
+
+  protected function getContainerBaseClass(): string
+  {
+    if ($this->isTestEnvironment()) {
+      return MockerContainer::class;
     }
 
-    public function getLogDir(): string
-    {
-        return $this->getProjectDir() . '/var/log';
-    }
+    return parent::getContainerBaseClass();
+  }
 
-    public function registerBundles(): iterable
-    {
-        $contents = require $this->getProjectDir() . '/config/bundles.php';
-        foreach ($contents as $class => $envs) {
-            if (isset($envs['all']) || isset($envs[$this->environment])) {
-                yield new $class();
-            }
-        }
-    }
+  protected function getContainerLoader(
+    ContainerInterface $container
+  ): LoaderInterface {
+    Assert::isInstanceOf($container, ContainerBuilder::class);
 
-    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
-    {
-        $container->addResource(new FileResource($this->getProjectDir() . '/config/bundles.php'));
-        $container->setParameter('container.dumper.inline_class_loader', true);
-        $confDir = $this->getProjectDir() . '/config';
+    $locator = new FileLocator($this, $this->getRootDir() . '/Resources');
+    $resolver = new LoaderResolver([
+      new XmlFileLoader($container, $locator),
+      new YamlFileLoader($container, $locator),
+      new IniFileLoader($container, $locator),
+      new PhpFileLoader($container, $locator),
+      new GlobFileLoader($container, $locator),
+      new DirectoryLoader($container, $locator),
+      new ClosureLoader($container),
+    ]);
 
-        $loader->load($confDir . '/{packages}/*' . self::CONFIG_EXTS, 'glob');
-        $loader->load($confDir . '/{packages}/' . $this->environment . '/**/*' . self::CONFIG_EXTS, 'glob');
-        $loader->load($confDir . '/{services}' . self::CONFIG_EXTS, 'glob');
-        $loader->load($confDir . '/{services}_' . $this->environment . self::CONFIG_EXTS, 'glob');
-    }
+    return new DelegatingLoader($resolver);
+  }
 
-    protected function configureRoutes(RouteCollectionBuilder $routes): void
-    {
-        $confDir = $this->getProjectDir() . '/config';
-
-        $routes->import($confDir . '/{routes}/*' . self::CONFIG_EXTS, '/', 'glob');
-        $routes->import($confDir . '/{routes}/' . $this->environment . '/**/*' . self::CONFIG_EXTS, '/', 'glob');
-        $routes->import($confDir . '/{routes}' . self::CONFIG_EXTS, '/', 'glob');
-    }
-
-    protected function getContainerBaseClass(): string
-    {
-        if ($this->isTestEnvironment()) {
-            return MockerContainer::class;
-        }
-
-        return parent::getContainerBaseClass();
-    }
-
-    protected function getContainerLoader(ContainerInterface $container): LoaderInterface
-    {
-        Assert::isInstanceOf($container, ContainerBuilder::class);
-
-        $locator = new FileLocator($this, $this->getRootDir() . '/Resources');
-        $resolver = new LoaderResolver([
-            new XmlFileLoader($container, $locator),
-            new YamlFileLoader($container, $locator),
-            new IniFileLoader($container, $locator),
-            new PhpFileLoader($container, $locator),
-            new GlobFileLoader($container, $locator),
-            new DirectoryLoader($container, $locator),
-            new ClosureLoader($container),
-        ]);
-
-        return new DelegatingLoader($resolver);
-    }
-
-    private function isTestEnvironment(): bool
-    {
-        return 0 === strpos($this->getEnvironment(), 'test');
-    }
+  private function isTestEnvironment(): bool
+  {
+    return 0 === strpos($this->getEnvironment(), 'test');
+  }
 }

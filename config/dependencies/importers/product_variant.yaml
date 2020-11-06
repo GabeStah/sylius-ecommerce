@@ -1,0 +1,5 @@
+services:
+  app.importer.product_variant:
+    class: App\Service\Importer\ProductVariantImporter
+  App\Service\Importer\ProductVariantImporter: '@app.importer.product_variant'
+

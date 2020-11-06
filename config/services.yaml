@@ -1,3 +1,6 @@
+imports:
+  - { resource: 'dependencies/**/*.yaml' }
+
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 framework:
@@ -5,6 +8,11 @@ framework:
 
 parameters:
   locale: en_US
+  raritan.database.name: '%env(RARITAN_DATABASE_NAME)%'
+  raritan.database.user: '%env(RARITAN_DATABASE_USER)%'
+  raritan.database.password: '%env(RARITAN_DATABASE_PASSWORD)%'
+  raritan.database.host: '%env(RARITAN_DATABASE_HOST)%'
+  raritan.database.port: '%env(RARITAN_DATABASE_PORT)%'
 
 services:
   # Default configuration for services in *this* file
@@ -29,26 +37,49 @@ services:
   # this creates a service per class whose id is the fully-qualified class name
   App\:
     resource: '../src/*'
-    exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+    exclude: '../src/{Entity,Migrations,Repository,Tests,Kernel.php}'
 
   app.form.extension.product_translation:
     class: App\Form\Extension\ProductTranslationTypeExtension
     tags:
       - { name: form.type_extension, extended_type: Sylius\Bundle\ProductBundle\Form\Type\ProductTranslationType, priority: -1 }
 
+  app.form.extension.taxonomy_translation:
+    class: App\Form\Extension\TaxonTranslationTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Sylius\Bundle\TaxonomyBundle\Form\Type\TaxonTranslationType, priority: -1 }
+
+  #  sylius.repository.product:
+  #    class: App\Repository\ProductRepository
+  #  App\Repository\ProductRepository: '@sylius.repository.product'
+
   # explicitly configure the service
-  App\Command\CategoryConvertCommand:
+  #  App\Command\Import\AbstractImportCommand:
+  #    arguments:
+  #      $name: null
+  App\Command\Import\CategoryImportCommand:
     arguments:
       $name: null
-  App\Command\ProductConvertCommand:
+  App\Command\Import\ProductImportCommand:
     arguments:
       $name: null
-  App\Command\ProductImportCommand:
+  App\Command\Import\ProductVariantImportCommand:
     arguments:
       $name: null
-  App\Command\SubcategoryConvertCommand:
+  App\Command\Import\SubcategoryImportCommand:
     arguments:
       $name: null
+  Sylius\Bundle\TaxonomyBundle\Doctrine\ORM\TaxonRepository: '@sylius.repository.taxon'
+  #      $importer: 'importer.subcategory'
+  #  App\Command\ProductConvertCommand:
+  #    arguments:
+  #      $name: null
+  #  App\Command\ProductImportCommand:
+  #    arguments:
+  #      $name: null
+  #  App\Command\SubcategoryConvertCommand:
+  #    arguments:
+  #      $name: null
 
   # Controllers are imported separately to make sure services can be injected
   # as action arguments even if you don't extend any base controller class
