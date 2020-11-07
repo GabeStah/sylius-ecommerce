@@ -4,98 +4,9 @@ namespace App\Object;
 
 use App\Service\StringNormalizer;
 use JsonSerializable;
-use Sylius\Component\Attribute\AttributeType\CheckboxAttributeType;
-use Sylius\Component\Attribute\AttributeType\TextAttributeType;
 
 class OptionValue implements JsonSerializable
 {
-  public const CONVERSION_MAP = [
-    [
-      'key' => 'volt',
-      'code' => 'voltage',
-      'name' => 'Voltage',
-      'type' => TextAttributeType::TYPE,
-    ],
-    [
-      'key' => 'pcolor',
-      'code' => 'color',
-      'name' => 'Color',
-      'type' => TextAttributeType::TYPE,
-    ],
-    [
-      'key' => 'psize',
-      'code' => 'size',
-      'name' => 'Size',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'pdegree',
-      'code' => 'degree',
-      'name' => 'Degree',
-      'type' => TextAttributeType::TYPE,
-    ],
-    [
-      'key' => 'ppack',
-      'code' => 'pack',
-      'name' => 'Pack',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'pfitting',
-      'code' => 'fitting',
-      'name' => 'Fitting',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'watersource',
-      'code' => 'water_source',
-      'name' => 'Water Source',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'control',
-      'code' => 'control',
-      'name' => 'Control',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'BowlBack',
-      'code' => 'bowl_back',
-      'name' => 'Bowl Back',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'BowlSize',
-      'code' => 'bowl_size',
-      'name' => 'Bowl Size',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'waterline',
-      'code' => 'waterline',
-      'name' => 'Waterline',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'treatment',
-      'code' => 'treatment',
-      'name' => 'Treatment',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'hntoption',
-      'code' => 'hnt',
-      'name' => 'HNT',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-    [
-      'key' => 'dischargeconversion',
-      'code' => 'discharge_conversion',
-      'name' => 'Discharge Conversion',
-      'type' => CheckboxAttributeType::TYPE,
-    ],
-  ];
-
   private $code;
   private $name;
   private $value;

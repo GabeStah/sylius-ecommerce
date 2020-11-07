@@ -17,7 +17,7 @@ class SubcategoryImporter extends CategoryImporter implements
   /**
    * Base retrieval query string.
    *
-   * Retrieves all unique subcategories that do not
+   * Retrieves all subcategories that do not
    * have a 'trudesign' parent category.
    *
    * @var string

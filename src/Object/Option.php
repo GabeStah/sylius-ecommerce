@@ -215,37 +215,10 @@ class Option implements JsonSerializable
     return [
       'code' => $this->getCode(),
       'name' => $this->getName(),
-      //      'storage_type' => $this->getStorageType(),
-      //      'type' => $this->getType(),
       'option_value' => $this->getOptionValue(),
       'value' => $this->getValue(),
     ];
   }
-
-  //  /**
-  //   * @return mixed
-  //   */
-  //  public function getStorageType()
-  //  {
-  //    if ($this->storageType) {
-  //      return $this->storageType;
-  //    }
-  //    switch ($this->getType()) {
-  //      case CheckboxAttributeType::TYPE:
-  //        return 'boolean';
-  //      case TextAttributeType::TYPE:
-  //      default:
-  //        return 'text';
-  //    }
-  //  }
-  //
-  //  /**
-  //   * @param mixed $storageType
-  //   */
-  //  public function setStorageType($storageType): void
-  //  {
-  //    $this->storageType = $storageType;
-  //  }
 
   /**
    * @return mixed
