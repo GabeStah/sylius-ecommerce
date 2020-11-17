@@ -27,6 +27,7 @@
     "friendsofsymfony/ckeditor-bundle": "2.x-dev",
     "opis/json-schema": "^1.0",
     "sensiolabs/security-checker": "^6.0",
+    "solarix/shipping": "^1.0",
     "swaggest/json-schema": "^0.12.31",
     "sylius/sylius": "~1.8.0",
     "symfony/dotenv": "^4.4",
@@ -107,5 +108,14 @@
     "branch-alias": {
       "dev-master": "1.8-dev"
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "packages/solarix/shipping",
+      "options": {
+        "symlink": true
+      }
+    }
+  ]
 }

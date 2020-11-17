@@ -1,0 +1,3 @@
+[submodule "packages/solarix/shipping"]
+	path = packages/solarix/shipping
+	url = https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php.git

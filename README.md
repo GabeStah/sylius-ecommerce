@@ -608,3 +608,38 @@ Similar to `ProductImporter` the `ProductVariantImporter` adds records to the fo
 #### 1.5.6. JSON Dump
 
 All generated V2 `ProductVariant` data can be found in [exports/product-variant.json](exports/product-variant.json).
+
+## Shipping
+
+Most shipping logic including FedEx rate requests are handled via the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) library.  This section covers integration into Sylius including pitfalls and implemented workarounds.
+
+### Shipping Methods
+
+Sylius handles shipping logic via one or more **Shipping Methods**.  A Shipping Method contains a few fundemental properties:
+
+- `code`: A unique string identifier, e.g `FEDEX_EXPRESS_SAVER`
+- `configuration`: An object containing specific configuration, e.g. `a:2:{s:7:"minimum";i:1000;s:4:"code";s:19:"FEDEX_EXPRESS_SAVER";}`
+- `calculator`: The **Shipping Calculator** class used to calculate shipping rates for this method.
+
+### Shipping Calculator
+
+The custom [FedExRateCalculator](src/Shipping/Calculator/FedExRateCalculator.php) handles all shipping rate retrieval from the FedEx provider API using the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) package.  A handful of Sylius design choices and limitations required some workarounds.
+
+### Issue: Handling Multiple Rates
+
+Sylius does not support associated multiple rates with a single **Shipping Method**.  Instead, Sylius assumes rate data will be obtained solely from the defined `configuration` property set within the Admin panel.
+
+The result is that all shipping related UIs including the checkout shipment method page cannot display more than one shipping method and therefore only a single rate value.  Our use case requires multiple rates depending on what the FedEx API returns.
+
+The implemented solution was to add a new shipping method for each of the potential types returned by the FedEx rates request API, e.g.:
+
+- FEDEX_EXPRESS_SAVER
+- FEDEX_FIRST_OVERNIGHT
+- FEDEX_PRIORITY_OVERNIGHT
+- ... etc.
+
+### Issue: Provider API Request Throttling
+
+Each active **Shipping Method** invokes the underlying rate calculator logic during processing, which means a potential for half a dozen or more unnecessary provider API requests.
+
+To resolve this a simple local cache was added to keep track of recently obtained rates data for a given object.  The new `Order->rates` property stores a serialized collection of [Rates](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php/-/blob/master/src/Solarix/Shipping/Provider/FedEx/Model/Rate/Rate.php).  When the rates calculator is invoked it checks the Order's rates cache for last updated timestamp.  If updated within a short period of time the cache is returned rather than making a new FedEx provider API request.

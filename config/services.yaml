@@ -49,6 +49,15 @@ services:
     tags:
       - { name: form.type_extension, extended_type: Sylius\Bundle\TaxonomyBundle\Form\Type\TaxonTranslationType, priority: -1 }
 
+  solarix.shipping.provider.fedex:
+    class: Solarix\Shipping\Provider\FedExProvider
+
+  app.shipping_calculator.fedex:
+    class: App\Shipping\Calculator\FedExRateCalculator
+    arguments: [ '@solarix.shipping.provider.fedex' ]
+    tags:
+      - { name: sylius.shipping_calculator, calculator: fedex, label: "FedEx", form_type: App\Form\Type\FedExShippingCalculatorType }
+
   #  sylius.repository.product:
   #    class: App\Repository\ProductRepository
   #  App\Repository\ProductRepository: '@sylius.repository.product'
