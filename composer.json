@@ -24,10 +24,12 @@
   "require": {
     "php": "^7.3",
     "ext-json": "*",
+    "authorizenet/authorizenet": "^1.9.8",
     "friendsofsymfony/ckeditor-bundle": "2.x-dev",
     "opis/json-schema": "^1.0",
     "sensiolabs/security-checker": "^6.0",
     "solarix/shipping": "^1.0",
+    "solarix/sylius-authorize-net-plugin": "^1.2",
     "swaggest/json-schema": "^0.12.31",
     "sylius/sylius": "~1.8.0",
     "symfony/dotenv": "^4.4",
@@ -113,6 +115,13 @@
     {
       "type": "path",
       "url": "packages/solarix/shipping",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "packages/solarix/sylius-authorize-net-plugin",
       "options": {
         "symlink": true
       }

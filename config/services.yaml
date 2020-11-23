@@ -58,6 +58,25 @@ services:
     tags:
       - { name: sylius.shipping_calculator, calculator: fedex, label: "FedEx", form_type: App\Form\Type\FedExShippingCalculatorType }
 
+  #  app.authorize_net_gateway_factory:
+  #    class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
+  #    arguments: [ App\Payum\AuthorizeNetPaymentGatewayFactory ]
+  #    tags:
+  #      - { name: payum.gateway_factory_builder, factory: authorize_net }
+  #
+  #  app.authorize_net_gateway_configuration_type:
+  #    class: App\Form\Type\AuthorizeNetGatewayConfigurationType
+  #    tags:
+  #      - { name: app.authorize_net_gateway_configuration_type, type: app.authorize_net_gateway_factory, label: 'Authorize.NET' }
+  #      - { name: 'form.type' }
+  #
+  #  app.authorize_net_payum_action_capture_action:
+  #    arguments: [ '@sylius.http_client' ]
+  #    class: App\Payum\Action\CaptureAction
+  #    public: true
+  #    tags:
+  #      - { name: 'payum.action', factory: '@app.authorize_net_gateway_factory', alias: 'payum.action.capture' }
+
   #  sylius.repository.product:
   #    class: App\Repository\ProductRepository
   #  App\Repository\ProductRepository: '@sylius.repository.product'

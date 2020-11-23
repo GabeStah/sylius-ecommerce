@@ -275,6 +275,10 @@
       <path value="$PROJECT_DIR$/vendor/symfony/webpack-encore-bundle" />
       <path value="$PROJECT_DIR$/vendor/jeremy-dunn/php-fedex-api-wrapper" />
       <path value="$PROJECT_DIR$/vendor/solarix/shipping" />
+      <path value="$PROJECT_DIR$/vendor/solarix/sylius-authorize-net" />
+      <path value="$PROJECT_DIR$/vendor/solarix/sylius-authorize-net-plugin" />
+      <path value="$PROJECT_DIR$/vendor/authorizenet/authorizenet" />
+      <path value="$PROJECT_DIR$/vendor/goetas-webservices/xsd2php-runtime" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3" />
