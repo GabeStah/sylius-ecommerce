@@ -151,7 +151,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/version" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sensiolabs/security-checker" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/slevomat/coding-standard" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/solarix/sylius-authorize-net" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/solarix/sylius-authorize-net-plugin" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sonata-project/block-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sonata-project/cache" />

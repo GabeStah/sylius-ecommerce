@@ -1,0 +1,3 @@
+sylius_shop_about:
+  resource: "routes/about.yaml"
+  prefix: /about-us

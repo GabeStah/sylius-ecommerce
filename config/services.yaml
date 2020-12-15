@@ -39,6 +39,11 @@ services:
     resource: '../src/*'
     exclude: '../src/{Entity,Migrations,Repository,Tests,Kernel.php}'
 
+  app.form.extension.complete:
+    class: App\Form\Extension\CompleteTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Sylius\Bundle\CoreBundle\Form\Type\Checkout\CompleteType, priority: -1 }
+
   app.form.extension.product_translation:
     class: App\Form\Extension\ProductTranslationTypeExtension
     tags:
@@ -57,6 +62,11 @@ services:
     arguments: [ '@solarix.shipping.provider.fedex' ]
     tags:
       - { name: sylius.shipping_calculator, calculator: fedex, label: "FedEx", form_type: App\Form\Type\FedExShippingCalculatorType }
+
+  sylius.controller.shop.about:
+    class: App\Controller\Shop\AboutController
+    arguments: [ '@templating' ]
+    tags: [ 'controller.service_arguments' ]
 
   #  app.authorize_net_gateway_factory:
   #    class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder

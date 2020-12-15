@@ -1,0 +1,4 @@
+sylius:
+  ui:
+    about:
+      title: 'About Us'

@@ -1,0 +1,21 @@
+{% extends '@SyliusShop/layout.html.twig' %}
+
+{% block title %}{{ 'sylius.ui.about'|trans }} | {{ parent() }}{% endblock %}
+
+{% import '@SyliusShop/Common/Macro/headers.html.twig' as headers %}
+
+{% block content %}
+  <div class="row">
+    <div class="col">
+      {{ headers.default('sylius.ui.about'|trans, '', 'sylius.ui.about.title'|trans) }}
+
+      {{ sylius_template_event('sylius.shop.about.after_content_header') }}
+
+      <div>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores beatae, dignissimos in ipsa iure magnam
+          maxime nostrum numquam optio rem repellat tempore ut voluptatem! Ab aspernatur magni rem sint ut?
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

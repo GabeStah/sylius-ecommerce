@@ -1,0 +1,7 @@
+sylius_shop_about_index:
+  path: /
+  methods: [ GET ]
+  defaults:
+    _controller: sylius.controller.shop.about:indexAction
+    _sylius:
+      redirect: sylius_shop_homepage

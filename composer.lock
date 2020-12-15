@@ -5945,11 +5945,11 @@
         },
         {
             "name": "solarix/sylius-authorize-net-plugin",
-            "version": "1.2.14",
+            "version": "1.2.18",
             "dist": {
                 "type": "path",
                 "url": "packages/solarix/sylius-authorize-net-plugin",
-                "reference": "69cc30fda16c89e51e9dae985e92195e0ad9be1d"
+                "reference": "d7745ac54d17178a27b6d04845726c5432914ea5"
             },
             "require": {
                 "authorizenet/authorizenet": "^1.9.8",

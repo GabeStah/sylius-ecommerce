@@ -130,6 +130,8 @@ sylius_payment:
         model: App\Entity\Payment\Payment
 
 sylius_payum:
+  template:
+    obtain_credit_card: '@SolarixSyliusAuthorizeNetPlugin/obtainCreditCard.html.twig'
   resources:
     payment_security_token:
       classes:
