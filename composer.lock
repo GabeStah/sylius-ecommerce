@@ -16078,7 +16078,7 @@
         "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
       },
       "bin": [
-        "bin/phpcs"
+        "bin/phpcs",
         "bin/phpcbf"
       ],
       "type": "library",
