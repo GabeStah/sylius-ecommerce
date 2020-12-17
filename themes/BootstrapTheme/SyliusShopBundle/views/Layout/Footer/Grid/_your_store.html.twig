@@ -1,9 +1,10 @@
 <div class="col mb-3">
-    <h4>{{ 'sylius.ui.your_store'|trans }}</h4>
-    <div class="d-flex flex-column">
-        <a class="text-muted" href="#">{{ 'sylius.ui.about'|trans }}</a>
-        <a class="text-muted" href="#">{{ 'sylius.ui.terms_and_conditions'|trans }}</a>
-        <a class="text-muted" href="#">{{ 'sylius.ui.privacy_policy'|trans }}</a>
-        <a class="text-muted" href="{{ path('sylius_shop_contact_request') }}">{{ 'sylius.ui.contact_us'|trans }}</a>
-    </div>
+  <h4>{{ 'sylius.ui.legal.title'|trans }}</h4>
+  <div class="d-flex flex-column">
+    {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_anti_spam_policy', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_dmca', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_privacy_policy', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_refund_policy', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_tos', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+  </div>
 </div>

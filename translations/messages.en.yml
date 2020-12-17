@@ -2,3 +2,7 @@ sylius:
   ui:
     about:
       title: 'About Us'
+    legal:
+      title: 'Legal'
+    support:
+      title: 'Support'

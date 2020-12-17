@@ -1,3 +1,6 @@
 sylius_shop_about:
   resource: "routes/about.yaml"
   prefix: /about-us
+
+bitbag_sylius_cms_plugin:
+  resource: "@BitBagSyliusCmsPlugin/Resources/config/routing.yml"

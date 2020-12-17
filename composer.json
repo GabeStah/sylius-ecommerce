@@ -25,6 +25,7 @@
     "php": "^7.3",
     "ext-json": "*",
     "authorizenet/authorizenet": "^1.9.8",
+    "bitbag/cms-plugin": "^2.4",
     "friendsofsymfony/ckeditor-bundle": "2.x-dev",
     "opis/json-schema": "^1.0",
     "sensiolabs/security-checker": "^6.0",

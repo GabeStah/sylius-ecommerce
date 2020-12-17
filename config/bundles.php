@@ -63,4 +63,6 @@ return [
     FOS\CKEditorBundle\FOSCKEditorBundle::class => ['all' => true],
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
     Solarix\SyliusAuthorizeNetPlugin\SolarixSyliusAuthorizeNetPlugin::class => ['all' => true],
+    SitemapPlugin\SitemapPlugin::class => ['all' => true],
+    BitBag\SyliusCmsPlugin\BitBagSyliusCmsPlugin::class => ['all' => true],
 ];
