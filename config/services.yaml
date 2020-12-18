@@ -64,6 +64,12 @@ services:
     tags:
       - { name: sylius.shipping_calculator, calculator: fedex, label: "FedEx", form_type: App\Form\Type\FedExShippingCalculatorType }
 
+  app.shipping_methods_resolver.fedex:
+    class: App\Shipping\Resolver\FedExMethodResolver
+    arguments: [ '@solarix.shipping.provider.fedex' ]
+    tags:
+      - { name: sylius.shipping_method_resolver, resolver: fedex, label: "FedEx" }
+
   sylius.controller.shop.about:
     class: App\Controller\Shop\AboutController
     arguments: [ '@templating' ]
