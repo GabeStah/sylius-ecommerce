@@ -1,0 +1,7 @@
+L1030 = Lectra/San promo sheet
+
+L270 = Lectra/San MC Owners Manual
+L274 = Lectra/San MC exploded parts view
+L281 = Lectra/San 2 gallon salt feed tank instructions
+L288 = Lectra/San 4 gallon salt feed tank instructions
+L289 = Lectra/San MC 4 gallon salt feed tank with pump instructions

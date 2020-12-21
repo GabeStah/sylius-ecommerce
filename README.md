@@ -643,3 +643,44 @@ The implemented solution was to add a new shipping method for each of the potent
 Each active **Shipping Method** invokes the underlying rate calculator logic during processing, which means a potential for half a dozen or more unnecessary provider API requests.
 
 To resolve this a simple local cache was added to keep track of recently obtained rates data for a given object.  The new `Order->rates` property stores a serialized collection of [Rates](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php/-/blob/master/src/Solarix/Shipping/Provider/FedEx/Model/Rate/Rate.php).  When the rates calculator is invoked it checks the Order's rates cache for last updated timestamp.  If updated within a short period of time the cache is returned rather than making a new FedEx provider API request.
+
+## Static Page Imports
+
+| ID | Title                                           | Category          | Status   | Note                                                   |
+| -- | ----------------------------------------------- | ----------------- | -------- | ------------------------------------------------------ |
+| 1  | About Us                                        | Information       | Imported |                                                        |
+| 2  | Terms of Service                                | Legal             | Imported |                                                        |
+| 3  | Privacy Policy                                  | Legal             | Imported |                                                        |
+| 4  | Digital Millennium Copyright Act Notice         | Legal             | Imported |                                                        |
+| 5  | Anti Spam Policy                                | Legal             | Imported |                                                        |
+| 6  | Refund Policy                                   | Legal             | Imported | Placeholder content requires client update             |
+| 7  | Earnings Disclaimer                             | Legal             | IGNORED  | Unused in Raritan-v1                                   |
+| 10 | Affiliate Disclosure                            | Legal             | IGNORED  | Unused in Raritan-v1                                   |
+| 11 | Repair Shop                                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 12 | Lectra\|San                                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 13 | What the flashing lights mean                   | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 14 | Troubleshooting the “Red light shut down”       | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 15 | Do I need a salt feed unit?                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 16 | Control board replacement                       | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 17 | Atlantes A5, A6                                 | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 18 | Atlastes Intake                                 | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 19 | Atlantes Discharge                              | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 20 | Atlantes Control Board                          | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 21 | Fuse Relay                                      | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 22 | Crown Head (CD Series)                          | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 23 | Replacing the discharge pump wall (part #CH120) | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 24 | Servicing the siphon check valve (part #CH37E)  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 25 | Servicing the intake pump assembly (part G13W)  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 26 | PHII and PHEII                                  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 27 | Icerette                                        | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 28 | Water Heater (1700 Series)                      | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 29 | Need A Part?                                    | Technical Support | Imported | Fixed links                                            |
+| 30 | LIMITED WARRANTY                                | Technical Support | Imported |                                                        |
+| 31 | Identify Your Head                              | Technical Support | Imported | Added images, fixed links                              |
+| 32 | Owner’s Manual / Exploded Parts View / Promos   | Technical Support | Imported | Added images, pdfs, and fixed links                    |
+| 33 | FAQ                                             | Technical Support | Imported | Fixed formatting and links                             |
+| 34 | Shop                                            |                   | IGNORED  | Unused in Raritan-v1                                   |
+| 35 | Ruddermaster                                    | Landing Pages     | IGNORED  | Unused in Raritan-v1                                   |
+| 36 | SeaFresh                                        |                   | IGNORED  | Unused in Raritan-v1                                   |
+| 37 | Not Available At The Moment                     | Information       | IGNORED  | Unused in Raritan-v1                                   |
+| 38 | How To & Informational Videos                   | Technical Support | Imported | Fixed video embeds, added collapse transcript elements |

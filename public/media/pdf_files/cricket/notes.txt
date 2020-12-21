@@ -1,0 +1,4 @@
+L1004 = promosheet
+
+L229 = Owners manual
+L240 = Exploded parts views

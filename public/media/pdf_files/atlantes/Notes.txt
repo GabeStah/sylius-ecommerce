@@ -1,0 +1,3 @@
+L1001 = promosheet
+L342 = owners manual
+L346 = exploded parts views

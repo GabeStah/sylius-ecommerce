@@ -1,0 +1,3 @@
+L04E = PHII exploded parts view
+L04 = PHII owners manual
+L1010 = PHII promosheet

@@ -1,0 +1,3 @@
+L1011purasan = Promo sheet
+L143purasan = Owners Manual
+L197purasan = exploded parts view
