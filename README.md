@@ -35,6 +35,24 @@
     - [1.5.4. Extra Data](#154-extra-data)
     - [1.5.5. Finalized Database Imports](#155-finalized-database-imports)
     - [1.5.6. JSON Dump](#156-json-dump)
+  - [1.6. `import:dealer`](#16-importdealer)
+    - [1.6.1. Prerequisite](#161-prerequisite)
+    - [1.6.2. Entity Fields](#162-entity-fields)
+    - [1.6.3. Raritan-v1 Data Export](#163-raritan-v1-data-export)
+    - [1.6.4. Normalization and Mapping](#164-normalization-and-mapping)
+    - [1.6.5. Filtered Data](#165-filtered-data)
+    - [1.6.6. Extra Data](#166-extra-data)
+    - [1.6.7. Finalized Database Imports](#167-finalized-database-imports)
+    - [1.6.8. JSON Dump](#168-json-dump)
+- [2. Shipping](#2-shipping)
+  - [2.1. Shipping Methods](#21-shipping-methods)
+  - [2.2. Shipping Calculator](#22-shipping-calculator)
+  - [2.3. Issue: Handling Multiple Rates](#23-issue-handling-multiple-rates)
+  - [2.4. Issue: Provider API Request Throttling](#24-issue-provider-api-request-throttling)
+- [3. Static Page Imports](#3-static-page-imports)
+- [Dealers](#dealers)
+  - [Nearby Dealers (Geolocation)](#nearby-dealers-geolocation)
+  - [Administration](#administration)
 
 ## 1. Import Pipeline
 
@@ -609,11 +627,86 @@ Similar to `ProductImporter` the `ProductVariantImporter` adds records to the fo
 
 All generated V2 `ProductVariant` data can be found in [exports/product-variant.json](exports/product-variant.json).
 
-## Shipping
+### 1.6. `import:dealer`
+
+Transfers all top-level Raritan-v1 `dealers` records into Sylius `Dealers`.
+
+#### 1.6.1. Prerequisite
+
+- Enabled patching for Composer: `composer require cweagans/composer-patches`
+- Add `force-annotation` option to entity maker: https://github.com/vklux/maker-bundle-force-annotation/blob/master/maker-force-annotation-flag.patch
+- Ensure `DealerRepository` is auto-wired in `services.yaml`
+
+#### 1.6.2. Entity Fields
+
+| name          | type                    | new_name    |
+| ------------- | ----------------------- | ----------- |
+| dealername    | varchar(200)            | name        |
+| dealerurl     | varchar(500)            | slug        |
+| daddress1     | varchar(100) NULL       | address1    |
+| daddress2     | varchar(100) NULL       | address2    |
+| dcity         | varchar(100) NULL       | city        |
+| dzipcode      | varchar(20) NULL        | postal_code |
+| dstate        | varchar(100) NULL       | state       |
+| dcountry      | varchar(2) NULL [US]    | country     |
+| dphone        | varchar(50) NULL        | phone       |
+| dfax          | varchar(50) NULL        | fax         |
+| demail        | varchar(200) NULL       | email       |
+| dwebsite      | varchar(500) NULL       | url         |
+| dstatus       | int [0]                 | enabled     |
+| dlogo         | varchar(500) NULL       |             |
+| dealertype    | int NULL                | type        |
+| wholesaleonly | int NULL [0]            | wholesale   |
+| dcomment      | text NULL               | comment     |
+| gmaplat       | varchar(20) NULL [0.00] | latitude    |
+| gmaplong      | varchar(20) NULL [0.00] | longitude   |
+
+#### 1.6.3. Raritan-v1 Data Export
+
+All dealers are exported:
+
+```sql
+SELECT
+  *
+FROM
+  dealers
+```
+
+#### 1.6.4. Normalization and Mapping
+
+A new `Dealer` entity is created for each incoming record with a few important mappings:
+
+- Most V1 columns are prefixed with the letter `d`, which has been removed.  Names have also been normalized where appropriate.
+- `slug`: V1 `dealerurl`.  The V1 data is actually a partial URL slug, so mapping adjusted accordingly
+- `url`: V1 `dwebsite`.  This is the real URL of the dealer's website, if applicable.
+- `country`: Uppercased.
+- `enabled`: V1 `dstatus`. Booleanized.
+- `wholesale`: V1 `wholesaleonly`. Booleanized. 
+- `type`: V1 `dealertype`. Integer value, which is mapped to appropriate string in `DealerEntity` and `DealerController`.
+
+####  1.6.5. Filtered Data
+
+No data was filtered beyond the base SQL query.
+
+#### 1.6.6. Extra Data
+
+No extra data was added.
+
+####  1.6.7. Finalized Database Imports
+
+Other than data normalization and mapping the V2 `Dealers` table identically matches the V1 `dealers` table.
+
+#### 1.6.8. JSON Dump
+
+All generated V2 `Dealer` data can be found in [exports/dealer.json](exports/dealer.json).
+
+
+
+## 2. Shipping
 
 Most shipping logic including FedEx rate requests are handled via the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) library.  This section covers integration into Sylius including pitfalls and implemented workarounds.
 
-### Shipping Methods
+### 2.1. Shipping Methods
 
 Sylius handles shipping logic via one or more **Shipping Methods**.  A Shipping Method contains a few fundemental properties:
 
@@ -621,11 +714,11 @@ Sylius handles shipping logic via one or more **Shipping Methods**.  A Shipping 
 - `configuration`: An object containing specific configuration, e.g. `a:2:{s:7:"minimum";i:1000;s:4:"code";s:19:"FEDEX_EXPRESS_SAVER";}`
 - `calculator`: The **Shipping Calculator** class used to calculate shipping rates for this method.
 
-### Shipping Calculator
+### 2.2. Shipping Calculator
 
 The custom [FedExRateCalculator](src/Shipping/Calculator/FedExRateCalculator.php) handles all shipping rate retrieval from the FedEx provider API using the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) package.  A handful of Sylius design choices and limitations required some workarounds.
 
-### Issue: Handling Multiple Rates
+### 2.3. Issue: Handling Multiple Rates
 
 Sylius does not support associated multiple rates with a single **Shipping Method**.  Instead, Sylius assumes rate data will be obtained solely from the defined `configuration` property set within the Admin panel.
 
@@ -638,13 +731,13 @@ The implemented solution was to add a new shipping method for each of the potent
 - FEDEX_PRIORITY_OVERNIGHT
 - ... etc.
 
-### Issue: Provider API Request Throttling
+### 2.4. Issue: Provider API Request Throttling
 
 Each active **Shipping Method** invokes the underlying rate calculator logic during processing, which means a potential for half a dozen or more unnecessary provider API requests.
 
 To resolve this a simple local cache was added to keep track of recently obtained rates data for a given object.  The new `Order->rates` property stores a serialized collection of [Rates](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php/-/blob/master/src/Solarix/Shipping/Provider/FedEx/Model/Rate/Rate.php).  When the rates calculator is invoked it checks the Order's rates cache for last updated timestamp.  If updated within a short period of time the cache is returned rather than making a new FedEx provider API request.
 
-## Static Page Imports
+## 3. Static Page Imports
 
 | ID | Title                                           | Category          | Status   | Note                                                   |
 | -- | ----------------------------------------------- | ----------------- | -------- | ------------------------------------------------------ |
@@ -687,32 +780,24 @@ To resolve this a simple local cache was added to keep track of recently obtaine
 
 ## Dealers
 
-### Prerequisite
+Dealer data is managed via the Administration dashboard
 
-- Enabled patching for Composer: `composer require cweagans/composer-patches`
-- Add `force-annotation` option to entity maker: https://github.com/vklux/maker-bundle-force-annotation/blob/master/maker-force-annotation-flag.patch
-- Ensure `DealerRepository` is auto-wired in `services.yaml`
+### Nearby Dealers (Geolocation)
 
-### Entity Fields
+The V1 nearby dealers list indicated it was displaying nearby dealers, but instead merely showed a list of dealers within the visitor's state lines:
 
-| name          | type                    | new_name    |
-| ------------- | ----------------------- | ----------- |
-| dealername    | varchar(200)            | name        |
-| dealerurl     | varchar(500)            | slug        |
-| daddress1     | varchar(100) NULL       | address1    |
-| daddress2     | varchar(100) NULL       | address2    |
-| dcity         | varchar(100) NULL       | city        |
-| dzipcode      | varchar(20) NULL        | postal_code |
-| dstate        | varchar(100) NULL       | state       |
-| dcountry      | varchar(2) NULL [US]    | country     |
-| dphone        | varchar(50) NULL        | phone       |
-| dfax          | varchar(50) NULL        | fax         |
-| demail        | varchar(200) NULL       | email       |
-| dwebsite      | varchar(500) NULL       | url         |
-| dstatus       | int [0]                 | enabled     |
-| dlogo         | varchar(500) NULL       |             |
-| dealertype    | int NULL                | type        |
-| wholesaleonly | int NULL [0]            | wholesale   |
-| dcomment      | text NULL               | comment     |
-| gmaplat       | varchar(20) NULL [0.00] | latitude    |
-| gmaplong      | varchar(20) NULL [0.00] | longitude   |
+```php
+foreach($Dealers as $ds) {
+  if(strtoupper($VisitingLocation->geoplugin_regionCode)== strtoupper($ds->dstate)) {
+    // ... output local dealer list
+  }
+}
+```
+
+The V2 dealers list resolves this by accurately calculating the distance from the user's IP address geolocation.  Dealers in this nearby list are within `250` miles by default, though this value can be easily adjusted.
+
+This ensures the list is *actually* showing nearby dealers and the dealers are sorted by distance to the user.
+
+###  Administration
+
+- Visit `/admin/dealers/` section under `Miscellaneous > Dealers` admin dashboard

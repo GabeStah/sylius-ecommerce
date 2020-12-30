@@ -31,7 +31,8 @@ final class DealerController extends AbstractController
       ->getCurrentRequest()
       ->getClientIp();
 
-    $ip = '50.53.174.237';
+    // Testing
+    //    $ip = '50.53.174.237';
 
     $client = new Client([
       'timeout' => 5.0,
@@ -90,6 +91,7 @@ final class DealerController extends AbstractController
 
     return $this->render('bundles/SyliusShopBundle/Dealer/show.html.twig', [
       'dealer' => $dealer,
+      'title' => 'Dealer',
     ]);
   }
 

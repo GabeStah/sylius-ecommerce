@@ -15,7 +15,11 @@
               height="480" style="border: 0;"></iframe>
 
       {% if localDealers is not empty %}
-        {% include '/bundles/SyliusShopBundle/Dealer/_dealers-list.html.twig' with {'dealers': localDealers} %}
+        <div class="my-4">
+          <p>Thanks for visiting Raritan Engineering! Below are nearest dealers, sales representatives, and/or repair
+            services in your area:</p>
+          {% include '/bundles/SyliusShopBundle/Dealer/_dealers-list.html.twig' with {'dealers': localDealers} %}
+        </div>
       {% endif %}
 
       <div class="row my-2">

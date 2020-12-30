@@ -69,11 +69,9 @@ EOF;
     ]);
     if ($existingEntity) {
       Logger::print('FOUND, updating');
-      //      $this->repository->add($entity->update($existingEntity));
       $entity->update($existingEntity);
     } else {
       Logger::print('NOT found, adding');
-      //      $this->repository->add($entity);
     }
     return $entity;
   }
@@ -85,22 +83,7 @@ EOF;
    */
   public function extra()
   {
-    return [
-        //      [
-        //        'category_id' => 100,
-        //        'category_type' => 'category',
-        //        'code' => StringNormalizer::toSnake('category-' . 'miscellaneous'),
-        //        'description' => null,
-        //        'enabled' => boolval(true),
-        //        'name' => StringNormalizer::toTitle('Miscellaneous'),
-        //        'parent' => [
-        //          'category_id' => 999,
-        //          'category_type' => 'menu',
-        //        ],
-        //        'slug' => StringNormalizer::toSlug('miscellaneous'),
-        //        'timestamp' => time(),
-        //      ],
-      ];
+    return [];
   }
 
   /**
@@ -113,9 +96,7 @@ EOF;
   public function fromData($data): Dealer
   {
     $entity = $this->repository->findOneBy(['slug' => $data['slug']]);
-    $isNew = false;
     if (!$entity) {
-      $isNew = true;
       $entity = new Dealer();
     }
 
@@ -139,37 +120,6 @@ EOF;
     $entity->setWholesale(
       is_bool($data['wholesale']) ? $data['wholesale'] : true
     );
-
-    //    $entity->setCurrentLocale($this->getLocale());
-    //    $entity->setCode($data['code']);
-    //    $entity->setDescription($data['description']);
-    //    $entity->setEnabled(is_bool($data['enabled']) ? $data['enabled'] : true);
-    //    $entity->setName($data['name']);
-    //    $entity->setSlug($data['slug']);
-    //    $entity->setCategoryId($data['category_id']);
-    //    $entity->setCategoryType($data['category_type']);
-    //    if (array_key_exists('parent', $data)) {
-    //      if ($data['parent'] instanceof Taxon) {
-    //        $entity->setParent($data['parent']);
-    //      } else {
-    //        $parent = $this->repository->findOneByCategory(
-    //          $data['parent']['category_id'],
-    //          $data['parent']['category_type']
-    //        );
-    //        if ($parent) {
-    //          $entity->setParent($parent);
-    //        } else {
-    //          Logger::print(
-    //            'ERROR: Cannot find parent matching ' .
-    //            $data['parent']['category_id']
-    //          );
-    //        }
-    //      }
-    //    }
-
-    //    if ($isNew) {
-    //      $this->repository->add($entity);
-    //    }
 
     return $entity;
   }
@@ -206,23 +156,7 @@ EOF;
       'comment' => $item['dcomment'],
       'latitude' => $item['gmaplat'],
       'longitude' => $item['gmaplong'],
-      //      'category_id' => $item['catid'],
-      //      'category_type' => 'category',
-      //      'code' => StringNormalizer::toSnake('category-' . $item['pcategoryurl']),
-      //            'enabled' => boolval(
-      //              is_null($item['catstatus']) ? false : $item['catstatus']
-      //            ),
-      //      'name' => StringNormalizer::toTitle($item['pcategoryname']),
-      //      'slug' => StringNormalizer::toSlug($item['pcategoryurl']),
-      //      'timestamp' => time(),
-      //      'parent' => [
-      //        'category_id' => 999,
-      //        'category_type' => 'menu',
-      //      ],
     ];
-    //    if (array_key_exists('pcategorydescription', $item)) {
-    //      $data['description'] = $item['pcategorydescription'];
-    //    }
 
     return $data;
   }
