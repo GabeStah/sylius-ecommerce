@@ -684,3 +684,35 @@ To resolve this a simple local cache was added to keep track of recently obtaine
 | 36 | SeaFresh                                        |                   | IGNORED  | Unused in Raritan-v1                                   |
 | 37 | Not Available At The Moment                     | Information       | IGNORED  | Unused in Raritan-v1                                   |
 | 38 | How To & Informational Videos                   | Technical Support | Imported | Fixed video embeds, added collapse transcript elements |
+
+## Dealers
+
+### Prerequisite
+
+- Enabled patching for Composer: `composer require cweagans/composer-patches`
+- Add `force-annotation` option to entity maker: https://github.com/vklux/maker-bundle-force-annotation/blob/master/maker-force-annotation-flag.patch
+- Ensure `DealerRepository` is auto-wired in `services.yaml`
+
+### Entity Fields
+
+| name          | type                    | new_name    |
+| ------------- | ----------------------- | ----------- |
+| dealername    | varchar(200)            | name        |
+| dealerurl     | varchar(500)            | slug        |
+| daddress1     | varchar(100) NULL       | address1    |
+| daddress2     | varchar(100) NULL       | address2    |
+| dcity         | varchar(100) NULL       | city        |
+| dzipcode      | varchar(20) NULL        | postal_code |
+| dstate        | varchar(100) NULL       | state       |
+| dcountry      | varchar(2) NULL [US]    | country     |
+| dphone        | varchar(50) NULL        | phone       |
+| dfax          | varchar(50) NULL        | fax         |
+| demail        | varchar(200) NULL       | email       |
+| dwebsite      | varchar(500) NULL       | url         |
+| dstatus       | int [0]                 | enabled     |
+| dlogo         | varchar(500) NULL       |             |
+| dealertype    | int NULL                | type        |
+| wholesaleonly | int NULL [0]            | wholesale   |
+| dcomment      | text NULL               | comment     |
+| gmaplat       | varchar(20) NULL [0.00] | latitude    |
+| gmaplong      | varchar(20) NULL [0.00] | longitude   |

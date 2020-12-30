@@ -1,0 +1,27 @@
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th scope="col">Dealer</th>
+    <th scope="col">Service Type</th>
+    <th scope="col">City</th>
+    <th scope="col">State</th>
+    <th scope="col">Country</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for dealer in dealers %}
+    <tr>
+      <th scope="row">
+        <a
+          href="{{ path('sylius_shop_dealer_show', {'slug': dealer.slug, 'id': dealer.id}) }}">{{ dealer.name|e }}</a>
+      </th>
+      <td><a
+          href="{{ path('sylius_shop_dealer_list_by_type', { 'type': dealer.type }) }}">{{ dealer.typeName|e }}</a>
+      </td>
+      <td>{{ dealer.city|e }}</td>
+      <td>{{ dealer.state|e }}</td>
+      <td>{{ dealer.country|e }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>

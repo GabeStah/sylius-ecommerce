@@ -65,4 +65,5 @@ return [
     Solarix\SyliusAuthorizeNetPlugin\SolarixSyliusAuthorizeNetPlugin::class => ['all' => true],
     SitemapPlugin\SitemapPlugin::class => ['all' => true],
     BitBag\SyliusCmsPlugin\BitBagSyliusCmsPlugin::class => ['all' => true],
+    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
 ];

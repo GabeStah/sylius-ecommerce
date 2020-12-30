@@ -1,3 +1,22 @@
+app_admin_dealer:
+  prefix: /admin
+  resource: |
+    alias: app.dealer
+    section: admin
+    templates: "@SyliusAdmin\\Crud"
+    redirect: update
+    grid: app_admin_dealer
+    vars:
+      all:
+        subheader: app.ui.dealer
+      index:
+        icon: 'file image outline'
+  type: sylius.resource
+
+sylius_shop_dealer:
+  resource: "routes/dealer.yaml"
+  prefix: /dealers
+
 sylius_shop_about:
   resource: "routes/about.yaml"
   prefix: /about-us

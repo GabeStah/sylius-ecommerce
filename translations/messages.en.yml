@@ -2,6 +2,8 @@ sylius:
   ui:
     about:
       title: 'About Us'
+    dealer:
+      title: "Dealers"
     legal:
       title: 'Legal'
     support:

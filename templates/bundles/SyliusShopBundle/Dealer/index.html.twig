@@ -1,0 +1,39 @@
+{% extends '@SyliusShop/layout.html.twig' %}
+
+{% block title %}{{ title }} | {{ parent() }}{% endblock %}
+
+{% import '@SyliusShop/Common/Macro/headers.html.twig' as headers %}
+
+{% block content %}
+  <div class="row">
+    <div class="col">
+      {{ headers.default(title, '', 'sylius.ui.dealer.title'|trans) }}
+
+      {{ sylius_template_event('sylius.shop.dealer.after_content_header') }}
+
+      <iframe src="https://www.google.com/maps/d/embed?mid=1Z-N3WEPqHk4cLlM5XXj0EJw1-kxhKucE" width="100%"
+              height="480" style="border: 0;"></iframe>
+
+      {% if localDealers is not empty %}
+        {% include '/bundles/SyliusShopBundle/Dealer/_dealers-list.html.twig' with {'dealers': localDealers} %}
+      {% endif %}
+
+      <div class="row my-2">
+        <div class="col-3 text-center"><a
+            href="{{ path('sylius_shop_dealer_index') }}" class="btn btn-outline-primary" role="button">All
+            Dealers</a></div>
+        <div class="col-3 text-center"><a
+            href="{{ path('sylius_shop_dealer_list_by_type', { 'type': 2 }) }}" class="btn btn-outline-primary"
+            role="button">Domestic Distributors</a></div>
+        <div class="col-3 text-center"><a href="{{ path('sylius_shop_dealer_list_by_type', { 'type': 1 }) }}"
+                                          class="btn btn-outline-primary" role="button">Servicing
+            Dealers</a></div>
+        <div class="col-3 text-center"><a href="{{ path('sylius_shop_dealer_list_by_type', { 'type': 3 }) }}"
+                                          class="btn btn-outline-primary" role="button">International
+            Distributors</a></div>
+      </div>
+
+      {% include '/bundles/SyliusShopBundle/Dealer/_dealers-list.html.twig' with {'dealers': dealers} %}
+    </div>
+  </div>
+{% endblock %}

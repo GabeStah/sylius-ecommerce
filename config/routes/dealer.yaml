@@ -1,0 +1,23 @@
+sylius_shop_dealer_index:
+  path: /
+  methods: [ GET ]
+  defaults:
+    _controller: sylius.controller.shop.dealer:index
+    _sylius:
+      redirect: sylius_shop_homepage
+
+sylius_shop_dealer_list_by_type:
+  path: /type/{type}
+  methods: [ GET ]
+  defaults:
+    _controller: sylius.controller.shop.dealer:listByType
+    _sylius:
+      redirect: sylius_shop_homepage
+
+sylius_shop_dealer_show:
+  path: /{slug}/{id}
+  methods: [ GET ]
+  defaults:
+    _controller: sylius.controller.shop.dealer:show
+    _sylius:
+      redirect: sylius_shop_homepage

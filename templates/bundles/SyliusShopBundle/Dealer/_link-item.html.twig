@@ -1,0 +1,10 @@
+{% if content is not empty %}
+  <li>
+    {% if svg is defined %}
+      <span class="fa-li">
+      {{ source(svg) }}
+    </span>
+    {% endif %}
+    {{ content }}
+  </li>
+{% endif %}

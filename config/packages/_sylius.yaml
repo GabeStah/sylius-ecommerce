@@ -94,6 +94,80 @@ sylius_customer:
       classes:
         model: App\Entity\Customer\CustomerGroup
 
+sylius_grid:
+  grids:
+    app_admin_dealer:
+      driver:
+        name: doctrine/orm
+        options:
+          class: App\Entity\Dealer
+      fields:
+        name:
+          type: string
+          label: sylius.ui.name
+        slug:
+          type: string
+          label: "Slug"
+        address1:
+          type: string
+          label: "Address 1"
+        address2:
+          type: string
+          label: "Address 2"
+        city:
+          type: string
+          label: "City"
+        postal_code:
+          type: string
+          label: "Postal Code"
+        state:
+          type: string
+          label: "State"
+        country:
+          type: string
+          label: "Country"
+        phone:
+          type: string
+          label: "Phone"
+        fax:
+          type: string
+          label: "Fax"
+        email:
+          type: string
+          label: "Email"
+        url:
+          type: string
+          label: "URL"
+        enabled:
+          type: twig
+          label: sylius.ui.enabled
+          options:
+            template: "@SyliusUi/Grid/Field/enabled.html.twig"
+        type:
+          type: string
+          label: "Type"
+        wholesale:
+          type: string
+          label: "Wholesale"
+        comment:
+          type: string
+          label: "Comment"
+        latitude:
+          type: string
+          label: "Latitude"
+        longitude:
+          type: string
+          label: "Longitude"
+      actions:
+        main:
+          create:
+            type: create
+        item:
+          update:
+            type: update
+          delete:
+            type: delete
+
 sylius_locale:
   resources:
     locale:

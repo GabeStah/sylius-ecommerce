@@ -5,7 +5,6 @@ namespace App\Shipping\Calculator;
 use App\Entity\Addressing\Address;
 use App\Entity\Order\Order;
 use App\Entity\Order\OrderItem;
-use App\Service\Shipping\FedExService;
 use Solarix\Shipping\Factory\AddressFactory;
 use Solarix\Shipping\Model\AddressInterface;
 use Solarix\Shipping\Model\Rate\RateInterface;

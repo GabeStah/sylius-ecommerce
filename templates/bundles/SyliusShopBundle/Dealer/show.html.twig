@@ -1,0 +1,65 @@
+{% extends '@SyliusShop/layout.html.twig' %}
+
+{% block title %}{{ 'sylius.ui.dealer'|trans }} | {{ parent() }}{% endblock %}
+
+{% import '@SyliusShop/Common/Macro/headers.html.twig' as headers %}
+
+{% block content %}
+  <div class="row">
+    <div class="col">
+      {{ headers.default('sylius.ui.dealer'|trans, '', 'sylius.ui.dealer.title'|trans) }}
+
+      {{ sylius_template_event('sylius.shop.dealer.after_content_header') }}
+
+      <div id="map" class="row" style="height: 400px;"></div>
+      <script>
+        function initMap() {
+          const position = {lat: {{ dealer.latitude }}, lng: {{ dealer.longitude }}};
+          const map = new google.maps.Map(
+            document.getElementById('map'), {zoom: 4, center: position});
+          const marker = new google.maps.Marker({position, map});
+        }
+      </script>
+      <script async defer
+              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgYAmZqc2OLIFgYA5FSwtJAIWmJFqVWv8&callback=initMap">
+      </script>
+    </div>
+  </div>
+
+  <div class="row py-2">
+    <div class="col-6 mx-auto">
+      <div class="card text-left">
+        {% if dealer.typeName is not empty %}
+          <div class="card-header">
+            <a href="{{ path('sylius_shop_dealer_list_by_type', { 'type': dealer.type }) }}">{{ dealer.typeName }}</a>
+          </div>
+        {% endif %}
+        <div class="card-body m-0">
+          <h2 class="card-title">{{ dealer.name|e }}</h2>
+
+          <ul class="fa-ul">
+            {% include '/bundles/SyliusShopBundle/Dealer/_link-item.html.twig' with {'content': dealer.address1|e, 'svg': '/svg/map-marker-alt-solid.svg'} %}
+            {% include '/bundles/SyliusShopBundle/Dealer/_link-item.html.twig' with {'content': dealer.address2|e} %}
+            {% include '/bundles/SyliusShopBundle/Dealer/_link-item.html.twig' with {'content': dealer.address3|e} %}
+            {% include '/bundles/SyliusShopBundle/Dealer/_link-item.html.twig' with {'content': dealer.phone|e, 'svg': '/svg/phone-alt-solid.svg'} %}
+            {% include '/bundles/SyliusShopBundle/Dealer/_link-item.html.twig' with {'content': dealer.fax|e, 'svg': '/svg/fax-solid.svg'} %}
+          </ul>
+
+          {% if dealer.email is not empty %}
+            <a href="mailto:{{ dealer.email }}" target="_blank" class="btn btn-outline-primary my-2"
+               role="button">
+              {{ source('/svg/envelope-regular.svg') }}
+              Email
+            </a>
+          {% endif %}
+          {% if dealer.url is not empty %}
+            <a href="{{ dealer.url|e }}" target="_blank" class="btn btn-outline-primary my-2" role="button">
+              Website
+              {{ source('/svg/external-link-alt-solid.svg') }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

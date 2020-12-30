@@ -38,7 +38,7 @@ services:
   # this creates a service per class whose id is the fully-qualified class name
   App\:
     resource: '../src/*'
-    exclude: '../src/{Entity,Migrations,Repository,Tests,Kernel.php}'
+    exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
 
   app.form.extension.complete:
     class: App\Form\Extension\CompleteTypeExtension
@@ -55,6 +55,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: Sylius\Bundle\TaxonomyBundle\Form\Type\TaxonTranslationType, priority: -1 }
 
+  app.listener.admin.menu_builder:
+    class: App\Menu\AdminMenuListener
+    tags:
+      - { name: kernel.event_listener, event: sylius.menu.admin.main, method: addAdminMenuItems }
+
   solarix.shipping.provider.fedex:
     class: Solarix\Shipping\Provider\FedExProvider
 
@@ -64,45 +69,53 @@ services:
     tags:
       - { name: sylius.shipping_calculator, calculator: fedex, label: "FedEx", form_type: App\Form\Type\FedExShippingCalculatorType }
 
-  app.shipping_methods_resolver.fedex:
-    class: App\Shipping\Resolver\FedExMethodResolver
-    arguments: [ '@solarix.shipping.provider.fedex' ]
-    tags:
-      - { name: sylius.shipping_method_resolver, resolver: fedex, label: "FedEx" }
+  #  app.shipping_methods_resolver.fedex:
+  #    class: App\Shipping\Resolver\FedExMethodResolver
+  #    arguments: [ '@solarix.shipping.provider.fedex' ]
+  #    tags:
+  #      - { name: sylius.shipping_method_resolver, resolver: fedex, label: "FedEx", type: App\Shipping\Resolver\FedExMethodResolver }
 
   sylius.controller.shop.about:
     class: App\Controller\Shop\AboutController
     arguments: [ '@templating' ]
     tags: [ 'controller.service_arguments' ]
 
-  #  app.authorize_net_gateway_factory:
-  #    class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
-  #    arguments: [ App\Payum\AuthorizeNetPaymentGatewayFactory ]
-  #    tags:
-  #      - { name: payum.gateway_factory_builder, factory: authorize_net }
-  #
-  #  app.authorize_net_gateway_configuration_type:
-  #    class: App\Form\Type\AuthorizeNetGatewayConfigurationType
-  #    tags:
-  #      - { name: app.authorize_net_gateway_configuration_type, type: app.authorize_net_gateway_factory, label: 'Authorize.NET' }
-  #      - { name: 'form.type' }
-  #
-  #  app.authorize_net_payum_action_capture_action:
-  #    arguments: [ '@sylius.http_client' ]
-  #    class: App\Payum\Action\CaptureAction
-  #    public: true
-  #    tags:
-  #      - { name: 'payum.action', factory: '@app.authorize_net_gateway_factory', alias: 'payum.action.capture' }
+  sylius.controller.shop.dealer:
+    class: App\Controller\Shop\DealerController
+    arguments: [ '@templating' ]
+    tags: [ 'controller.service_arguments' ]
 
-  #  sylius.repository.product:
-  #    class: App\Repository\ProductRepository
-  #  App\Repository\ProductRepository: '@sylius.repository.product'
+    #  app.authorize_net_gateway_factory:
+    #    class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
+    #    arguments: [ App\Payum\AuthorizeNetPaymentGatewayFactory ]
+    #    tags:
+    #      - { name: payum.gateway_factory_builder, factory: authorize_net }
+    #
+    #  app.authorize_net_gateway_configuration_type:
+    #    class: App\Form\Type\AuthorizeNetGatewayConfigurationType
+    #    tags:
+    #      - { name: app.authorize_net_gateway_configuration_type, type: app.authorize_net_gateway_factory, label: 'Authorize.NET' }
+    #      - { name: 'form.type' }
+    #
+    #  app.authorize_net_payum_action_capture_action:
+    #    arguments: [ '@sylius.http_client' ]
+    #    class: App\Payum\Action\CaptureAction
+    #    public: true
+    #    tags:
+    #      - { name: 'payum.action', factory: '@app.authorize_net_gateway_factory', alias: 'payum.action.capture' }
+
+  #  app.repository.dealer:
+  #    class: App\Repository\DealerRepository
+  #  App\Repository\DealerRepository: '@app.repository.dealer'
 
   # explicitly configure the service
   #  App\Command\Import\AbstractImportCommand:
   #    arguments:
   #      $name: null
   App\Command\Import\CategoryImportCommand:
+    arguments:
+      $name: null
+  App\Command\Import\DealerImportCommand:
     arguments:
       $name: null
   App\Command\Import\ProductImportCommand:

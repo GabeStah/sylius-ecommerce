@@ -19,6 +19,9 @@
     "authorizenet/authorizenet": {
         "version": "2.0.0"
     },
+    "beberlei/doctrineextensions": {
+        "version": "v1.3.0"
+    },
     "behat/behat": {
         "version": "v3.5.0"
     },
@@ -60,6 +63,9 @@
     },
     "container-interop/container-interop": {
         "version": "1.2.0"
+    },
+    "cweagans/composer-patches": {
+        "version": "1.7.0"
     },
     "dealerdirect/phpcodesniffer-composer-installer": {
         "version": "v0.7.0"
@@ -279,6 +285,9 @@
     },
     "lakion/mink-debug-extension": {
         "version": "v1.2.3"
+    },
+    "laminas/laminas-zendframework-bridge": {
+        "version": "1.1.1"
     },
     "lchrusciel/api-test-case": {
         "version": "v3.1.3"
@@ -793,6 +802,15 @@
     },
     "symfony/intl": {
         "version": "v4.1.3"
+    },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
     },
     "symfony/messenger": {
         "version": "4.3",
