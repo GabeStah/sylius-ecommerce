@@ -1,10 +1,23 @@
+company:
+  address: '530 Orange St. Millville, NJ 08332, USA'
+  email:
+    sales: 'sales@raritaneng.com'
+  phone: '856-825-4900'
+  phone2: '1-954-525-0378'
+
+footer:
+  about:
+    title: 'About Us'
+  legal:
+    title: 'Legal'
+  office:
+    title: 'Main Office & Plants'
+  support:
+    title: 'Support'
+  tracking:
+    title: 'Order Tracking'
+
 sylius:
   ui:
-    about:
-      title: 'About Us'
     dealer:
-      title: "Dealers"
-    legal:
-      title: 'Legal'
-    support:
-      title: 'Support'
+      title: 'Dealers'

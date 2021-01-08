@@ -1,0 +1,26 @@
+sylius_ui:
+  events:
+    sylius.shop.layout.header.content:
+      blocks:
+        contact: "bundles/SyliusShopBundle/Layout/Header/contact.html.twig"
+        legacy:
+          template: "@SyliusUi/Block/_legacySonataEvent.html.twig"
+          context:
+            event: sylius.shop.layout.header
+
+    sylius.shop.layout.footer.grid:
+      blocks:
+        before_legacy:
+          template: "@SyliusUi/Block/_legacySonataEvent.html.twig"
+          priority: 45
+          context:
+            event: sylius.shop.layout.before_footer
+        plus:
+          template: "bundles/SyliusShopBundle/Layout/Footer/Grid/_office.html.twig"
+          priority: 40
+        your_store:
+          template: "bundles/SyliusShopBundle/Layout/Footer/Grid/_about.html.twig"
+          priority: 30
+        payment_methods:
+          template: "bundles/SyliusShopBundle/Layout/Footer/Grid/_tracking.html.twig"
+          priority: 20

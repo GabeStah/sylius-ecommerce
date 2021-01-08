@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e650aabac3333402db20c3c388e0b6cb",
+    "content-hash": "927910954c3d6eb1f89a0927a714a587",
     "packages": [
         {
             "name": "api-platform/core",
@@ -303,16 +303,16 @@
         },
         {
             "name": "bitbag/cms-plugin",
-            "version": "v2.4.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BitBagCommerce/SyliusCmsPlugin.git",
-                "reference": "b8bb133358fc26b37b403909ffe8d6acad48f7b8"
+                "reference": "d603db3c95e8e3e2916e781959e25f7a511ef18b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BitBagCommerce/SyliusCmsPlugin/zipball/b8bb133358fc26b37b403909ffe8d6acad48f7b8",
-                "reference": "b8bb133358fc26b37b403909ffe8d6acad48f7b8",
+                "url": "https://api.github.com/repos/BitBagCommerce/SyliusCmsPlugin/zipball/d603db3c95e8e3e2916e781959e25f7a511ef18b",
+                "reference": "d603db3c95e8e3e2916e781959e25f7a511ef18b",
                 "shasum": ""
             },
             "require": {
@@ -374,7 +374,7 @@
                 "sylius-cms",
                 "sylius-plugin"
             ],
-            "time": "2020-04-26T14:01:39+00:00"
+            "time": "2020-09-12T09:57:35+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -17489,6 +17489,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "bitbag/cms-plugin": 20,
         "friendsofsymfony/ckeditor-bundle": 20
     },
     "prefer-stable": true,

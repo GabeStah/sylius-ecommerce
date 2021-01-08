@@ -1,5 +1,28 @@
 <div class="border-top border-bottom bg-light">
   <div class="container">
-    {{ render(url('sylius_shop_partial_taxon_index_by_code', {'code': 'MENU_CATEGORY', 'template': '@SyliusShop/Taxon/_horizontalMenu.html.twig'})) }}
+    {% include  '/bundles/SyliusShopBundle/Menu/_mainMenu.html.twig' %}
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+  $('.multi-level-dropdown .dropdown-submenu > a').on("click", function (e) {
+    $('.multi-level-dropdown .dropdown-submenu .dropdown-menu').removeClass('show');
+    $(this).next('.dropdown-menu').addClass('show');
+    e.stopPropagation();
+  });
+
+  $('.multi-level-dropdown .dropdown').on("hidden.bs.dropdown", function () {
+    $('.multi-level-dropdown .dropdown-menu.show').removeClass('show');
+  });
+</script>
+<style>
+  .dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+  }
+
+  /*.multi-level-dropdown:hover > .dropdown-menu {*/
+  /*  display: block;*/
+  /*}*/
+</style>

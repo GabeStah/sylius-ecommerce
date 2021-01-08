@@ -1,0 +1,47 @@
+{% macro item(element) %}
+  {% import _self as macros %}
+
+  {% if element.enabledChildren|length > 0 %}
+    <li class="dropdown-item dropdown-submenu position-relative">
+      <a class="dropdown-toggle"
+         href="{{ path('sylius_shop_product_index', {'slug': element.slug, '_locale': element.translation.locale}) }}"
+         data-toggle="dropdown">
+        {{ element.name }}
+      </a>
+      {% for child in element.enabledChildren %}
+        {% if (loop.first) %}
+          <ul class="dropdown-menu list-unstyled">
+        {% endif %}
+
+        {{ macros.item(child) }}
+
+        {% if (loop.last) %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    </li>
+  {% else %}
+    <li class="dropdown-item">
+      <a class=""
+         href="{{ path('sylius_shop_product_index', {'slug': element.slug, '_locale': element.translation.locale}) }}">
+        {{ element.name }}
+      </a>
+    </li>
+  {% endif %}
+{% endmacro %}
+
+{% import _self as macros %}
+
+{% if taxons|length > 0 %}
+  {% for taxon in taxons %}
+    {% if (loop.first) %}
+      <ul class="dropdown-menu">
+    {% endif %}
+
+    {{ macros.item(taxon) }}
+
+    {% if (loop.last) %}
+      </ul>
+    {% endif %}
+  {% endfor %}
+{% endif %}

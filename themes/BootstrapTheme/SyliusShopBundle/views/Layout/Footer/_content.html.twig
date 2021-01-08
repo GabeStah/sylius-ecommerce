@@ -1,8 +1,27 @@
-<div class="col-12 col-sm mb-3 text-sm-center">
-    <p>&copy; {{ 'sylius.ui.your_store'|trans }}. {{ 'sylius.ui.powered_by'|trans }} <a href="http://sylius.com" target="_blank" style="color: #1abb9c;">Sylius</a>.</p>
-    <p>
-        <a target="_blank" href="//facebook.com/SyliusEcommerce/"><i class="fab fa-facebook fa-2x"></i></a>
-        <a target="_blank" href="//instagram.com/sylius.team/"><i class="fab fa-instagram fa-2x"></i></a>
-        <a target="_blank" href="//twitter.com/sylius"><i class="fab fa-twitter fa-2x"></i></a>
-    </p>
+<div class="col-12 col-sm mb-3 text-sm-center d-flex">
+  <ul class="list-group list-group-horizontal text-center mx-auto">
+    <li class="list-group-item border-0 bg-light">
+      {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_tos', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    </li>
+    <li class="list-group-item border-0 bg-light">
+      {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_dmca', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    </li>
+    <li class="list-group-item border-0 bg-light">
+      {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_privacy_policy', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    </li>
+    <li class="list-group-item border-0 bg-light">
+      {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_refund_policy', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    </li>
+    <li class="list-group-item border-0 bg-light">
+      {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'legal_anti_spam_policy', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
+    </li>
+  </ul>
+</div>
+<div class="col-12 col-sm mb-0 text-sm-center">
+  <p class="m-0">COPYRIGHT &copy; 2021 RARITAN ENGINEERING - ALL RIGHTS RESERVED</p>
+  {# <p> #}
+  {# <a target="_blank" href="//facebook.com/SyliusEcommerce/"><i class="fab fa-facebook fa-2x"></i></a> #}
+  {# <a target="_blank" href="//instagram.com/sylius.team/"><i class="fab fa-instagram fa-2x"></i></a> #}
+  {# <a target="_blank" href="//twitter.com/sylius"><i class="fab fa-twitter fa-2x"></i></a> #}
+  {# </p> #}
 </div>
