@@ -1,0 +1,652 @@
+<script type="text/javascript" src="/assets/plugins/slider.revolution.v4/js/jquery.themepunch.tools.min.js"></script>
+<script type="text/javascript"
+        src="/assets/plugins/slider.revolution.v4/js/jquery.themepunch.revolution.min.js"></script>
+<script type="text/javascript" src="/assets/js/slider_revolution.js"></script>
+<link href="/assets/plugins/slider.revolution.v4/css/settings.css" rel="stylesheet" type="text/css"/>
+<style>
+  /**********************************************
+	-	FULLSCREEN AND FULLWIDHT CONTAINERS	-
+**********************************************/
+
+  .fullscreen-container {
+    width: 100%;
+    position: relative;
+    padding: 0;
+  }
+
+
+  .fullwidthbanner-container {
+    width: 100%;
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .fullwidthbanner-container .fullwidthbanner {
+    width: 100%;
+    position: relative;
+  }
+
+  /*********************************************
+
+	-	BASIC SETTINGS FOR THE BANNER	-
+
+***********************************************/
+
+  .tp-simpleresponsive img {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+  }
+
+
+  .tp-simpleresponsive a {
+    text-decoration: none
+  }
+
+  .tp-simpleresponsive ul,
+  .tp-simpleresponsive ul li,
+  .tp-simpleresponsive ul li:before {
+    list-style: none;
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+    overflow-x: visible;
+    overflow-y: visible;
+    background-image: none
+  }
+
+
+  .tp-simpleresponsive > ul > li {
+    list-style: none;
+    position: absolute;
+    visibility: hidden
+  }
+
+  /*  CAPTION SLIDELINK   **/
+  .caption.slidelink a div,
+  .tp-caption.slidelink a div {
+    width: 3000px;
+    height: 1500px;
+    background: url(/assets/plugins/slider.revolution.v4/assets/coloredbg.png) repeat
+  }
+
+  .tp-caption.slidelink a span {
+    background: url(/assets/plugins/slider.revolution.v4/assets/coloredbg.png) repeat
+  }
+
+  .tp-caption.large_bold_black {
+    text-shadow: rgb(241, 241, 241) 1px 0px 10px;
+  }
+
+  .tp-caption.small_thin_grey {
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 300;
+    font-family: "Open Sans";
+    color: #cdcdcd;
+    text-decoration: none;
+    background-color: #323232;
+    text-shadow: none;
+    margin: 0px;
+    border-width: 0px;
+    border-color: rgb(255, 214, 88);
+    border-style: none;
+    width: 500px;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+    padding: 0 10px;
+    border-radius: 5px;
+  }
+
+  .tp-caption.small_thin_grey > p {
+    margin-bottom: 0;
+  }
+
+  /*************************************
+    -	TP ARROWS 	-
+  **************************************/
+  .tparrows {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    -moz-opacity: 1;
+    -khtml-opacity: 1;
+    opacity: 1;
+    -webkit-transition: opacity 0.2s ease-out;
+    -moz-transition: opacity 0.2s ease-out;
+    -o-transition: opacity 0.2s ease-out;
+    -ms-transition: opacity 0.2s ease-out;
+    -webkit-transform: translateZ(5000px);
+    -webkit-transform-style: flat;
+    -webkit-backface-visibility: hidden;
+    z-index: 600;
+    position: relative;
+
+  }
+
+  .tparrows.hidearrows {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    opacity: 0;
+  }
+
+  .tp-leftarrow {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/large_left.png) no-Repeat top left;
+    width: 40px;
+    height: 40px;
+  }
+
+  .tp-rightarrow {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/large_right.png) no-Repeat top left;
+    width: 40px;
+    height: 40px;
+  }
+
+
+  .tp-leftarrow.round {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/small_left.png) no-Repeat top left;
+    width: 19px;
+    height: 14px;
+    margin-right: 0px;
+    float: left;
+    margin-top: 0px;
+  }
+
+  .tp-rightarrow.round {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/small_right.png) no-Repeat top left;
+    width: 19px;
+    height: 14px;
+    margin-right: 0px;
+    float: left;
+    margin-top: 0px
+  }
+
+
+  .tp-leftarrow.round-old {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/arrow_left.png) no-Repeat top left;
+    width: 26px;
+    height: 26px;
+    margin-right: 0px;
+    float: left;
+    margin-top: 0px;
+  }
+
+  .tp-rightarrow.round-old {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/arrow_right.png) no-Repeat top left;
+    width: 26px;
+    height: 26px;
+    margin-right: 0px;
+    float: left;
+    margin-top: 0px
+  }
+
+
+  .tp-leftarrow.navbar {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/small_left_boxed.png) no-Repeat top left;
+    width: 20px;
+    height: 15px;
+    float: left;
+    margin-right: 6px;
+    margin-top: 12px
+  }
+
+  .tp-rightarrow.navbar {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/small_right_boxed.png) no-Repeat top left;
+    width: 20px;
+    height: 15px;
+    float: left;
+    margin-left: 6px;
+    margin-top: 12px
+  }
+
+
+  .tp-leftarrow.navbar-old {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/arrowleft.png) no-Repeat top left;
+    width: 9px;
+    height: 16px;
+    float: left;
+    margin-right: 6px;
+    margin-top: 10px
+  }
+
+  .tp-rightarrow.navbar-old {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/arrowright.png) no-Repeat top left;
+    width: 9px;
+    height: 16px;
+    float: left;
+    margin-left: 6px;
+    margin-top: 10px
+  }
+
+  .tp-leftarrow.navbar-old.thumbswitharrow {
+    margin-right: 10px
+  }
+
+  .tp-rightarrow.navbar-old.thumbswitharrow {
+    margin-left: 0px
+  }
+
+  .tp-leftarrow.square {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/arrow_left2.png) no-Repeat top left;
+    width: 12px;
+    height: 17px;
+    float: left;
+    margin-right: 0px;
+    margin-top: 0px
+  }
+
+  .tp-rightarrow.square {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/arrow_right2.png) no-Repeat top left;
+    width: 12px;
+    height: 17px;
+    float: left;
+    margin-left: 0px;
+    margin-top: 0px
+  }
+
+
+  .tp-leftarrow.square-old {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/arrow_left2.png) no-Repeat top left;
+    width: 12px;
+    height: 17px;
+    float: left;
+    margin-right: 0px;
+    margin-top: 0px
+  }
+
+  .tp-rightarrow.square-old {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/arrow_right2.png) no-Repeat top left;
+    width: 12px;
+    height: 17px;
+    float: left;
+    margin-left: 0px;
+    margin-top: 0px
+  }
+
+
+  .tp-leftarrow.default {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/large_left.png) no-Repeat 0 0;
+    width: 40px;
+    height: 40px;
+
+  }
+
+  .tp-rightarrow.default {
+    z-index: 100;
+    cursor: pointer;
+    position: relative;
+    background: url(/assets/plugins/slider.revolution.v4/assets/large_right.png) no-Repeat 0 0;
+    width: 40px;
+    height: 40px;
+
+  }
+
+
+  .tp-leftarrow:hover,
+  .tp-rightarrow:hover {
+    background-position: bottom left
+  }
+
+
+  /****************************************************************************************************
+    -	TP THUMBS 	-
+  *****************************************************************************************************
+
+   - tp-thumbs & tp-mask Width is the width of the basic Thumb Container (500px basic settings)
+
+   - .bullet width & height is the dimension of a simple Thumbnail (basic 100px x 50px)
+
+   *****************************************************************************************************/
+
+
+  .tp-bullets.tp-thumbs {
+    z-index: 1000;
+    position: absolute;
+    padding: 3px;
+    background-color: #fff;
+    width: 500px;
+    height: 50px; /* THE DIMENSIONS OF THE THUMB CONTAINER */
+    margin-top: -50px;
+  }
+
+
+  .fullwidthbanner-container .tp-thumbs {
+    padding: 3px
+  }
+
+  .tp-bullets.tp-thumbs .tp-mask {
+    width: 500px;
+    height: 50px; /* THE DIMENSIONS OF THE THUMB CONTAINER */
+    overflow: hidden;
+    position: relative
+  }
+
+
+  .tp-bullets.tp-thumbs .tp-mask .tp-thumbcontainer {
+    width: 5000px;
+    position: absolute
+  }
+
+  .tp-bullets.tp-thumbs .bullet {
+    width: 100px;
+    height: 50px; /* THE DIMENSION OF A SINGLE THUMB */
+    cursor: pointer;
+    overflow: hidden;
+    background: none;
+    margin: 0;
+    float: left;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    /*filter: alpha(opacity=50);	*/
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+  }
+
+
+  .tp-bullets.tp-thumbs .bullet:hover,
+  .tp-bullets.tp-thumbs .bullet.selected {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+
+    -moz-opacity: 1;
+    -khtml-opacity: 1;
+    opacity: 1;
+  }
+
+  .tp-thumbs img {
+    width: 100%
+  }
+
+
+  /************************************
+      -	TP BANNER TIMER		-
+  *************************************/
+  .tp-bannertimer {
+    width: 100%;
+    height: 10px;
+    background: url(/assets/plugins/slider.revolution.v4/assets/timer.png);
+    position: absolute;
+    z-index: 200;
+    top: 0px
+  }
+
+  .tp-bannertimer.tp-bottom {
+    bottom: 0px;
+    height: 5px;
+    top: auto
+  }
+
+</style>
+
+<div id="wrapper">
+  <div class="fullwidthbanner-container roundedcorners">
+    <div class="fullwidthbanner">
+      <ul>
+
+        <li data-transition="fade" data-slotamount="7" data-masterspeed="1500">
+          <!-- COVER IMAGE -->
+          <img src="/media/image/boat-2.jpg" alt="Raritan Boat" data-bgfit="cover" data-bgposition="left top"
+               data-bgrepeat="no-repeat">
+
+          <div class="tp-caption customin customout" data-x="right" data-hoffset="-220" data-y="bottom"
+               data-voffset="-150"
+               data-customin="x:50;y:150;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.5;scaleY:0.5;skewX:0;skewY:0;opacity:0;transformPerspective:0;transformOrigin:50% 50%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="800" data-start="700" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" style="z-index: 3"><img src="/media/image/ICE-MAKER-New2014-250X250.png"
+                                                                      alt="Marine Ice Maker">
+          </div>
+
+          <div class="tp-caption large_bold_black skewfromrightshort customout" data-x="80" data-y="66"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="800" data-easing="Back.easeOut"
+               data-endspeed="500" data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 4"
+               style="color:#000 !important">ICE MAKERS
+          </div>
+
+
+          <div class="tp-caption small_thin_grey customin customout"
+               data-x="80" data-y="150"
+               data-customin="x:0;y:100;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:1;scaleY:3;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:0% 0%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="1300" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 8">
+            <p>A dependable, environmentally friendly, fully automatic ice making machine designed specifically for
+              marine applications. Produces up to 22 pounds of crescent-shaped ice a day.</p>
+            <p><a class="btn btn-warning text-white" href="/en_US/taxons/icerette">Learn more...</a></p>
+          </div>
+        </li>
+
+
+        <li data-transition="fade" data-slotamount="7" data-masterspeed="1500">
+          <!-- COVER IMAGE -->
+          <img src="/media/image/boat-1.jpg" alt="raritan slider boat 2" data-bgfit="cover" data-bgposition="left top"
+               data-bgrepeat="no-repeat">
+
+
+          <div class="tp-caption customin customout" data-x="right" data-hoffset="-220" data-y="bottom"
+               data-voffset="-150"
+               data-customin="x:50;y:150;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.5;scaleY:0.5;skewX:0;skewY:0;opacity:0;transformPerspective:0;transformOrigin:50% 50%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="800" data-start="700" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" style="z-index: 3"><img src="/media/image/electroscan.png"
+                                                                      alt="Electroscan">
+          </div>
+
+          <div class="tp-caption large_bold_black skewfromrightshort customout" data-x="80" data-y="66"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="800" data-easing="Back.easeOut"
+               data-endspeed="500" data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 4">
+            Electro Scan
+          </div>
+
+          <div class="tp-caption small_thin_grey customin customout" data-x="80" data-y="150"
+               data-customin="x:0;y:100;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:1;scaleY:3;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:0% 0%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="1300" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 8">
+            <p>The most popular USCG certified Type I MSD. Power requirements have been reduced by 36%, generates
+              its own natural disinfectant from salt water. Can be used with both manual and electric toilets.
+            </p>
+            <p><a class="btn btn-warning text-white" href="/en_US/taxons/electroscan">Learn more...</a></p>
+          </div>
+        </li>
+
+
+        <li data-transition="fade" data-slotamount="7" data-masterspeed="1500">
+          <!-- COVER IMAGE -->
+          <img src="/media/image/boat-2.jpg" alt="Raritan Electro Scan" data-bgfit="cover" data-bgposition="left top"
+               data-bgrepeat="no-repeat">
+
+          <div class="tp-caption customin customout" data-x="right" data-hoffset="-220" data-y="bottom"
+               data-voffset="-150"
+               data-customin="x:50;y:150;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.5;scaleY:0.5;skewX:0;skewY:0;opacity:0;transformPerspective:0;transformOrigin:50% 50%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="800" data-start="700" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" style="z-index: 3"><img src="/media/image/Macerator-Product-done.png"
+                                                                      alt="Macerator Pump">
+          </div>
+
+          <div class="tp-caption large_bold_black skewfromrightshort customout" data-x="80" data-y="66"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="800" data-easing="Back.easeOut"
+               data-endspeed="500" data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 4">
+            Macerator Pump
+          </div>
+
+          <div class="tp-caption small_thin_grey customin customout"
+               data-x="80" data-y="150"
+               data-customin="x:0;y:100;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:1;scaleY:3;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:0% 0%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="1300" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 8">
+            <p>All stainless steel bolts to avoid corrosion problems. Spring loaded Viton shaft seal is used to prevent
+              premature leaks.</p>
+            <p>Our proprietary rubber impeller compound allows longer dry running time.&nbsp;Optional Waste Valve
+              Assembly isolates the waste matter from the pump during maintenance.</p>
+            <p><a class="btn btn-warning text-white" href="/en_US/taxons/macerator-pump">Learn more...</a></p>
+          </div>
+        </li>
+
+
+        <li data-transition="fade" data-slotamount="7" data-masterspeed="1500">
+          <!-- COVER IMAGE -->
+          <img src="/media/image/boat-1.jpg" alt="boat-1" data-bgfit="cover" data-bgposition="left top"
+               data-bgrepeat="no-repeat">
+
+          <div class="tp-caption customin customout" data-x="right" data-hoffset="-220" data-y="bottom"
+               data-voffset="-150"
+               data-customin="x:50;y:150;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.5;scaleY:0.5;skewX:0;skewY:0;opacity:0;transformPerspective:0;transformOrigin:50% 50%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="800" data-start="700" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" style="z-index: 3"><img src="/media/image/admin-ajax.png"
+                                                                      alt="Atlantes Freedom">
+          </div>
+
+          <div class="tp-caption large_bold_black skewfromrightshort customout" data-x="80" data-y="66"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="800" data-easing="Back.easeOut"
+               data-endspeed="500" data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 4">Atlantes
+            Freedom
+          </div>
+
+          <div class="tp-caption small_thin_grey customin customout"
+               data-x="80" data-y="150"
+               data-customin="x:0;y:100;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:1;scaleY:3;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:0% 0%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="1300" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 8">
+            <p>Anti-clog Vortex-Vac discharge system.</p>
+            <p>Available in Fresh, seawater and SeaFresh flushing options. Two bowl styles: household and elongated.</p>
+            <p><a class="btn btn-warning text-white" href="/en_US/taxons/atlantes-freedom">Learn more...</a></p>
+          </div>
+        </li>
+
+
+        <li data-transition="fade" data-slotamount="7" data-masterspeed="1500">
+          <!-- COVER IMAGE -->
+          <img src="/media/image/boat-2.jpg" alt="raritan marine sanitation" data-bgfit="cover"
+               data-bgposition="left top"
+               data-bgrepeat="no-repeat">
+
+          <div class="tp-caption customin customout" data-x="right" data-hoffset="-220" data-y="bottom"
+               data-voffset="-150"
+               data-customin="x:50;y:150;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.5;scaleY:0.5;skewX:0;skewY:0;opacity:0;transformPerspective:0;transformOrigin:50% 50%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="800" data-start="700" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" style="z-index: 3"><img src="/media/image/Rar_Ad_5_toilet-1.png"
+                                                                      alt="Fresh Head">
+          </div>
+
+          <div class="tp-caption large_bold_black skewfromrightshort customout" data-x="80" data-y="66"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="800" data-easing="Back.easeOut"
+               data-endspeed="500" data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 4"
+          >
+            Fresh Head
+          </div>
+
+          <div class="tp-caption small_thin_grey customin customout"
+               data-x="80" data-y="150"
+               data-customin="x:0;y:100;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:1;scaleY:3;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:0% 0%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="1300" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" data-captionhidden="off">
+            <p>The first manual marine toilet to utilize pressurized fresh water. The Footprint is a direct replacement
+              for competitive models. Low water use toilet.</p>
+            <p>Available as Left hand side pump.</p>
+            <p><a class="btn btn-warning text-white" href="/en_US/taxons/fresh-head">Learn more...</a></p>
+
+          </div>
+        </li>
+
+        <li data-transition="fade" data-slotamount="7" data-masterspeed="1500">
+          <!-- COVER IMAGE -->
+          <img src="/media/image/boat-1.jpg" alt="Raritan Boat - atlantes freedom" data-bgfit="cover"
+               data-bgposition="left top"
+               data-bgrepeat="no-repeat">
+
+          <div class="tp-caption customin customout" data-x="right" data-hoffset="-220" data-y="bottom"
+               data-voffset="-150"
+               data-customin="x:50;y:150;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.5;scaleY:0.5;skewX:0;skewY:0;opacity:0;transformPerspective:0;transformOrigin:50% 50%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="800" data-start="700" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" style="z-index: 3"><img src="/media/image/marine_elegance.png"
+                                                                      alt="Marine Elegance">
+          </div>
+
+          <div class="tp-caption large_bold_black skewfromrightshort customout" data-x="80" data-y="66"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="800" data-easing="Back.easeOut"
+               data-endspeed="500" data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 4"
+          >
+            Marine Elegance
+          </div>
+
+          <div class="tp-caption small_thin_grey customin customout"
+               data-x="80" data-y="150"
+               data-customin="x:0;y:100;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:1;scaleY:3;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:0% 0%;"
+               data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+               data-speed="500" data-start="1300" data-easing="Power4.easeOut" data-endspeed="500"
+               data-endeasing="Power4.easeIn" data-captionhidden="off" style="z-index: 8">
+            <p>Unmatched rinsing capability with low water consumption. Available in fresh, seawater and SeaFresh
+              flushing options.</p>
+            <p>Four bowl styles to choose from.</p>
+            <p><a class="btn btn-warning text-white" href="/en_US/taxons/marine-elegance">Learn more...</a></p>
+          </div>
+        </li>
+      </ul>
+      <div class="tp-bannertimer"></div>
+    </div>
+  </div>
+</div>

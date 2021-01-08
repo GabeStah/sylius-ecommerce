@@ -6,6 +6,8 @@
         <entryData>
           <resourceRoots>
             <path value="file://$PROJECT_DIR$/public/media/image/fileslibrary" />
+            <path value="file://$PROJECT_DIR$/public/assets/plugins" />
+            <path value="file://$PROJECT_DIR$/public/assets/js" />
           </resourceRoots>
         </entryData>
       </entry>

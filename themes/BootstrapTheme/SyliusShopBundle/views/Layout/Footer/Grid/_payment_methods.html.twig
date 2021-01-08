@@ -1,8 +1,16 @@
 <div class="col mb-3">
   <h4>{{ 'footer.tracking.title'|trans }}</h4>
   <div>
-    <h2>TODO</h2>
-    {# <i class="fab fa-cc-mastercard fa-4x"></i> #}
-    {# <i class="fab fa-cc-visa fa-4x"></i> #}
+    <form action="https://www.fedex.com/apps/fedextrack/index.html" method="get" target="_blank">
+      <div class="form-group">
+        <label for="tracknumbers">FedEx Tracking #</label>
+        <input type="number" class="form-control" id="tracknumbers" name="tracknumbers"
+               aria-describedby="trackingNumberHelp"
+               placeholder="123456789012345">
+        <small id="trackingNumberHelp" class="form-text text-muted">Enter your FedEx Tracking # above and click Track to
+          see the shipping status of your order.</small>
+      </div>
+      <button type="submit" class="btn btn-primary">Track</button>
+    </form>
   </div>
 </div>

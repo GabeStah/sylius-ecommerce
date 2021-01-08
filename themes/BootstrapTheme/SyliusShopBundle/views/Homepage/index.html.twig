@@ -1,7 +1,10 @@
 {% extends '@SyliusShop/layout.html.twig' %}
 
 {% block content %}
-    <div class="homepage">
-        {{ sylius_template_event('sylius.shop.homepage') }}
+  <div class="homepage">
+    <div class="col-12 mb-3">
+      {% include 'bundles/SyliusShopBundle/Homepage/_carousel.html.twig' %}
     </div>
+    {{ sylius_template_event('sylius.shop.homepage') }}
+  </div>
 {% endblock %}
