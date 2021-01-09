@@ -17,6 +17,14 @@ footer:
   tracking:
     title: 'Order Tracking'
 
+header:
+  search:
+    aria:
+      button: 'Search'
+      label: 'Search'
+    input:
+      placeholder: 'Enter search term'
+
 sylius:
   ui:
     dealer:

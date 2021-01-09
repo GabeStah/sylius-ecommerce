@@ -85,6 +85,11 @@ services:
     arguments: [ '@templating' ]
     tags: [ 'controller.service_arguments' ]
 
+  sylius.controller.shop.search:
+    class: App\Controller\Shop\SearchController
+    #    arguments: [ '@templating' ]
+    tags: [ 'controller.service_arguments' ]
+
     #  app.authorize_net_gateway_factory:
     #    class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
     #    arguments: [ App\Payum\AuthorizeNetPaymentGatewayFactory ]

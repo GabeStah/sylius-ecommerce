@@ -23,3 +23,11 @@ sylius_shop_about:
 
 bitbag_sylius_cms_plugin:
   resource: "@BitBagSyliusCmsPlugin/Resources/config/routing.yml"
+
+product_search_results:
+  path: /search
+  methods: [ GET ]
+  defaults:
+    _controller: sylius.controller.shop.search:searchAction
+    _sylius:
+      redirect: sylius_shop_homepage
