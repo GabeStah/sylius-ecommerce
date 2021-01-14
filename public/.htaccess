@@ -55,6 +55,13 @@ DirectoryIndex index.php
 
     # Rewrite all other queries to the front controller.
     RewriteRule ^ %{ENV:BASE}/index.php [L]
+
+    RedirectMatch 301 ^/en/info/(.*)$ /en_US/page/$1
+    RedirectMatch 301 ^/en/product-categories/(.*)$ /en_US/taxons/$1
+    RedirectMatch 301 ^/en/shop/products/(.*)$ /en_US/products/$1
+    RedirectMatch 301 ^/en/tech-support/(.*)$ /en_US/page/$1
+    # '/en' to '/en_US' locale
+    RedirectMatch 301 ^/en/(.*)$ /en_US/$1
 </IfModule>
 
 <IfModule !mod_rewrite.c>
@@ -66,3 +73,10 @@ DirectoryIndex index.php
         # RedirectTemp cannot be used instead
     </IfModule>
 </IfModule>
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php73” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php73 .php .php7 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
