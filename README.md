@@ -22,6 +22,7 @@
       - [1.4.2.2. Categorization](#1422-categorization)
       - [1.4.2.3. Images](#1423-images)
       - [1.4.2.4. Taxons](#1424-taxons)
+      - [1.4.2.5. Descriptions](#1425-descriptions)
     - [1.4.3. Filtered Data](#143-filtered-data)
     - [1.4.4. Extra Data](#144-extra-data)
     - [1.4.5. Finalized Database Imports](#145-finalized-database-imports)
@@ -50,9 +51,10 @@
   - [2.3. Issue: Handling Multiple Rates](#23-issue-handling-multiple-rates)
   - [2.4. Issue: Provider API Request Throttling](#24-issue-provider-api-request-throttling)
 - [3. Static Page Imports](#3-static-page-imports)
-- [Dealers](#dealers)
-  - [Nearby Dealers (Geolocation)](#nearby-dealers-geolocation)
-  - [Administration](#administration)
+- [4. Dealers](#4-dealers)
+  - [4.1. Nearby Dealers (Geolocation)](#41-nearby-dealers-geolocation)
+  - [4.2. Frontend Dealers Pages](#42-frontend-dealers-pages)
+  - [4.3. Administration](#43-administration)
 
 ## 1. Import Pipeline
 
@@ -433,6 +435,34 @@ The `ProductImporter` creates normalized and maps existing images to [ProductIma
 
 `ProductTaxons` are relational entities that assign the `Product` to a given `Taxon`, also referred to as its **main** `Taxon`.
 
+##### 1.4.2.5. Descriptions
+
+Many Raritan-v1 product decriptions contain static, hard-coded, and/or relative URLs, e.g.:
+
+```html
+The pump draws water from the <a title="Raritan Semi-Custom Holding Tanks" href="../../en/product-categories/holding-tanks">storage tank(s)</a> and fills the water heater tank. Inside the water heater is an electrical <a title="Water Heater Heating Element - PART NUMBER: WH1A" href="../../en/shop/products/water-heater-heating-element">heating element</a> and usually a coiled tube called a heat exchanger. When AC power is available, the electrical element (<a title="Water Heater Thermostat Part Number: WH16" href="../../en/shop/products/water-heater-thermostat">controlled by a thermostat</a>) heats the water. 
+```
+
+The import process normalizes descriptions by searching and replacing hard-coded URLs with relative, v2 URLs, e.g.:
+
+```html
+The pump draws water from the <a title="Raritan Semi-Custom Holding Tanks" href="/en_US/taxons/holding-tanks">storage tank(s)</a> and fills the water heater tank. Inside the water heater is an electrical <a title="Water Heater Heating Element - PART NUMBER: WH1A" href="/en_US/products/water-heater-heating-element">heating element</a> and usually a coiled tube called a heat exchanger. When AC power is available, the electrical element (<a title="Water Heater Thermostat Part Number: WH16" href="/en_US/products/water-heater-thermostat">controlled by a thermostat</a>) heats the water.
+```
+
+v1 URLs take two forms, as found in the below queries:
+
+- 444 rows
+
+```sql
+SELECT * FROM products where gendescription LIKE '%href="../../%' or pdescription LIKE '%href="../../%'
+```
+
+- 255 rows
+
+```sql
+SELECT * FROM products where gendescription LIKE '%http://raritaneng.com/en/pages%' or pdescription LIKE '%http://raritaneng.com/en/pages%'
+```
+
 #### 1.4.3. Filtered Data
 
 No data was filtered beyond the base SQL query.
@@ -778,11 +808,11 @@ To resolve this a simple local cache was added to keep track of recently obtaine
 | 37 | Not Available At The Moment                     | Information       | IGNORED  | Unused in Raritan-v1                                   |
 | 38 | How To & Informational Videos                   | Technical Support | Imported | Fixed video embeds, added collapse transcript elements |
 
-## Dealers
+## 4. Dealers
 
 Dealer data is managed via the Administration dashboard
 
-### Nearby Dealers (Geolocation)
+### 4.1. Nearby Dealers (Geolocation)
 
 The V1 nearby dealers list indicated it was displaying nearby dealers, but instead merely showed a list of dealers within the visitor's state lines:
 
@@ -798,6 +828,15 @@ The V2 dealers list resolves this by accurately calculating the distance from th
 
 This ensures the list is *actually* showing nearby dealers and the dealers are sorted by distance to the user.
 
-###  Administration
+### 4.2. Frontend Dealers Pages
+
+The new V2 Dealers frontend pages closely mimic the V1 look and behavior.
+
+- `/dealers/` shows the same global dealers google map, with local dealer listings immediately below, then the full list at the bottom.
+- Each individual dealer page is located at `/dealers/{slug}/{id}` to use existing slugs while also allowing for proper SEO in the few cases of duplication.
+  - Individual dealer pages contain a pinned Google map followed by a card listing dealer details.
+  - The layout improves on V1 by hiding unpopulated fields.
+
+###  4.3. Administration
 
 - Visit `/admin/dealers/` section under `Miscellaneous > Dealers` admin dashboard

@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Service\Importer;
+<?php namespace App\Service\Importer;
 
 use App\Entity\Product\Product;
 use App\Entity\Product\ProductAttribute;
@@ -17,6 +15,7 @@ use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
 use Sylius\Bundle\TaxonomyBundle\Doctrine\ORM\TaxonRepository;
 use Sylius\Component\Attribute\AttributeType\CheckboxAttributeType;
 use Sylius\Component\Core\Model\ProductInterface;
+use Sylius\Component\Taxonomy\Model\TaxonInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -284,7 +283,7 @@ EOF;
    *
    * @return mixed|string|null
    */
-  public function getSlug($entity, $data)
+  public function getSlug($entity, $data): ?string
   {
     return $entity
       ? $entity->getSlug()
@@ -350,7 +349,7 @@ EOF;
    *
    * @return array
    */
-  public function normalizeEntity($item)
+  public function normalizeEntity($item): array
   {
     $data = [
       'id' => $item['prid'],
@@ -368,19 +367,20 @@ EOF;
       'weight' => $item['weight'],
     ];
 
-    $data['description'] = $item['gendescription'] ?? null;
-    $data['variant_description'] = $item['pdescription'] ?? null;
-
     $this->normalizeAttributes($data, $item);
     $this->normalizeDimensions($data, $item);
+    $this->normalizeDescription($data, $item);
     $this->normalizeImages($data, $item);
     $this->normalizeMeta($data, $item);
 
     return $data;
   }
 
-  public function findCategoryTaxon($id, $url = null, $type = 'subcategory')
-  {
+  public function findCategoryTaxon(
+    $id,
+    $url = null,
+    $type = 'subcategory'
+  ): ?TaxonInterface {
     return $this->taxonRepository->findOneByCategory($id, $type) ??
       $this->taxonRepository->findOneBySlug($url, $this->getLocale());
   }
@@ -392,7 +392,7 @@ EOF;
    *
    * @return mixed|null
    */
-  public function getCategoryAttribute($value)
+  public function getCategoryAttribute($value): ?AttributeObject
   {
     if ($value == 'part' || $value == 'parts') {
       return new AttributeObject(
@@ -423,7 +423,7 @@ EOF;
    *
    * @return AttributeObject|mixed|null
    */
-  private function getAttributesFromCategories($item)
+  private function getAttributesFromCategories($item): ?AttributeObject
   {
     for ($i = 4; $i >= 1; $i--) {
       // Inversely iterate subcategories
@@ -444,8 +444,11 @@ EOF;
    *
    * @return array|null
    */
-  private function getCategoryData($item, $type = 'subcategory', $index = 1)
-  {
+  private function getCategoryData(
+    $item,
+    $type = 'subcategory',
+    $index = 1
+  ): ?array {
     switch ($type) {
       case 'category':
         if (!$item['pcategory']) {
@@ -482,7 +485,7 @@ EOF;
    *
    * @return array|null
    */
-  private function getPrimaryCategory($item)
+  private function getPrimaryCategory($item): ?array
   {
     for ($i = 4; $i >= 1; $i--) {
       // Inversely iterate subcategories
@@ -507,7 +510,7 @@ EOF;
    *
    * @return bool
    */
-  private function isValidCategorySlug($value)
+  private function isValidCategorySlug($value): bool
   {
     return !in_array($value, ['part', 'parts', 'accessory', 'accessories']);
   }
@@ -584,6 +587,75 @@ EOF;
       'category_id' => $item['pcategory'],
       'category_type' => 'category',
     ];
+  }
+
+  /**
+   * Replaces invalid, static URLs with valid ones.
+   *
+   * @param $matches
+   *
+   * @return string
+   */
+  private function descriptionRegexCallback($matches): string
+  {
+    $callbacks = [
+      '/\.\.\/\.\.\/en\/info\//' => function () {
+        return '/en_US/page/';
+      },
+      '/\.\.\/\.\.\/en\/product-categories\//' => function () {
+        return '/en_US/taxons/';
+      },
+      '/\.\.\/\.\.\/en\/shop\/products\//' => function () {
+        return '/en_US/products/';
+      },
+      '/\.\.\/\.\.\/en\/tech-support\//' => function () {
+        return '/en_US/page/';
+      },
+      '/\.\.\/\.\.\/fileslibrary\//' => function () {
+        return '/media/image/';
+      },
+      '/\.\.\/\.\.\//' => function () {
+        return '/';
+      },
+      '/http:\/\/raritaneng\.com\/en\/pages\//' => function () {
+        return '/en_US/page/';
+      },
+    ];
+
+    return 'href="' .
+      preg_replace_callback_array($callbacks, $matches[1]) .
+      '"';
+  }
+
+  /**
+   * Normalize and map descriptions.
+   *
+   * @param $data
+   * @param $item
+   */
+  public function normalizeDescription(&$data, $item)
+  {
+    $patternHref = '/href="(.+?)"/';
+
+    $data['description'] = null;
+
+    if ($item['gendescription']) {
+      $data['description'] = preg_replace_callback(
+        $patternHref,
+        [$this, 'descriptionRegexCallback'],
+        $item['gendescription']
+      );
+    }
+
+    $data['variant_description'] = null;
+
+    if ($item['pdescription']) {
+      $data['variant_description'] = preg_replace_callback(
+        $patternHref,
+        [$this, 'descriptionRegexCallback'],
+        $item['pdescription']
+      );
+    }
   }
 
   /**

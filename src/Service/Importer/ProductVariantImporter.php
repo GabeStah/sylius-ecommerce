@@ -185,8 +185,10 @@ EOF;
    * Create ProductVariant and related entities from model.
    *
    * @param $data
+   *
+   * @return ProductVariant
    */
-  public function fromData($data)
+  public function fromData($data): ProductVariant
   {
     // Find base product
     $product = $this->repository->findOneByCode($data['product_id']);
@@ -292,7 +294,7 @@ EOF;
    *
    * @return array
    */
-  public function normalizeEntity($item)
+  public function normalizeEntity($item): array
   {
     $data = [
       'prid' => $item['prid'],
@@ -315,6 +317,7 @@ EOF;
 
     $this->normalizeAttributes($data, $item);
     $this->normalizeCategories($data, $item);
+    $this->normalizeDescription($data, $item);
     $this->normalizeDimensions($data, $item);
     $this->normalizeImages($data, $item);
     $this->normalizeMeta($data, $item);
