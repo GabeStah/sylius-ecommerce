@@ -1,18 +1,24 @@
 // Color system
 
-$white:    #fff !default;
+$white: #fff !default;
 $gray-100: #f8f9fa !default;
 $gray-200: #e9ecef !default;
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
-$gray-600: #6c757d !default;
+// Darken body text color from #6c757d to #333
+$gray-600: #333;
 $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
-$black:    #000 !default;
+$black: #000 !default;
 
-$primary: #1abb9c !default;
+//  change link color to #1e73be via the $link-color Bootstrap variable. Also, change the text highlight color to #cc860c via the $link-hover-color Bootstrap variable.
+$link-color: #1e73be;
+$link-hover-color: #cc860c;
+
+// Change green #1abb9c color (used in *-primary classes) scheme to preference color: #1980B6
+$primary: #1980b6;
 
 
 // Body

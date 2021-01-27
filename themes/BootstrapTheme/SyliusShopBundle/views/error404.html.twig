@@ -1,9 +1,15 @@
 {% extends '@SyliusShop/layout.html.twig' %}
 
-{% block content %}
-    <h2 class="mt-5 mb-3 text-center font-weight-bold">
-        {{ 'sylius.ui.the_page_you_are_looking_for_does_not_exist'|trans }}
-    </h2>
+{% block title %}
+  404 | Page Not Found
+{% endblock %}
 
-    <img src="{{ asset('assets/shop/img/logo.png') }}" alt="Sylius logo" class="img-fluid" />
+{% block content %}
+  <h2 class="mt-5 mb-3 text-center font-weight-bold">
+    {{ 'sylius.ui.the_page_you_are_looking_for_does_not_exist'|trans }}
+  </h2>
+
+  <div class="d-flex justify-content-center mt-4">
+    <img src="{{ asset('media/image/logo.png') }}" alt="Raritan Engineering logo" class="img-fluid"/>
+  </div>
 {% endblock %}
