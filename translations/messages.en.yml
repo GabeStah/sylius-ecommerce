@@ -1,5 +1,7 @@
 company:
   address: '530 Orange St. Millville, NJ 08332, USA'
+  address1: '530 Orange St.'
+  address2: 'Millville, NJ 08332, USA'
   email:
     sales: 'sales@raritaneng.com'
   phone: '856-825-4900'
