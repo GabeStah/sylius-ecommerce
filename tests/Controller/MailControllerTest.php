@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use Swift_SendmailTransport;
 use Swift_SmtpTransport;
+use Sylius\Component\Mailer\Sender\SenderInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MailControllerTest extends WebTestCase
@@ -16,6 +17,21 @@ class MailControllerTest extends WebTestCase
     //    $client->enableProfiler();
 
     $this->assertSame(123, 456);
+  }
+
+  public function testSender()
+  {
+    $client = static::createClient();
+    $container = $client->getContainer();
+
+    /** @var SenderInterface $sender */
+    $sender = $container->get('sylius.email_sender');
+
+    $sender->send(
+      \Sylius\Bundle\UserBundle\Mailer\Emails::EMAIL_VERIFICATION_TOKEN,
+      ['gabe@solarixdigital.com'],
+      ['user' => 'a user', 'channel' => 'DEFAULT', 'localeCode' => 'en_US']
+    );
   }
 
   public function testSendmail()
