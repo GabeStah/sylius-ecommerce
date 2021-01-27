@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use Swift_SendmailTransport;
 use Swift_SmtpTransport;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -15,6 +16,40 @@ class MailControllerTest extends WebTestCase
     //    $client->enableProfiler();
 
     $this->assertSame(123, 456);
+  }
+
+  public function testSendmail()
+  {
+    $transport = new Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+
+    //    public function sendEmail($name, \Swift_Mailer $mailer)
+    //    {
+    $message = (new \Swift_Message('Hello Email'))
+      ->setFrom('test@raritaneng.com')
+      ->setTo('gabe@solarixdigital.com', 'Gabe')
+      ->setBody('You should see me from the profiler!');
+
+    (new \Swift_Mailer($transport))->send($message);
+
+    // ...
+    //    }
+  }
+
+  public function testSendLocalhost()
+  {
+    $transport = new Swift_SmtpTransport();
+
+    //    public function sendEmail($name, \Swift_Mailer $mailer)
+    //    {
+    $message = (new \Swift_Message('Hello Email'))
+      ->setFrom('test@raritaneng.com')
+      ->setTo('gabe@solarixdigital.com', 'Gabe')
+      ->setBody('You should see me from the profiler!');
+
+    (new \Swift_Mailer($transport))->send($message);
+
+    // ...
+    //    }
   }
 
   public function testSendMessage()
