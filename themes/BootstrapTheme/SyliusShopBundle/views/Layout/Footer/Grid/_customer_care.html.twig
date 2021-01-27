@@ -1,5 +1,5 @@
 <div class="col mb-3">
-  <h4>{{ 'footer.support.title'|trans }}</h4>
+  <h4 class="text-light">{{ 'footer.support.title'|trans }}</h4>
   <div class="d-flex flex-column">
     {{ render(path('bitbag_sylius_cms_plugin_shop_page_show_link_by_code', {'code' : 'about_us', 'template' : '@BitBagSyliusCmsPlugin/Shop/Page/Show/_link.html.twig'})) }}
     <a class="text-muted" href="{{ path('sylius_shop_contact_request') }}">{{ 'sylius.ui.contact_us'|trans }}</a>

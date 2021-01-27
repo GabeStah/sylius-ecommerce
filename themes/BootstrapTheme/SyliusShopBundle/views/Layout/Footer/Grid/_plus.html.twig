@@ -1,11 +1,15 @@
 <div class="col mb-3">
-  <h4>{{ 'footer.office.title'|trans }}</h4>
+  <h4 class="text-light">{{ 'footer.office.title'|trans }}</h4>
   <ul class="fa-ul">
     <li>
       <span class="fa-li">
         {{ source('/svg/map-marker-alt-solid.svg') }}
       </span>
-      {{ 'company.address'|trans }}
+      <span>{{ 'company.address1'|trans }}</span>
+    </li>
+    <li>
+      <span class="fa-li"></span>
+      <span>{{ 'company.address2'|trans }}</span>
     </li>
     <li>
       <span class="fa-li">
