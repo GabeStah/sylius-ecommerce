@@ -1,7 +1,7 @@
 [submodule "packages/solarix/shipping"]
 	path = packages/solarix/shipping
-	url = git@gitlab.solarixdigital.com:solarix/core/tooling/solarix-shipping-php.git
+	url = ../../../core/tooling/solarix-shipping-php.git
 
 [submodule "packages/solarix/sylius-authorize-net-plugin"]
 	path = packages/solarix/sylius-authorize-net-plugin
-	url = git@gitlab.solarixdigital.com:solarix/core/tooling/sylius-authorize-net-plugin.git
+	url = ../../../core/tooling/sylius-authorize-net-plugin.git
