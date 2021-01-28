@@ -11,6 +11,7 @@ variables:
   # All
   ARCHIVE_FILENAME: "$CI_JOB_ID-$CI_COMMIT_SHORT_SHA-package.tar.gz"
   DEPLOY_ENDPOINT: "srv1.vfmservers.biz"
+  GIT_SUBMODULE_STRATEGY: normal
   REMOTE_USER: raritaneng
   REPOSITORY_URL: $CI_REPOSITORY_URL
   SYMFONY_ENVIRONMENT: "dev"

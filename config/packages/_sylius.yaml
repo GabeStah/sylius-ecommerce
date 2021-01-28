@@ -173,6 +173,11 @@ sylius_locale:
       classes:
         model: App\Entity\Locale\Locale
 
+sylius_mailer:
+  sender:
+    name: Raritan Engineering
+    address: no-reply@raritaneng.com
+
 sylius_order:
   resources:
     order:
