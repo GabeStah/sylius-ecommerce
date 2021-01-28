@@ -20,6 +20,36 @@ footer:
     title: 'Order Tracking'
 
 sylius:
+  email:
+    contact_request:
+      content: 'Content'
+      message_from: 'Message from'
+      subject: 'Contact request'
+    order_confirmation:
+      has_been_successfully_placed: 'has been successfully placed.'
+      subject: 'Order confirmation'
+      view_order_or_change_payment_method: 'View order'
+    password_reset:
+      hello: 'Hello'
+      reset_your_password: 'Reset your password'
+      subject: 'Password reset'
+      to_reset_your_password: 'Click the link below to reset your password'
+    shipment_confirmation:
+      has_been_sent_using: 'has been sent using'
+      subject: 'Shipment confirmation'
+      thank_you_for_transaction: 'Thank you for your purchase.'
+      you_can_check_its_location_with_the_tracking_code: 'You can check its location with the %tracking_code% tracking code.'
+      your_order_with_number: 'Your order with number'
+    user_registration:
+      start_shopping: 'Start shopping'
+      subject: 'User registration'
+      welcome_to_our_store: 'Welcome to our store!'
+      you_have_just_been_registered: 'You have just been registered. Thank you'
+    verification_token:
+      hello: 'Hello'
+      subject: 'Email address verification'
+      to_verify_your_email_address: 'Click the link below to verify your email address'
+      verify_your_email_address: 'Verify your email address'
   ui:
     dealer:
       title: 'Dealers'

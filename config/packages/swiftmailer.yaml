@@ -1,2 +1,4 @@
 swiftmailer:
-    url: '%env(MAILER_URL)%'
+  sender_address: 'admin@raritaneng.com'
+  transport: sendmail
+  url: '%env(MAILER_URL)%'
