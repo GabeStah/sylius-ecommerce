@@ -4,4 +4,4 @@
 
 [submodule "packages/solarix/sylius-authorize-net-plugin"]
 	path = packages/solarix/sylius-authorize-net-plugin
-	url = ../../../core/tooling/sylius-authorize-net-plugin.git
+	url = ../../../core/tooling/sylius-authorize-net-plugin
