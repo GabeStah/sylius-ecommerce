@@ -4,6 +4,7 @@ company:
   address2: 'Millville, NJ 08332, USA'
   email:
     sales: 'sales@raritaneng.com'
+  hours: '<strong>Monday - Friday</strong>: 08:00AM EST to 05:00PM EST<br/><strong>Saturday</strong>: Closed<br/><strong>Sunday</strong>: Closed'
   phone: '856-825-4900'
   phone2: '1-954-525-0378'
 

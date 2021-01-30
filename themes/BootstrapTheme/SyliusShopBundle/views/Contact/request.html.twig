@@ -7,23 +7,261 @@
 {% import '@SyliusShop/Common/Macro/headers.html.twig' as headers %}
 
 {% block content %}
-    <div class="row">
-        <div class="col">
-            {{ headers.default('sylius.ui.contact_us'|trans, '', 'sylius.ui.use_the_contact_form_below_to_send_us_a_message'|trans) }}
-
-            {{ sylius_template_event('sylius.shop.contact.request.after_content_header') }}
-
-            <div>
-                {{ form_start(form, {'action': path('sylius_shop_contact_request'), 'attr': {'class': 'loadable', 'novalidate': 'novalidate'}}) }}
-                {{ form_row(form.email) }}
-                {{ form_row(form.message) }}
-
-                {{ sylius_template_event('sylius.shop.contact.request.form', {'form': form}) }}
-
-                {{ form_row(form._token) }}
-                <button type="submit" class="btn btn-primary" {{ sylius_test_html_attribute('send-button') }}>{{ 'sylius.ui.send'|trans }}</button>
-                {{ form_end(form, {'render_rest': false}) }}
-            </div>
-        </div>
+  <div class="row mb-4">
+    <div class="col">
+      <div id="map" class="row" style="height: 400px;"></div>
+      <script>
+        function initMap() {
+          const position = {lat: 39.37380116857432, lng: -75.01736261531101};
+          const map = new google.maps.Map(
+            document.getElementById('map'), {
+              zoom: 15,
+              center: position,
+              styles: [
+                {
+                  "elementType": "geometry",
+                  "stylers": [
+                    {
+                      "color": "#f5f5f5"
+                    }
+                  ]
+                },
+                {
+                  "elementType": "labels.icon",
+                  "stylers": [
+                    {
+                      "visibility": "off"
+                    }
+                  ]
+                },
+                {
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                    {
+                      "color": "#616161"
+                    }
+                  ]
+                },
+                {
+                  "elementType": "labels.text.stroke",
+                  "stylers": [
+                    {
+                      "color": "#f5f5f5"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "administrative.land_parcel",
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                    {
+                      "color": "#bdbdbd"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "poi",
+                  "elementType": "geometry",
+                  "stylers": [
+                    {
+                      "color": "#eeeeee"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "poi",
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                    {
+                      "color": "#757575"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "poi.park",
+                  "elementType": "geometry",
+                  "stylers": [
+                    {
+                      "color": "#e5e5e5"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "poi.park",
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                    {
+                      "color": "#9e9e9e"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "road",
+                  "elementType": "geometry",
+                  "stylers": [
+                    {
+                      "color": "#ffffff"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "road.arterial",
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                    {
+                      "color": "#757575"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "road.highway",
+                  "elementType": "geometry",
+                  "stylers": [
+                    {
+                      "color": "#dadada"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "road.highway",
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                    {
+                      "color": "#616161"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "road.local",
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                    {
+                      "color": "#9e9e9e"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "transit.line",
+                  "elementType": "geometry",
+                  "stylers": [
+                    {
+                      "color": "#e5e5e5"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "transit.station",
+                  "elementType": "geometry",
+                  "stylers": [
+                    {
+                      "color": "#eeeeee"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "water",
+                  "elementType": "geometry",
+                  "stylers": [
+                    {
+                      "color": "#c9c9c9"
+                    }
+                  ]
+                },
+                {
+                  "featureType": "water",
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                    {
+                      "color": "#9e9e9e"
+                    }
+                  ]
+                }
+              ]
+            });
+          const marker = new google.maps.Marker({position, map});
+        }
+      </script>
+      <script async defer
+              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgYAmZqc2OLIFgYA5FSwtJAIWmJFqVWv8&callback=initMap">
+      </script>
     </div>
+  </div>
+  <div class="row my-3">
+    <div class="col-9">
+      {{ headers.default('sylius.ui.contact_us'|trans, '', 'sylius.ui.use_the_contact_form_below_to_send_us_a_message'|trans) }}
+
+      {{ sylius_template_event('sylius.shop.contact.request.after_content_header') }}
+
+      <div>
+        {{ form_start(form, {'action': path('sylius_shop_contact_request'), 'attr': {'class': 'loadable', 'novalidate': 'novalidate'}}) }}
+        <div class="form-row">
+          <div class="col">
+            {{ form_row(form.department) }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col">{{ form_row(form.full_name) }}</div>
+          <div class="col">
+            {{ form_row(form.email) }}
+          </div>
+          <div class="col">
+            {{ form_row(form.phone) }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col">
+            {{ form_row(form.subject) }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col">
+            {{ form_row(form.message) }}
+          </div>
+        </div>
+        {{ form_row(form.captcha) }}
+
+        {{ sylius_template_event('sylius.shop.contact.request.form', {'form': form}) }}
+
+        {{ form_row(form._token) }}
+        <button type="submit"
+                class="btn btn-primary" {{ sylius_test_html_attribute('send-button') }}>{{ 'sylius.ui.send'|trans }}</button>
+        {{ form_end(form, {'render_rest': false}) }}
+      </div>
+    </div>
+    <div class="col-3">
+      <h4>Our Address</h4>
+      <ul class="fa-ul">
+        <li>
+      <span class="fa-li">
+        {{ source('/svg/map-marker-alt-solid.svg') }}
+      </span>
+          <span>{{ 'company.address1'|trans }}</span>
+        </li>
+        <li>
+          <span class="fa-li"></span>
+          <span>{{ 'company.address2'|trans }}</span>
+        </li>
+        <li>
+      <span class="fa-li">
+         {{ source('/svg/phone-alt-solid.svg') }}
+      </span>
+          {{ 'company.phone'|trans }}
+        </li>
+        <li>
+      <span class="fa-li">
+         {{ source('/svg/phone-alt-solid.svg') }}
+      </span>
+          {{ 'company.phone2'|trans }}
+        </li>
+        <li>
+      <span class="fa-li">
+         {{ source('/svg/envelope-regular.svg') }}
+      </span>
+          <a href="mailto:{{ 'company.email.sales'|trans }}">{{ 'company.email.sales'|trans }}</a>
+        </li>
+      </ul>
+      <h4>Business Hours</h4>
+      <span>{{ 'company.hours'|trans|raw }}</span>
+    </div>
+  </div>
 {% endblock %}

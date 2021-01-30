@@ -14,6 +14,7 @@ parameters:
   raritan.database.password: '%env(RARITAN_DATABASE_PASSWORD)%'
   raritan.database.host: '%env(RARITAN_DATABASE_HOST)%'
   raritan.database.port: '%env(RARITAN_DATABASE_PORT)%'
+  google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:
   # Default configuration for services in *this* file
@@ -45,6 +46,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: Sylius\Bundle\CoreBundle\Form\Type\Checkout\CompleteType, priority: -1 }
 
+  app.form.extension.contact:
+    class: App\Form\Extension\ContactTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Sylius\Bundle\CoreBundle\Form\Type\ContactType, priority: -1 }
+
   app.form.extension.product_translation:
     class: App\Form\Extension\ProductTranslationTypeExtension
     tags:
@@ -69,15 +75,14 @@ services:
     tags:
       - { name: sylius.shipping_calculator, calculator: fedex, label: "FedEx", form_type: App\Form\Type\FedExShippingCalculatorType }
 
-  #  app.shipping_methods_resolver.fedex:
-  #    class: App\Shipping\Resolver\FedExMethodResolver
-  #    arguments: [ '@solarix.shipping.provider.fedex' ]
-  #    tags:
-  #      - { name: sylius.shipping_method_resolver, resolver: fedex, label: "FedEx", type: App\Shipping\Resolver\FedExMethodResolver }
-
   sylius.controller.shop.about:
     class: App\Controller\Shop\AboutController
     arguments: [ '@templating' ]
+    tags: [ 'controller.service_arguments' ]
+
+  sylius.controller.shop.contact:
+    class: App\Controller\Shop\ContactController
+    #    arguments: [ '@templating' ]
     tags: [ 'controller.service_arguments' ]
 
   sylius.controller.shop.dealer:
@@ -85,33 +90,6 @@ services:
     arguments: [ '@templating' ]
     tags: [ 'controller.service_arguments' ]
 
-    #  app.authorize_net_gateway_factory:
-    #    class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
-    #    arguments: [ App\Payum\AuthorizeNetPaymentGatewayFactory ]
-    #    tags:
-    #      - { name: payum.gateway_factory_builder, factory: authorize_net }
-    #
-    #  app.authorize_net_gateway_configuration_type:
-    #    class: App\Form\Type\AuthorizeNetGatewayConfigurationType
-    #    tags:
-    #      - { name: app.authorize_net_gateway_configuration_type, type: app.authorize_net_gateway_factory, label: 'Authorize.NET' }
-    #      - { name: 'form.type' }
-    #
-    #  app.authorize_net_payum_action_capture_action:
-    #    arguments: [ '@sylius.http_client' ]
-    #    class: App\Payum\Action\CaptureAction
-    #    public: true
-    #    tags:
-    #      - { name: 'payum.action', factory: '@app.authorize_net_gateway_factory', alias: 'payum.action.capture' }
-
-  #  app.repository.dealer:
-  #    class: App\Repository\DealerRepository
-  #  App\Repository\DealerRepository: '@app.repository.dealer'
-
-  # explicitly configure the service
-  #  App\Command\Import\AbstractImportCommand:
-  #    arguments:
-  #      $name: null
   App\Command\Import\CategoryImportCommand:
     arguments:
       $name: null
@@ -128,16 +106,6 @@ services:
     arguments:
       $name: null
   Sylius\Bundle\TaxonomyBundle\Doctrine\ORM\TaxonRepository: '@sylius.repository.taxon'
-  #      $importer: 'importer.subcategory'
-  #  App\Command\ProductConvertCommand:
-  #    arguments:
-  #      $name: null
-  #  App\Command\ProductImportCommand:
-  #    arguments:
-  #      $name: null
-  #  App\Command\SubcategoryConvertCommand:
-  #    arguments:
-  #      $name: null
 
   # Controllers are imported separately to make sure services can be injected
   # as action arguments even if you don't extend any base controller class
