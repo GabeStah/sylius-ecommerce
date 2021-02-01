@@ -217,6 +217,18 @@
     "goetas-webservices/xsd2php-runtime": {
         "version": "v0.2.13"
     },
+    "google/recaptcha": {
+        "version": "1.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.1",
+            "ref": "d087df3e087f50da3955f2def05079380da5894b"
+        },
+        "files": [
+            "./config/packages/google_recaptcha.yaml"
+        ]
+    },
     "guzzlehttp/guzzle": {
         "version": "6.3.3"
     },
@@ -270,6 +282,18 @@
             "version": "2.0",
             "ref": "fe60ce509ef04a3f40da96e3979bc8d9b13b2372"
         }
+    },
+    "karser/karser-recaptcha3-bundle": {
+        "version": "0.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.1",
+            "ref": "107a3a758fe331292f1c23c13d73c66cb3a268c7"
+        },
+        "files": [
+            "./config/packages/karser_recaptcha3.yaml"
+        ]
     },
     "knplabs/gaufrette": {
         "version": "v0.6.0"

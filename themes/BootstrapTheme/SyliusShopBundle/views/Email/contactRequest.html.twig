@@ -1,18 +1,34 @@
 {% extends '@SyliusShop/Email/layout.html.twig' %}
 
 {% block subject %}
-    {{ 'sylius.email.contact_request.subject'|trans({}, null, localeCode) }}
+  {{ 'sylius.email.contact_request.subject'|trans({}, null, localeCode) }}
 {% endblock %}
 
 {% block content %}
-    <div style="text-align: left;">
-        <div style="color: #1abb9c;">
-            <strong>{{ 'sylius.email.contact_request.message_from'|trans({}, null, localeCode) }}:</strong>
-        </div>
-        <div style="margin-bottom: 20px;">{{ data.email }}</div>
-        <div style="color: #1abb9c;">
-            <strong>{{ 'sylius.email.contact_request.content'|trans({}, null, localeCode) }}:</strong>
-        </div>
-        <div>{{ data.message|nl2br }}</div>
+  <div style="text-align: left;">
+    <div style="color: #1abb9c;">
+      <strong>{{ 'sylius.email.contact_request.message_from'|trans({}, null, localeCode) }}:</strong>
     </div>
+    <div style="margin-bottom: 20px;">{{ data.email }}</div>
+    <div style="color: #1abb9c;">
+      <strong>Department:</strong>
+    </div>
+    <div>{{ data.department }}</div>
+    <div style="color: #1abb9c;">
+      <strong>Full Name:</strong>
+    </div>
+    <div>{{ data.full_name }}</div>
+    <div style="color: #1abb9c;">
+      <strong>Phone:</strong>
+    </div>
+    <div>{{ data.phone }}</div>
+    <div style="color: #1abb9c;">
+      <strong>Subject:</strong>
+    </div>
+    <div>{{ data.subject }}</div>
+    <div style="color: #1abb9c;">
+      <strong>{{ 'sylius.email.contact_request.content'|trans({}, null, localeCode) }}:</strong>
+    </div>
+    <div>{{ data.message|nl2br }}</div>
+  </div>
 {% endblock %}
