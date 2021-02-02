@@ -14,6 +14,8 @@ parameters:
   raritan.database.password: '%env(RARITAN_DATABASE_PASSWORD)%'
   raritan.database.host: '%env(RARITAN_DATABASE_HOST)%'
   raritan.database.port: '%env(RARITAN_DATABASE_PORT)%'
+  raritan.email.sales: '%env(string:RARITAN_EMAIL_SALES)%'
+  raritan.email.support: '%env(string:RARITAN_EMAIL_SUPPORT)%'
   google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:

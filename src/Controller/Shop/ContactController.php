@@ -19,6 +19,7 @@ use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Customer\Context\CustomerContextInterface;
 use Sylius\Component\Locale\Context\LocaleContextInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -28,7 +29,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webmozart\Assert\Assert;
 
-final class ContactController
+final class ContactController extends AbstractController
 {
   /** @var RouterInterface */
   private $router;
@@ -89,9 +90,9 @@ final class ContactController
       /** @var ChannelInterface $channel */
       Assert::isInstanceOf($channel, ChannelInterface::class);
 
-      $contactEmail = $channel->getContactEmail();
+      $address = $this->getContactEmail($data['department']);
 
-      if (null === $contactEmail) {
+      if ($address === null) {
         $errorMessage = $this->getSyliusAttribute(
           $request,
           'error_flash',
@@ -108,7 +109,7 @@ final class ContactController
       $localeCode = $this->localeContext->getLocaleCode();
       $this->contactEmailManager->sendContactRequest(
         $data,
-        [$contactEmail],
+        [$address],
         $channel,
         $localeCode
       );
@@ -141,6 +142,22 @@ final class ContactController
     return $this->templatingEngine->renderResponse($template, [
       'form' => $form->createView(),
     ]);
+  }
+
+  /**
+   * Get the current contact email address.
+   *
+   * @param string|null $department
+   *
+   * @return mixed
+   */
+  private function getContactEmail(?string $department)
+  {
+    $address = $this->getParameter('raritan.email.sales');
+    if ($department === 'support') {
+      $address = $this->getParameter('raritan.email.support');
+    }
+    return $address;
   }
 
   private function getSyliusAttribute(

@@ -19,6 +19,8 @@ ssh -o StrictHostKeyChecking=no "${REMOTE_USER}"@"${DEPLOY_ENDPOINT}" << EOF
   cd ${TARGET_DIRECTORY}
   echo "Extracting ${ARCHIVE_FILENAME} to remote"
   tar -zxf ${ARCHIVE_FILENAME}
+  echo "Removing ${ARCHIVE_FILENAME} from remote"
+  rm ${ARCHIVE_FILENAME}
 EOF
 
 echo "Copying ${ENV_FILE} to .env."
