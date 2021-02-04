@@ -1,0 +1,26 @@
+sylius_ui:
+  events:
+    sylius.shop.homepage:
+      blocks:
+        banner:
+          template: "@SyliusShop/Homepage/_banner.html.twig"
+          priority: 60
+        newsletter:
+          template: "@SyliusShop/Homepage/_newsletter.html.twig"
+          priority: 30
+        latest_products: false
+        #        latest_products:
+        #          template: "@SyliusShop/Homepage/_latestProducts.html.twig"
+        #          priority: -1
+        latest_products_carousel: false
+        #        latest_products_carousel:
+        #          template: "@SyliusShop/Homepage/_latestProductsCarousel.html.twig"
+        #          priority: 0
+        products_grid: false
+        #        products_grid:
+        #          template: "@SyliusShop/Homepage/_productsGrid.html.twig"
+        #          priority: -1
+        about_us: false
+        #        about_us:
+        #          template: "@SyliusShop/Homepage/_aboutUs.html.twig"
+        #          priority: 0
