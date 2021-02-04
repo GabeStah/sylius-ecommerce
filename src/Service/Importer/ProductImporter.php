@@ -603,7 +603,7 @@ EOF;
         return '/en_US/page/';
       },
       '/\.\.\/\.\.\/en\/product-categories\//' => function () {
-        return '/en_US/taxons/';
+        return '/en_US/product-categories/';
       },
       '/\.\.\/\.\.\/en\/shop\/products\//' => function () {
         return '/en_US/products/';

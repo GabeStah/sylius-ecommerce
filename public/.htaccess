@@ -57,7 +57,7 @@ DirectoryIndex index.php
     RewriteRule ^ %{ENV:BASE}/index.php [L]
 
     RedirectMatch 301 ^/en/info/(.*)$ /en_US/page/$1
-    RedirectMatch 301 ^/en/product-categories/(.*)$ /en_US/taxons/$1
+    RedirectMatch 301 ^/en/product-categories/(.*)$ /en_US/product-categories/$1
     RedirectMatch 301 ^/en/shop/products/(.*)$ /en_US/products/$1
     RedirectMatch 301 ^/en/tech-support/(.*)$ /en_US/page/$1
     # '/en' to '/en_US' locale
