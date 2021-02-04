@@ -5,6 +5,9 @@
     <div class="col-12 mb-3">
       {% include 'bundles/SyliusShopBundle/Homepage/_carousel.html.twig' %}
     </div>
+    {{ bitbag_cms_render_block('homepage-1') }}
+    {{ bitbag_cms_render_block('homepage-2') }}
+    {{ bitbag_cms_render_block('homepage-3') }}
     {{ sylius_template_event('sylius.shop.homepage') }}
   </div>
 {% endblock %}
