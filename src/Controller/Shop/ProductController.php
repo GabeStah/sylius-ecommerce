@@ -35,9 +35,7 @@ class ProductController extends ResourceController
 
     $isProductVisible = true;
 
-    if (
-      $request->get('_route') !== 'sylius_shop_partial_product_index_latest'
-    ) {
+    if ($request->get('_route') === 'sylius_shop_product_index') {
       $foundTaxon = $taxonRepository->findOneBySlug(
         $request->get('slug'),
         $this->container->get('sylius.context.locale')->getLocaleCode()
