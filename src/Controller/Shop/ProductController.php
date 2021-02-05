@@ -33,10 +33,17 @@ class ProductController extends ResourceController
 
     $taxonRepository = $this->container->get('sylius.repository.taxon');
 
-    $foundTaxon = $taxonRepository->findOneBySlug(
-      $request->get('slug'),
-      $this->container->get('sylius.context.locale')->getLocaleCode()
-    );
+    $isProductVisible = true;
+
+    if (
+      $request->get('_route') !== 'sylius_shop_partial_product_index_latest'
+    ) {
+      $foundTaxon = $taxonRepository->findOneBySlug(
+        $request->get('slug'),
+        $this->container->get('sylius.context.locale')->getLocaleCode()
+      );
+      $isProductVisible = $foundTaxon->isProductVisible();
+    }
 
     $view = View::create($resources);
 
@@ -50,7 +57,7 @@ class ProductController extends ResourceController
           'configuration' => $configuration,
           'metadata' => $this->metadata,
           'resources' => $resources,
-          'product_visible' => $foundTaxon->isProductVisible(),
+          'product_visible' => $isProductVisible,
           $this->metadata->getPluralName() => $resources,
         ]);
     }
