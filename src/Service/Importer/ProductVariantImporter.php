@@ -15,6 +15,7 @@ use App\Service\StringNormalizer;
 use Doctrine\DBAL\Exception;
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductOptionRepository;
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductVariantRepository;
+use Sylius\Bundle\TaxationBundle\Doctrine\ORM\TaxCategoryRepository;
 use Sylius\Bundle\TaxonomyBundle\Doctrine\ORM\TaxonRepository;
 use Sylius\Component\Core\Model\ProductInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -109,6 +110,10 @@ EOF;
    * @var object|\Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository|null
    */
   private $productOptionValueRepository;
+  /**
+   * @var TaxCategoryRepository
+   */
+  private $taxCategoryRepository;
 
   /**
    * ProductImporter constructor.
@@ -146,6 +151,9 @@ EOF;
     );
     $this->productOptionValueRepository = $this->container->get(
       'sylius.repository.product_option_value'
+    );
+    $this->taxCategoryRepository = $this->container->get(
+      'sylius.repository.tax_category'
     );
   }
 
@@ -207,6 +215,9 @@ EOF;
     $entity->setProduct($product);
     $entity->setDepth($data['depth']);
     $entity->setHeight($data['height']);
+    $entity->setTaxCategory(
+      $this->taxCategoryRepository->findOneBy(['code' => 'taxable_good'])
+    );
     $entity->setWidth($data['width']);
     $entity->setWeight($data['weight']);
 
