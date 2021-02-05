@@ -223,6 +223,7 @@ sylius_product:
   resources:
     product:
       classes:
+        controller: App\Controller\Shop\ProductController
         model: App\Entity\Product\Product
         repository: App\Repository\ProductRepository
       translation:

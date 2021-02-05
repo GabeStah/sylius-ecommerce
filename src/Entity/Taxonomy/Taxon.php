@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Entity\Taxonomy;
 
 use App\Model\Taxonomy\Taxon as TaxonModel;
-use App\Service\Logger;
 use Doctrine\ORM\Mapping as ORM;
-use Sylius\Bundle\TaxonomyBundle\Doctrine\ORM\TaxonRepository;
 use Sylius\Component\Core\Model\Taxon as BaseTaxon;
 use Sylius\Component\Taxonomy\Model\TaxonInterface;
 use Sylius\Component\Taxonomy\Model\TaxonTranslationInterface;
@@ -22,6 +20,8 @@ class Taxon extends BaseTaxon
   private $category_id;
   /** @ORM\Column(type="string", nullable=true) */
   private $category_type;
+  /** @ORM\Column(type="boolean", nullable=true, options={"default":"1"}) */
+  private $product_visible;
 
   /**
    * @return int|null
@@ -55,6 +55,22 @@ class Taxon extends BaseTaxon
     $this->category_type = $category_type;
   }
 
+  /**
+   * @return bool
+   */
+  public function isProductVisible(): ?bool
+  {
+    return $this->product_visible;
+  }
+
+  /**
+   * @param bool $product_visible
+   */
+  public function setProductVisible(?bool $product_visible): void
+  {
+    $this->product_visible = $product_visible;
+  }
+
   protected function createTranslation(): TaxonTranslationInterface
   {
     return new TaxonTranslation();
@@ -77,6 +93,7 @@ class Taxon extends BaseTaxon
     $this->setEnabled($model->isEnabled());
     $this->setSlug($model->getSlug());
     $this->setName($model->getName());
+    $this->setProductVisible($model->isProductVisible());
     if ($model->getParent()) {
       $this->setParent($this->fromModel($model->getParent()));
     }
@@ -100,14 +117,9 @@ class Taxon extends BaseTaxon
     $this->setEnabled(is_bool($data['enabled']) ? $data['enabled'] : true);
     $this->setName($data['name']);
     $this->setSlug($data['slug']);
+    $this->setProductVisible(true);
     if (array_key_exists('parent', $data)) {
-      //      if ($data['parent'] instanceof Taxon) {
       $this->setParent($data['parent']);
-      //      } else {
-      //        Logger::print('PARENT');
-      //        Logger::print($data['parent']);
-      //        $existingEntity = $this->repository->findOneByCode($data['parent']);
-      //      }
     }
 
     return $this;
@@ -128,6 +140,7 @@ class Taxon extends BaseTaxon
     $target->setEnabled($this->isEnabled());
     $target->setSlug($this->getSlug());
     $target->setName($this->getName());
+    $target->setProductVisible($this->isProductVisible());
     if ($this->getParent()) {
       $target->setParent($this->getParent());
     }

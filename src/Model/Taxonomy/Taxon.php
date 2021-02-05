@@ -30,6 +30,10 @@ class Taxon
    */
   private $name;
   /**
+   * @var bool
+   */
+  private $product_visible;
+  /**
    * @var string
    */
   private $slug;
@@ -196,6 +200,25 @@ class Taxon
   public function setParent($parent): Taxon
   {
     $this->parent = $parent;
+    return $this;
+  }
+
+  /**
+   * @return bool
+   */
+  public function isProductVisible(): ?bool
+  {
+    return $this->product_visible;
+  }
+
+  /**
+   * @param bool $product_visible
+   *
+   * @return Taxon
+   */
+  public function setProductVisible(bool $product_visible): Taxon
+  {
+    $this->product_visible = $product_visible;
     return $this;
   }
 }
