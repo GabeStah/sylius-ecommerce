@@ -7,11 +7,11 @@ use App\Entity\Addressing\Zone;
 use App\Entity\Addressing\ZoneMember;
 use App\Entity\Taxation\TaxCategory;
 use App\Entity\Taxation\TaxRate;
-use App\Service\Importer\ZoneImporter;
 use App\Service\Logger;
 use Exception;
 use Swaggest\JsonSchema\Schema;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -44,12 +44,18 @@ class ZoneImportCommand extends AbstractImportCommand
    */
   private $taxRateRepository;
 
-  public function __construct(?string $name) {
+  public function __construct(?string $name)
+  {
     parent::__construct($name);
   }
 
-  protected function configure() {
-    $this->setDescription('Imports zones.');
+  protected function configure()
+  {
+    $this->setDescription('Imports zones.')->addArgument(
+      'path',
+      InputArgument::OPTIONAL,
+      'Province seed data file path.'
+    );
   }
 
   /**
@@ -59,7 +65,8 @@ class ZoneImportCommand extends AbstractImportCommand
    * @return int|void
    * @throws Exception|\Doctrine\DBAL\Driver\Exception
    */
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output)
+  {
     parent::execute($input, $output);
 
     $this->countryRepository = $this->get('sylius.repository.country');
@@ -69,10 +76,9 @@ class ZoneImportCommand extends AbstractImportCommand
     $this->zoneRepository = $this->get('sylius.repository.zone');
     $this->zoneMemberRepository = $this->get('sylius.repository.zone_member');
 
-    $provinceData = json_decode(
-      file_get_contents('seed/province-tax-nj-only.json'),
-      true
-    );
+    $path = $input->getArgument('path') ?? 'seed/province-tax-nj-only.json';
+
+    $provinceData = json_decode(file_get_contents($path), true);
     Logger::print(count($provinceData));
 
     $this->importProvinces($provinceData);
@@ -83,13 +89,15 @@ class ZoneImportCommand extends AbstractImportCommand
     return 0;
   }
 
-  private function importProvinces($data) {
+  private function importProvinces($data)
+  {
     foreach ($data as $datum) {
       $this->importProvince($datum);
     }
   }
 
-  private function importProvince($data) {
+  private function importProvince($data)
+  {
     Logger::print('Importing Province: ' . $data['code']);
 
     $entity = $this->provinceRepository->findOneBy(['code' => $data['code']]);
@@ -106,7 +114,8 @@ class ZoneImportCommand extends AbstractImportCommand
     $this->provinceRepository->add($entity);
   }
 
-  private function importZonesFromProvinces($data) {
+  private function importZonesFromProvinces($data)
+  {
     foreach ($data as $datum) {
       $this->importZoneFromProvince(
         $this->provinceRepository->findOneBy(['code' => $datum['code']])
@@ -114,7 +123,8 @@ class ZoneImportCommand extends AbstractImportCommand
     }
   }
 
-  private function importZoneFromProvince(Province $province) {
+  private function importZoneFromProvince(Province $province)
+  {
     Logger::print('Importing Zone from Province: ' . $province->getCode());
 
     $code = $this->getZoneCodeFromProvince($province);
@@ -144,16 +154,18 @@ class ZoneImportCommand extends AbstractImportCommand
     $this->zoneRepository->add($entity);
   }
 
-  private function getZoneCodeFromProvince(Province $province): string {
+  private function getZoneCodeFromProvince(Province $province): string
+  {
     return 'ZONE-' . $province->getCode();
   }
 
-  private function getZoneNameFromProvince(Province $province): string {
-    return $province->getCountry()
-                    ->getCode() . ' - ' . $province->getName();
+  private function getZoneNameFromProvince(Province $province): string
+  {
+    return $province->getCountry()->getCode() . ' - ' . $province->getName();
   }
 
-  private function importTaxRatesFromProvinces($data) {
+  private function importTaxRatesFromProvinces($data)
+  {
     $taxCategory = $this->taxCategoryRepository->findOneBy([
       'code' => 'taxable_good',
     ]);
@@ -180,7 +192,7 @@ class ZoneImportCommand extends AbstractImportCommand
     string $code
   ) {
     Logger::print(
-      'Importing TaxRate from Zone: ' . $zone->getCode() . ' (' . $rate . ')'
+      'Importing TaxRate from Zone: ' . $zone->getCode() . ' (' . $rate . '%)'
     );
 
     $entity = $this->taxRateRepository->findOneBy(['code' => $code]);
@@ -199,7 +211,8 @@ class ZoneImportCommand extends AbstractImportCommand
     $this->taxRateRepository->add($entity);
   }
 
-  public function validateSchema($data) {
+  public function validateSchema($data)
+  {
     $schema = Schema::import('schema/zone.json');
     return $schema->in($data);
   }
