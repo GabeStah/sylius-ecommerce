@@ -45,6 +45,12 @@
     - [1.6.6. Extra Data](#166-extra-data)
     - [1.6.7. Finalized Database Imports](#167-finalized-database-imports)
     - [1.6.8. JSON Dump](#168-json-dump)
+  - [1.7. `import:zone`](#17-importzone)
+    - [1.7.1. Data Source](#171-data-source)
+    - [1.7.2. Normalization and Mapping](#172-normalization-and-mapping)
+    - [1.7.3. Filtered Data](#173-filtered-data)
+    - [1.7.4. Extra Data](#174-extra-data)
+    - [1.7.5. Enabling/Modifying Tax Rates](#175-enablingmodifying-tax-rates)
 - [2. Shipping](#2-shipping)
   - [2.1. Shipping Methods](#21-shipping-methods)
   - [2.2. Shipping Calculator](#22-shipping-calculator)
@@ -730,7 +736,56 @@ Other than data normalization and mapping the V2 `Dealers` table identically mat
 
 All generated V2 `Dealer` data can be found in [exports/dealer.json](exports/dealer.json).
 
+### 1.7. `import:zone`
 
+Imports all taxable zones and tax rates for US states.
+
+#### 1.7.1. Data Source
+
+By default, province data is imported from [seed/province-tax-nj-only.json](seed/province-tax-nj-only.json), which contains New Jersey tax rate data **only**.
+
+Alternatively, a new import data source can be specified as the first argument to the `import:zone` command.
+
+For example, import **all** US state tax rate data via:
+
+```bash
+$ php bin/console import:zone seed/province.json
+```
+
+#### 1.7.2. Normalization and Mapping
+
+A new `Province` entity is created for each incoming record:
+
+- `code`: Format of `US-XX` where `XX` is the state abbreviation.
+
+Each `Province` entity is used to generate a new `Zone`:
+
+- `code`: Format of `ZONE-US-XX`.
+- `name`: Format of `US - <State Name>`
+- `scope`: Set to `tax` to only apply to tax rates.
+- `type`: Set to `province`.
+- `member`: Associated with the appropriate `Province` entity so checkout tax calculator can identify when an address applies to a given zone.
+
+Each `Zone` entity is used to generate a new `TaxRate`:
+
+- `code`: Format of `US-XX`.
+- `amount`: Obtained from original `Province` JSON data object.  
+
+####  1.7.3. Filtered Data
+
+No data was filtered.
+
+#### 1.7.4. Extra Data
+
+No extra data was added.
+
+#### 1.7.5. Enabling/Modifying Tax Rates
+
+Sylius does not have a admin-editable way to disable a given State for tax calculation purposes.  Thus, the next best option was implemented:
+
+1. Each state has an existing `Zone` and applicable `TaxRate` entity.
+2. By default per Raritan-v1 business logic, all `TaxRate.amount` values are set to `0%` with the exception of New Jersey.
+3. Thus, checkout for addresses outside of NJ effectively have no tax applied.
 
 ## 2. Shipping
 

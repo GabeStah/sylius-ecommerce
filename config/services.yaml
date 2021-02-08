@@ -121,6 +121,9 @@ services:
   App\Command\Import\SubcategoryImportCommand:
     arguments:
       $name: null
+  App\Command\Import\ZoneImportCommand:
+    arguments:
+      $name: null
   Sylius\Bundle\TaxonomyBundle\Doctrine\ORM\TaxonRepository: '@sylius.repository.taxon'
 
   # Controllers are imported separately to make sure services can be injected
