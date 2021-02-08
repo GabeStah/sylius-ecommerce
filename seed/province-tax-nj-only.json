@@ -1,0 +1,352 @@
+[
+  {
+    "name": "Alabama",
+    "abbreviation": "AL",
+    "code": "US-AL",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Alaska",
+    "abbreviation": "AK",
+    "code": "US-AK",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Arizona",
+    "abbreviation": "AZ",
+    "code": "US-AZ",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Arkansas",
+    "abbreviation": "AR",
+    "code": "US-AR",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "California",
+    "abbreviation": "CA",
+    "code": "US-CA",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Colorado",
+    "abbreviation": "CO",
+    "code": "US-CO",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Connecticut",
+    "abbreviation": "CT",
+    "code": "US-CT",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Delaware",
+    "abbreviation": "DE",
+    "code": "US-DE",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Florida",
+    "abbreviation": "FL",
+    "code": "US-FL",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Georgia",
+    "abbreviation": "GA",
+    "code": "US-GA",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Hawaii",
+    "abbreviation": "HI",
+    "code": "US-HI",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Idaho",
+    "abbreviation": "ID",
+    "code": "US-ID",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Illinois",
+    "abbreviation": "IL",
+    "code": "US-IL",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Indiana",
+    "abbreviation": "IN",
+    "code": "US-IN",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Iowa",
+    "abbreviation": "IA",
+    "code": "US-IA",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Kansas",
+    "abbreviation": "KS",
+    "code": "US-KS",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Kentucky",
+    "abbreviation": "KY",
+    "code": "US-KY",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Louisiana",
+    "abbreviation": "LA",
+    "code": "US-LA",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Maine",
+    "abbreviation": "ME",
+    "code": "US-ME",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Maryland",
+    "abbreviation": "MD",
+    "code": "US-MD",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Massachusetts",
+    "abbreviation": "MA",
+    "code": "US-MA",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Michigan",
+    "abbreviation": "MI",
+    "code": "US-MI",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Minnesota",
+    "abbreviation": "MN",
+    "code": "US-MN",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Mississippi",
+    "abbreviation": "MS",
+    "code": "US-MS",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Missouri",
+    "abbreviation": "MO",
+    "code": "US-MO",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Montana",
+    "abbreviation": "MT",
+    "code": "US-MT",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Nebraska",
+    "abbreviation": "NE",
+    "code": "US-NE",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Nevada",
+    "abbreviation": "NV",
+    "code": "US-NV",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "New Hampshire",
+    "abbreviation": "NH",
+    "code": "US-NH",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "New Jersey",
+    "abbreviation": "NJ",
+    "code": "US-NJ",
+    "country": "US",
+    "rate": 0.066
+  },
+  {
+    "name": "New Mexico",
+    "abbreviation": "NM",
+    "code": "US-NM",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "New York",
+    "abbreviation": "NY",
+    "code": "US-NY",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "North Carolina",
+    "abbreviation": "NC",
+    "code": "US-NC",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "North Dakota",
+    "abbreviation": "ND",
+    "code": "US-ND",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Ohio",
+    "abbreviation": "OH",
+    "code": "US-OH",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Oklahoma",
+    "abbreviation": "OK",
+    "code": "US-OK",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Oregon",
+    "abbreviation": "OR",
+    "code": "US-OR",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Pennsylvania",
+    "abbreviation": "PA",
+    "code": "US-PA",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Rhode Island",
+    "abbreviation": "RI",
+    "code": "US-RI",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "South Carolina",
+    "abbreviation": "SC",
+    "code": "US-SC",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "South Dakota",
+    "abbreviation": "SD",
+    "code": "US-SD",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Tennessee",
+    "abbreviation": "TN",
+    "code": "US-TN",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Texas",
+    "abbreviation": "TX",
+    "code": "US-TX",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Utah",
+    "abbreviation": "UT",
+    "code": "US-UT",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Vermont",
+    "abbreviation": "VT",
+    "code": "US-VT",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Virginia",
+    "abbreviation": "VA",
+    "code": "US-VA",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Washington",
+    "abbreviation": "WA",
+    "code": "US-WA",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "West Virginia",
+    "abbreviation": "WV",
+    "code": "US-WV",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Wisconsin",
+    "abbreviation": "WI",
+    "code": "US-WI",
+    "country": "US",
+    "rate": 0
+  },
+  {
+    "name": "Wyoming",
+    "abbreviation": "WY",
+    "code": "US-WY",
+    "country": "US",
+    "rate": 0
+  }
+]
