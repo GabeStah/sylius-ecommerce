@@ -1,4 +1,5 @@
 {
+  "name": "raritan-ecommerce",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "chart.js": "^2.9.3",
@@ -64,8 +65,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sylius/Sylius.git"
+    "url": "git+https://gitlab.solarixdigital.com/solarix/voyager/raritan/ecommerce.git"
   },
-  "author": "Paweł Jędrzejewski",
+  "author": "Gabe Wyatt <gabe@solarixdigital.com>",
   "license": "MIT"
 }
