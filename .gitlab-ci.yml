@@ -43,7 +43,6 @@ variables:
     SYMFONY_ENVIRONMENT: "dev"
     SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY_TESTING
     TARGET_DIRECTORY: "/home/raritaneng/ecommerce/testing/"
-    #TARGET_DIRECTORY: "/home/raritaneng/ecommerce/testing/$CI_COMMIT_SHORT_SHA/"
   before_script:
     - *all_before_script
 
