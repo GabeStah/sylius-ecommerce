@@ -68,5 +68,6 @@
     "url": "git+https://gitlab.solarixdigital.com/solarix/voyager/raritan/ecommerce.git"
   },
   "author": "Gabe Wyatt <gabe@solarixdigital.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "version": "1.0.0"
 }
