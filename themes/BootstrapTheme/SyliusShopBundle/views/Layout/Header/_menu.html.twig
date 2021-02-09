@@ -1,6 +1,13 @@
 <div class="border-top border-bottom bg-light">
   <div class="container">
-    {% include  '/bundles/SyliusShopBundle/Menu/_mainMenu.html.twig' %}
+    <div class="row">
+      <div class="col-9">
+        {% include  '/bundles/SyliusShopBundle/Menu/_mainMenu.html.twig' %}
+      </div>
+      <div class="col-3 pt-3">
+        {% include '/bundles/SyliusShopBundle/Layout/Header/_search.html.twig' %}
+      </div>
+    </div>
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"
