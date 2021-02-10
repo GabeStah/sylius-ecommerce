@@ -104,33 +104,6 @@ sylius_grid:
         name:
           type: string
           label: sylius.ui.name
-        slug:
-          type: string
-          label: "Slug"
-        address1:
-          type: string
-          label: "Address 1"
-        address2:
-          type: string
-          label: "Address 2"
-        city:
-          type: string
-          label: "City"
-        postal_code:
-          type: string
-          label: "Postal Code"
-        state:
-          type: string
-          label: "State"
-        country:
-          type: string
-          label: "Country"
-        phone:
-          type: string
-          label: "Phone"
-        fax:
-          type: string
-          label: "Fax"
         email:
           type: string
           label: "Email"
@@ -151,12 +124,70 @@ sylius_grid:
         comment:
           type: string
           label: "Comment"
-        latitude:
+        #        slug:
+        #          enabled: false
+        #          type: string
+        #          label: "Slug"
+        #        address1:
+        #          enabled: false
+        #          type: string
+        #          label: "Address 1"
+        #        address2:
+        #          enabled: false
+        #          type: string
+        #          label: "Address 2"
+        #        city:
+        #          enabled: false
+        #          type: string
+        #          label: "City"
+        #        postal_code:
+        #          enabled: false
+        #          type: string
+        #          label: "Postal Code"
+        #        state:
+        #          enabled: false
+        #          type: string
+        #          label: "State"
+        #        country:
+        #          enabled: false
+        #          type: string
+        #          label: "Country"
+        #        phone:
+        #          enabled: false
+        #          type: string
+        #          label: "Phone"
+        #        fax:
+        #          enabled: false
+        #          type: string
+        #          label: "Fax"
+        #        latitude:
+        #          enabled: false
+        #          type: string
+        #          label: "Latitude"
+        #        longitude:
+        #          enabled: false
+        #          type: string
+        #          label: "Longitude"
+      filters:
+        search:
           type: string
-          label: "Latitude"
-        longitude:
-          type: string
-          label: "Longitude"
+          label: sylius.ui.search
+          options:
+            fields: [ name, comment, email, url ]
+        wholesale:
+          label: "Wholesale"
+          type: boolean
+        enabled:
+          label: "Enabled"
+          type: boolean
+        type:
+          label: "Type"
+          type: select
+          form_options:
+            choices:
+              dealer.type.domestic: 2
+              dealer.type.international: 3
+              dealer.type.servicing: 1
       actions:
         main:
           create:
