@@ -8,6 +8,12 @@ company:
   phone: '856-825-4900'
   phone2: '1-954-525-0378'
 
+dealer:
+  type:
+    domestic: 'Domestic Distributor'
+    international: 'International Distributor'
+    servicing: 'Servicing Dealer'
+
 footer:
   about:
     title: 'About Us'

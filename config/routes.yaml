@@ -8,7 +8,8 @@ app_admin_dealer:
     grid: app_admin_dealer
     vars:
       all:
-        subheader: app.ui.dealer
+        header: 'Dealers'
+        subheader: sylius.ui.dealer.title
       index:
         icon: 'file image outline'
   type: sylius.resource
