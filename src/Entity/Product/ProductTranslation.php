@@ -13,4 +13,22 @@ use Sylius\Component\Core\Model\ProductTranslation as BaseProductTranslation;
  */
 class ProductTranslation extends BaseProductTranslation
 {
+  /** @ORM\Column(type="text", nullable=true) */
+  private $content;
+
+  /**
+   * @return mixed
+   */
+  public function getContent()
+  {
+    return $this->content;
+  }
+
+  /**
+   * @param mixed $content
+   */
+  public function setContent($content): void
+  {
+    $this->content = $content;
+  }
 }

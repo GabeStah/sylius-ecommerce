@@ -13,15 +13,20 @@ final class ProductTranslationTypeExtension extends AbstractTypeExtension
 {
   public function buildForm(FormBuilderInterface $builder, array $options): void
   {
-    $builder->remove('description')->add('description', CKEditorType::class, [
-      'required' => false,
-      'label' => 'sylius.form.product.description',
-    ]);
     $builder
+      ->remove('description')
+      ->add('description', CKEditorType::class, [
+        'required' => false,
+        'label' => 'sylius.form.product.description',
+      ])
       ->remove('shortDescription')
       ->add('shortDescription', CKEditorType::class, [
         'required' => false,
         'label' => 'sylius.form.product.short_description',
+      ])
+      ->add('content', CKEditorType::class, [
+        'required' => false,
+        'label' => 'sylius.form.product.content.title',
       ]);
   }
 
