@@ -12,8 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends ResourceController
 {
-  public function indexAction(Request $request): Response
-  {
+  public function indexAction(Request $request): Response {
     $configuration = $this->requestConfigurationFactory->create(
       $this->metadata,
       $request
@@ -38,7 +37,8 @@ class ProductController extends ResourceController
     if ($request->get('_route') === 'sylius_shop_product_index') {
       $foundTaxon = $taxonRepository->findOneBySlug(
         $request->get('slug'),
-        $this->container->get('sylius.context.locale')->getLocaleCode()
+        $this->container->get('sylius.context.locale')
+                        ->getLocaleCode()
       );
       $isProductVisible = $foundTaxon->isProductVisible();
     }
@@ -52,11 +52,45 @@ class ProductController extends ResourceController
         )
         ->setTemplateVar($this->metadata->getPluralName())
         ->setData([
-          'configuration' => $configuration,
-          'metadata' => $this->metadata,
-          'resources' => $resources,
-          'product_visible' => $isProductVisible,
+          'configuration'                  => $configuration,
+          'metadata'                       => $this->metadata,
+          'resources'                      => $resources,
+          'product_visible'                => $isProductVisible,
           $this->metadata->getPluralName() => $resources,
+        ]);
+    }
+
+    return $this->viewHandler->handle($configuration, $view);
+  }
+
+  public function showAction(Request $request): Response {
+    $configuration = $this->requestConfigurationFactory->create(
+      $this->metadata,
+      $request
+    );
+
+    $this->isGrantedOr403($configuration, ResourceActions::SHOW);
+    $product = $this->findOr404($configuration);
+
+    $this->eventDispatcher->dispatch(
+      ResourceActions::SHOW,
+      $configuration,
+      $product
+    );
+
+    $view = View::create($product);
+
+    if ($configuration->isHtmlRequest()) {
+      $view
+        ->setTemplate(
+          $configuration->getTemplate(ResourceActions::SHOW . '.html')
+        )
+        ->setTemplateVar($this->metadata->getName())
+        ->setData([
+          'configuration'            => $configuration,
+          'metadata'                 => $this->metadata,
+          'resource'                 => $product,
+          $this->metadata->getName() => $product,
         ]);
     }
 
