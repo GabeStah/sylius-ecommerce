@@ -34,9 +34,10 @@ sylius_ui:
           priority: 45
           context:
             event: sylius.shop.product.show.after_product_header
-        reviews:
-          template: "@SyliusShop/Product/Show/_reviews.html.twig"
-          priority: 40
+        reviews: false
+        #        reviews:
+        #          template: "@SyliusShop/Product/Show/_reviews.html.twig"
+        #          priority: 40
         after_reviews_legacy:
           template: "@SyliusUi/Block/_legacySonataEvent.html.twig"
           priority: 35
