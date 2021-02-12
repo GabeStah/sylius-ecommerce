@@ -18,15 +18,18 @@ final class ProductTranslationTypeExtension extends AbstractTypeExtension
       ->add('description', CKEditorType::class, [
         'required' => false,
         'label' => 'sylius.form.product.description',
+        'config_name' => 'default',
       ])
       ->remove('shortDescription')
       ->add('shortDescription', CKEditorType::class, [
         'required' => false,
         'label' => 'sylius.form.product.short_description',
+        'config_name' => 'default',
       ])
       ->add('content', CKEditorType::class, [
         'required' => false,
         'label' => 'sylius.form.product.content.title',
+        'config_name' => 'default',
       ]);
   }
 
