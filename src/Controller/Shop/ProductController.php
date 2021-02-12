@@ -62,4 +62,39 @@ class ProductController extends ResourceController
 
     return $this->viewHandler->handle($configuration, $view);
   }
+
+  public function showAction(Request $request): Response
+  {
+    $configuration = $this->requestConfigurationFactory->create(
+      $this->metadata,
+      $request
+    );
+
+    $this->isGrantedOr403($configuration, ResourceActions::SHOW);
+    $product = $this->findOr404($configuration);
+
+    $this->eventDispatcher->dispatch(
+      ResourceActions::SHOW,
+      $configuration,
+      $product
+    );
+
+    $view = View::create($product);
+
+    if ($configuration->isHtmlRequest()) {
+      $view
+        ->setTemplate(
+          $configuration->getTemplate(ResourceActions::SHOW . '.html')
+        )
+        ->setTemplateVar($this->metadata->getName())
+        ->setData([
+          'configuration' => $configuration,
+          'metadata' => $this->metadata,
+          'resource' => $product,
+          $this->metadata->getName() => $product,
+        ]);
+    }
+
+    return $this->viewHandler->handle($configuration, $view);
+  }
 }
