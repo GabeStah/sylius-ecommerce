@@ -66,6 +66,9 @@ sylius:
       to_verify_your_email_address: 'Click the link below to verify your email address'
       verify_your_email_address: 'Verify your email address'
   form:
+    product:
+      content:
+        title: 'Additional Content'
     taxon:
       product_visible: 'Product Visibility'
   ui:
