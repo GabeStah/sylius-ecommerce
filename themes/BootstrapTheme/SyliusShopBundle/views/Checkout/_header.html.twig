@@ -1,3 +1,4 @@
+{% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %}
 <div class="container my-4">
   <div class="row align-items-center">
     <div class="col">
@@ -10,7 +11,7 @@
           id="purchaser-email" {{ sylius_test_html_attribute('purchaser-name-or-email') }}>{{ 'sylius.ui.checking_out_as'|trans }} {{ order.customer.fullName|default(order.customer.email) }}
           .
         </div>
-      {% else %}
+      {% elseif '/payment/capture/' not in currentPath %}
         <a href="{{ path('sylius_shop_login') }}">{{ 'sylius.ui.sign_in'|trans }}</a>
       {% endif %}
     </div>
