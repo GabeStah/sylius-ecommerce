@@ -66,11 +66,75 @@ sylius:
       to_verify_your_email_address: 'Click the link below to verify your email address'
       verify_your_email_address: 'Verify your email address'
   form:
+    address:
+      city: City
+      company: Company
+      country: Country
+      first_name: First name
+      last_name: Last name
+      phone_number: Phone number
+      postcode: Zipcode
+      street: Street address
+      province: State
+      zone: Zone
+    country:
+      add_province: Add state
+      name: Name
+      provinces: Provinces
+      select: Select
+      enabled: Enabled
+    province:
+      name: Name
+      abbreviation: Abbreviation
+      select: Select
+    zone:
+      add_member: Add member
+      members: Members
+      name: Name
+      type: Type
+      types:
+        country: Country
+        province: State
+        zone: Zone
+      scope: Scope
+      scopes:
+        all: All
+      select: Select
+      select_scope: Select scope
+    zone_member:
+      select: Select
     product:
       content:
         title: 'Additional Content'
     taxon:
       product_visible: 'Product Visibility'
   ui:
+    complete: 'Summary'
     dealer:
       title: 'Dealers'
+    make_payment: 'Make a payment'
+    place_order: 'Proceed to Payment'
+    review_and_confirm_your_order: 'Review your order'
+    view_your_order_or_change_payment_method: 'View your order'
+    view_account: 'View your account'
+
+solarix_sylius_authorize_net_plugin:
+  payum_gateway_factory:
+    authorize_net: Authorize.net
+  form:
+    obtain_credit_card:
+      title: Payment Info
+      description: Please enter your credit card information to finalize your order.
+    gateway_configuration:
+      authorize_net:
+        api_id: API ID
+        transaction_key: Transaction Key
+        auto_capture: Auto Capture
+        yes: Yes
+        no: No
+      error:
+        api_id:
+          not_blank: API ID should not be empty
+        transaction_key:
+          not_blank: Transaction Key should not be empty
+

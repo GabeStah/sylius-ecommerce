@@ -46,6 +46,11 @@ services:
   App\Controller\ProductController:
     autowire: false
 
+  app.email_manager.order_paid:
+    class: App\EmailManager\OrderPaidEmailManager
+    public: true
+    arguments: [ '@sylius.email_sender', '@sylius.availability_checker', '@sylius.repository.admin_user' ]
+
   app.form.extension.complete:
     class: App\Form\Extension\CompleteTypeExtension
     tags:
