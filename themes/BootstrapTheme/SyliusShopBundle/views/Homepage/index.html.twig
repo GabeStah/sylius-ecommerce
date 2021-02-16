@@ -2,12 +2,32 @@
 
 {% block content %}
   <div class="homepage">
-    <div class="col-12 mb-3">
-      {% include 'bundles/SyliusShopBundle/Homepage/_carousel.html.twig' %}
-    </div>
-    {{ bitbag_cms_render_block('homepage-1') }}
-    {{ bitbag_cms_render_block('homepage-2') }}
-    {{ bitbag_cms_render_block('homepage-3') }}
-    {{ sylius_template_event('sylius.shop.homepage') }}
+    <main>
+      <section id="homepageSlider">
+        <div class="row">
+          <div class="col-12 mb-5">
+            {% include 'bundles/SyliusShopBundle/Homepage/_carousel.html.twig' %}
+          </div>
+        </div>
+      </section>
+      <section id="homepageContent">
+        <div id="homepageIntroContent" class="row mb-2">
+          <div class="col-12">
+            {{ bitbag_cms_render_block('homepage-1') }}
+          </div>
+        </div>
+        <div id="homepageProducts" class="row my-4">
+          <div class="col-12">
+            {{ bitbag_cms_render_block('homepage-2') }}
+          </div>
+        </div>
+        <div id="homepageContent" class="row my-4">
+          <div class="col-12">
+            {{ bitbag_cms_render_block('homepage-3') }}
+          </div>
+        </div>
+      </section>
+    </main>
+      {{ sylius_template_event('sylius.shop.homepage') }}
   </div>
 {% endblock %}
