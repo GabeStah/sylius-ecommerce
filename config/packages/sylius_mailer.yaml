@@ -1,0 +1,10 @@
+sylius_mailer:
+  sender:
+    name: Raritan Engineering
+    address: no-reply@raritaneng.com
+  emails:
+    order_confirmation:
+      enabled: false
+    order_paid:
+      subject: "Thank you for your payment!"
+      template: "bundles/SyliusShopBundle/Email/Order/paid.html.twig"
