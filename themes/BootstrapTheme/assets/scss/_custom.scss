@@ -53,3 +53,35 @@ label.required {
   padding-left: 5px;
   //font-size: $font-size-lg;
 }
+
+a:hover, a:focus {
+  border: 1px dotted $link-hover-color;
+}
+
+footer a {
+  // Force a higher contrast ratio for footer links w/ .bg-dark
+  color: $link-color-alt;
+}
+
+footer a:hover {
+  // Force a higher contrast ratio for footer links w/ .bg-dark
+  color: $link-hover-color-alt;
+}
+
+// Helpers
+.link-text-light a, .link-text-light li a {
+  color: $link-color-alt;
+}
+
+.link-text-light a:hover, .link-text-light li a:hover {
+  color: $link-hover-color-alt;
+}
+
+.navbar-nav .nav-link {
+  // Force a higher contrast ratio for main menu links w/ .bg-light
+  color: $nav-color;
+}
+
+.navbar-expand-lg .navbar-nav .nav-item:first-child .nav-link {
+  padding-left: 0;
+}

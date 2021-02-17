@@ -13,12 +13,19 @@ $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 $black: #000 !default;
 
-//  change link color to #1e73be via the $link-color Bootstrap variable. Also, change the text highlight color to #cc860c via the $link-hover-color Bootstrap variable.
-$link-color: #1e73be;
-$link-hover-color: #cc860c;
+// Contrast ratio of 4.66 @ 14px meets AA Goal Ratio
+// rgb(42,122,176)
+$primary: #2a7ab0;
 
-// Change green #1abb9c color (used in *-primary classes) scheme to preference color: #1980B6
-$primary: #1980b6;
+//  change link color to #1e73be via the $link-color Bootstrap variable. Also, change the text highlight color to #cc860c via the $link-hover-color Bootstrap variable.
+$link-color: #2a7ab0;
+$link-hover-color: #3455db;
+
+$link-color-alt: #00bfff;
+$link-hover-color-alt: #f39c12;
+
+$nav-color: #205d86;
+$nav-hover-color: #f39c12;
 
 
 // Body
