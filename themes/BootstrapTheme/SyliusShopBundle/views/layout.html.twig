@@ -17,6 +17,7 @@
   {% endblock %}
 
   {{ sylius_template_event('sylius.shop.layout.head') }}
+  {{ channel_setting('header_script') }}
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -69,6 +70,6 @@
     <span class="sr-only">Loading...</span>
   </div>
 </div>
-
+{{ channel_setting('footer_script') }}
 </body>
 </html>

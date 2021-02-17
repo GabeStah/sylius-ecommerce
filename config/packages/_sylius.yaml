@@ -95,6 +95,38 @@ sylius_customer:
 
 sylius_grid:
   grids:
+    app_admin_channel_setting:
+      driver:
+        name: doctrine/orm
+        options:
+          class: App\Entity\Channel\ChannelSetting
+      fields:
+        channel:
+          type: twig
+          label: sylius.ui.channel
+          sortable: channel.code
+          options:
+            template: "@SyliusAdmin/Order/Grid/Field/channel.html.twig"
+        code:
+          type: string
+          label: sylius.ui.code
+        enabled:
+          type: twig
+          label: sylius.ui.enabled
+          options:
+            template: "@SyliusUi/Grid/Field/enabled.html.twig"
+        value:
+          type: string
+          label: 'Value'
+      actions:
+        main:
+          create:
+            type: create
+        item:
+          update:
+            type: update
+          delete:
+            type: delete
     app_admin_dealer:
       driver:
         name: doctrine/orm
