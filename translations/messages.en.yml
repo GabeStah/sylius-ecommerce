@@ -109,6 +109,8 @@ sylius:
     taxon:
       product_visible: 'Product Visibility'
   ui:
+    channel_setting:
+      title: 'Channel Settings'
     complete: 'Summary'
     dealer:
       title: 'Dealers'
