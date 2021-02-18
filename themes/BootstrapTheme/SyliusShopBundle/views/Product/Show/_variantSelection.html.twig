@@ -1,5 +1,6 @@
 {% if product.isConfigurable() and product.getVariantSelectionMethod() == 'match' and not product.variants.empty() %}
-    {% include '@SyliusShop/Product/Show/_variantsPricing.html.twig' with {'pricing': sylius_product_variant_prices(product, sylius.channel)} %}
+  {% include '@SyliusShop/Product/Show/_variantsPricing.html.twig' with {'pricing': sylius_product_variant_prices(product, sylius.channel)} %}
+  {% include 'bundles/SyliusShopBundle/Product/Show/_variantsCodes.html.twig' with {'codes': app_product_variant_codes(product, sylius.channel)} %}
 {% endif %}
 
 {% include '@SyliusShop/Product/Show/_inventory.html.twig' %}

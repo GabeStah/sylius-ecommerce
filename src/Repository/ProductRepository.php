@@ -75,6 +75,8 @@ class ProductRepository extends BaseProductRepository implements
         'taxonTranslation.locale = :locale'
       )
       ->orWhere('taxonTranslation.name LIKE :searchTerm')
+      ->innerJoin('p.variants', 'variant')
+      ->orWhere('variant.code LIKE :searchTerm')
       ->andWhere(':channel MEMBER OF p.channels')
       ->andWhere('p.enabled = true')
       ->setParameter('searchTerm', '%' . $searchTerm . '%')
