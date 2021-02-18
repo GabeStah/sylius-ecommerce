@@ -167,6 +167,14 @@ EOF;
   public function filter($data)
   {
     $invalidProductIds = [
+      1126,
+      1127,
+      1128,
+      1129,
+      1130,
+      1131,
+      1132,
+      1133,
       1287,
       1288,
       1298,

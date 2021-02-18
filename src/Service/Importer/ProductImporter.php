@@ -297,6 +297,27 @@ EOF;
   }
 
   /**
+   * Filter product variant list.
+   *
+   * @param $data
+   *
+   * @return array|mixed
+   */
+  public function filter($data)
+  {
+    $invalidProductIds = [1126, 1127, 1128, 1129, 1130, 1131, 1132, 1133];
+
+    return array_filter($data, function ($item) use ($invalidProductIds) {
+      if (key_exists('prid', $item)) {
+        if (in_array($item['prid'], $invalidProductIds) || !$item['sku']) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+
+  /**
    * Create Entity from data.
    *
    * @param $data
