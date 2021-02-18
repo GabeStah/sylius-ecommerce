@@ -90,6 +90,15 @@ services:
     tags:
       - { name: sylius.shipping_calculator, calculator: fedex, label: "FedEx", form_type: App\Form\Type\FedExShippingCalculatorType }
 
+  app.provider.product_variants_codes:
+    class: App\Provider\ProductVariantsCodesProvider
+
+  app.templating.helper.product_variants_codes:
+    class: App\Templating\Helper\ProductVariantsCodesHelper
+    arguments: [ '@app.provider.product_variants_codes' ]
+    tags:
+      - { name: 'templating.helper', alias: 'app_product_variants_codes' }
+
   sylius.controller.shop.product:
     class: App\Controller\Shop\ProductController
     arguments: [ '@sylius.repository.product' ]
