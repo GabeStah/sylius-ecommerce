@@ -229,6 +229,72 @@ sylius_grid:
             type: update
           delete:
             type: delete
+    app_admin_files:
+      driver:
+        name: doctrine/orm
+        options:
+          class: App\Entity\File\File
+      fields:
+        name:
+          type: string
+          label: sylius.ui.files.fields.name.title
+        size:
+          type: twig
+          label: sylius.ui.files.fields.size.title
+          options:
+            template: 'Admin/File/Field/_size.html.twig'
+        created_by:
+          type: twig
+          label: sylius.ui.files.fields.created_by.title
+          options:
+            template: 'Admin/File/Field/_created_by.html.twig'
+        type:
+          type: string
+          label: sylius.ui.files.fields.type.title
+        updated_at:
+          type: datetime
+          label: sylius.ui.files.fields.updated_at.title
+      filters:
+        search:
+          type: string
+          label: sylius.ui.search
+          options:
+            fields: [ checksum, createdBy, path, type, url ]
+      actions:
+        main:
+          create:
+            type: create
+        item:
+          #          update:
+          #            type: update
+          delete:
+            type: delete
+    app_admin_product_files:
+      driver:
+        name: doctrine/orm
+        options:
+          class: App\Entity\Product\ProductFile
+      fields:
+        file:
+          type: twig
+          label: sylius.ui.files.fields.file.title
+          options:
+            template: 'Admin/File/Field/_file.html.twig'
+      filters:
+        search:
+          type: string
+          label: sylius.ui.search
+          options:
+            fields: [ checksum, createdBy, path, type, url ]
+      actions:
+        main:
+          create:
+            type: create
+        item:
+          update:
+            type: update
+          delete:
+            type: delete
 
 sylius_locale:
   resources:

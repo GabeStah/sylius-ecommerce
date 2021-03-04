@@ -30,6 +30,8 @@
     "cweagans/composer-patches": "^1.7",
     "friendsofsymfony/ckeditor-bundle": "2.x-dev",
     "guzzlehttp/guzzle": "6.3",
+    "jms/metadata": "1.7",
+    "knplabs/knp-gaufrette-bundle": "^0.7.1",
     "opis/json-schema": "^1.0",
     "sensiolabs/security-checker": "^6.0",
     "solarix/shipping": "^1.0",

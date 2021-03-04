@@ -30,6 +30,22 @@ app_admin_dealer:
         icon: 'file image outline'
   type: sylius.resource
 
+app_admin_files:
+  prefix: /admin
+  resource: |
+    alias: app.files
+    section: admin
+    templates: "@SyliusAdmin\\Crud"
+    redirect: update
+    grid: app_admin_files
+    vars:
+      all:
+        header: 'Files'
+        subheader: sylius.ui.file.title
+      index:
+        icon: 'file image outline'
+  type: sylius.resource
+
 sylius_shop_dealer:
   resource: "routes/dealer.yaml"
   prefix: /dealers

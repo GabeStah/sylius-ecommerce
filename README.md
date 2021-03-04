@@ -64,23 +64,29 @@
 
 ## 1. Import Pipeline
 
-The pipeline that imports Raritan-v1 data into Raritan-v2/Sylius is executed via a series of custom CLI commands.  All pipeline commands are fully idempotent, allowing a given command to run multiple times but always producing the same imported data result.
+The pipeline that imports Raritan-v1 data into Raritan-v2/Sylius is executed via a series of custom CLI commands. All
+pipeline commands are fully idempotent, allowing a given command to run multiple times but always producing the same
+imported data result.
 
 ### 1.1. Pipeline Overview
 
-Each import pipeline command executes the following stages, adjusting as appropriate to the Raritan-v1 data and the targeted entities.
+Each import pipeline command executes the following stages, adjusting as appropriate to the Raritan-v1 data and the
+targeted entities.
 
 1. A `php bin/console import:<command>` is executed.
 2. An appropriate [ImportCommand](src/Command/Import) class catches the CLI execution.
 3. The `ImportCommand` injects the matching [Importer](src/Service/Importer) class.
-4. The `Importer` class connects to the Raritan-v1 database and retrieves Sylius services, managers, repositories, and container.
+4. The `Importer` class connects to the Raritan-v1 database and retrieves Sylius services, managers, repositories, and
+   container.
 5. An SQL query retrieves data from the Raritan-v1 database table.
 6. The data is normalized in stages to appropriately convert Raritan-v1 keys/value type to a format Raritan-v2 can use.
-   - Normalized data includes attributes, categories (taxons), dimensions, images, meta data, product options, product variants, pricing, and so forth.
+  - Normalized data includes attributes, categories (taxons), dimensions, images, meta data, product options, product
+    variants, pricing, and so forth.
 7. The normalized dataset is mapped and merged with optional extra data.
 8. Mapped data is filtered to remove any exceptional records (i.e. duplicate unique key types).
-9. Then each mapped record is passed through a series of Entity creation steps necessary to generate the appropriate Sylius Entity with relevant data, associated Entities, and relationships.
-   - New database records are generated while existing records are updated.
+9. Then each mapped record is passed through a series of Entity creation steps necessary to generate the appropriate
+   Sylius Entity with relevant data, associated Entities, and relationships.
+  - New database records are generated while existing records are updated.
 10. Lastly the new/updated dataset is serialized and exported to the [/exports](/exports) directory.
 
 ### 1.2. `import:category`
@@ -89,7 +95,7 @@ Transfers all Raritan-v1 `productcategory` records into top-level Sylius `Taxono
 
 #### 1.2.1. Raritan-v1 Data Export
 
-All `enabled` product categories that are *NOT* `trudesign`-related are exported:
+All `enabled` product categories that are _NOT_ `trudesign`-related are exported:
 
 ```sql
 SELECT
@@ -109,7 +115,8 @@ A new `Taxon` entity is created for each incoming record with a few important ma
 - `code`: Snakified v1 `pcategoryurl`, prefixed with `category_`
 - `slug`: Slugified v1 `pcategoryurl`
 - `name`: Titlized v1 `pcategoryname`
-- `parent`: All top-level `Taxons` are assigned a parent `Taxon` of `MENU_CATEGORY`.  This allows UI components to render navigation menus from the single top-level `Taxon`.
+- `parent`: All top-level `Taxons` are assigned a parent `Taxon` of `MENU_CATEGORY`. This allows UI components to render
+  navigation menus from the single top-level `Taxon`.
 - `category_id`: v1 `productcategory.catid` value for future pipeline reference
 - `category_type`: Static `category` or `subcategory` designation for future pipeline reference
 
@@ -119,7 +126,8 @@ No filters are applied beyond the initial SQL statement.
 
 #### 1.2.4. Extra Data
 
-A new `miscellaneous` `Taxon` is added to the import data and is used later in the pipeline as a last-resort catchall for otherwise non-categorized `Products`.
+A new `miscellaneous` `Taxon` is added to the import data and is used later in the pipeline as a last-resort catchall
+for otherwise non-categorized `Products`.
 
 ```php
 [
@@ -142,21 +150,21 @@ A new `miscellaneous` `Taxon` is added to the import data and is used later in t
 
 Generated `sylius_taxon` data:
 
-| id  | parent_id | code                                             | tree_left | tree_right | tree_level | position | enabled | category_id | category_type |
-| --- | --------- | ------------------------------------------------ | --------- | ---------- | ---------- | -------- | ------- | ----------- | ------------- |
-| 1   |           | MENU_CATEGORY                                    | 1         | 130        | 0          | 0        | 1       | 999         | menu          |
-| 494 | 1         | category_alarms                                  | 112       | 115        | 1          | 1        | 1       | 27          | category      |
-| 495 | 1         | category_holding_tanks                           | 104       | 111        | 1          | 3        | 1       | 21          | category      |
-| 496 | 1         | category_legacy_products                         | 88        | 103        | 1          | 6        | 1       | 26          | category      |
-| 497 | 1         | category_marine_ice_makers                       | 84        | 87         | 1          | 8        | 1       | 19          | category      |
-| 498 | 1         | category_marine_sanitation_devices               | 74        | 83         | 1          | 9        | 1       | 12          | category      |
-| 499 | 1         | category_marine_toilets                          | 46        | 73         | 1          | 10       | 1       | 14          | category      |
-| 500 | 1         | category_marine_water_heater                     | 42        | 45         | 1          | 11       | 1       | 24          | category      |
-| 501 | 1         | category_miscellaneous                           | 2         | 3          | 1          | 4        | 1       | 100         | category      |
-| 502 | 1         | category_odor_control                            | 30        | 41         | 1          | 12       | 1       | 20          | category      |
-| 503 | 1         | category_ruddermaster                            | 24        | 29         | 1          | 13       | 1       | 25          | category      |
-| 504 | 1         | category_sanitation_accessories                  | 12        | 23         | 1          | 14       | 1       | 22          | category      |
-| 505 | 1         | category_strainers                               | 4         | 11         | 1          | 15       | 1       | 23          | category      |
+| id  | parent_id | code                               | tree_left | tree_right | tree_level | position | enabled | category_id | category_type |
+| --- | --------- | ---------------------------------- | --------- | ---------- | ---------- | -------- | ------- | ----------- | ------------- |
+| 1   |           | MENU_CATEGORY                      | 1         | 130        | 0          | 0        | 1       | 999         | menu          |
+| 494 | 1         | category_alarms                    | 112       | 115        | 1          | 1        | 1       | 27          | category      |
+| 495 | 1         | category_holding_tanks             | 104       | 111        | 1          | 3        | 1       | 21          | category      |
+| 496 | 1         | category_legacy_products           | 88        | 103        | 1          | 6        | 1       | 26          | category      |
+| 497 | 1         | category_marine_ice_makers         | 84        | 87         | 1          | 8        | 1       | 19          | category      |
+| 498 | 1         | category_marine_sanitation_devices | 74        | 83         | 1          | 9        | 1       | 12          | category      |
+| 499 | 1         | category_marine_toilets            | 46        | 73         | 1          | 10       | 1       | 14          | category      |
+| 500 | 1         | category_marine_water_heater       | 42        | 45         | 1          | 11       | 1       | 24          | category      |
+| 501 | 1         | category_miscellaneous             | 2         | 3          | 1          | 4        | 1       | 100         | category      |
+| 502 | 1         | category_odor_control              | 30        | 41         | 1          | 12       | 1       | 20          | category      |
+| 503 | 1         | category_ruddermaster              | 24        | 29         | 1          | 13       | 1       | 25          | category      |
+| 504 | 1         | category_sanitation_accessories    | 12        | 23         | 1          | 14       | 1       | 22          | category      |
+| 505 | 1         | category_strainers                 | 4         | 11         | 1          | 15       | 1       | 23          | category      |
 
 #### 1.2.6. JSON Dump
 
@@ -168,7 +176,7 @@ Transfers all Raritan-v1 `productsubcategory` records into second-level Sylius `
 
 #### 1.3.1. Raritan-v1 Data Export
 
-All product subcategories that are *NOT* direct children of a `trudesign` `productcategory` are exported:
+All product subcategories that are _NOT_ direct children of a `trudesign` `productcategory` are exported:
 
 ```sql
 SELECT
@@ -202,9 +210,10 @@ A new `Taxon` entity is created for each incoming record with a few important ma
 
 ##### 1.3.2.1. Parent Determination
 
-Raritan-v1 data is generally *non-relational*, instead duplicating and flattening data within singular records.
+Raritan-v1 data is generally _non-relational_, instead duplicating and flattening data within singular records.
 
-V1 `productsubcategory` records store their child-parent relationships in a series of `parent#` columns, as seen in the exported snippet below:
+V1 `productsubcategory` records store their child-parent relationships in a series of `parent#` columns, as seen in the
+exported snippet below:
 
 | subcatid | parent2 | parent3 | parent4 | categoryid | subcaturl              |
 | -------- | ------- | ------- | ------- | ---------- | ---------------------- |
@@ -237,9 +246,12 @@ V1 `productsubcategory` records store their child-parent relationships in a seri
 | 29       | 28      | 0       | 0       | 12         | parts                  |
 | 30       | 28      | 0       | 0       | 12         |                        |
 
-To reconcile this the `SubcategoryImporter` determines the *most nested* subcategory relationship of a given record during import.  For example, `productsubcategory.parent4` entry indicates a higher priority child-parent relationship than all other `parent#` or even `categoryid` entries.
+To reconcile this the `SubcategoryImporter` determines the _most nested_ subcategory relationship of a given record
+during import. For example, `productsubcategory.parent4` entry indicates a higher priority child-parent relationship
+than all other `parent#` or even `categoryid` entries.
 
-Since Sylius maintains proper data relationships each subcategory `Taxon` is assigned to one and only one parent `Taxon`.
+Since Sylius maintains proper data relationships each subcategory `Taxon` is assigned to one and only one parent `Taxon`
+.
 
 #### 1.3.3. Filtered Data
 
@@ -254,9 +266,13 @@ V1 `productsubcategory` contains (4) duplicate records that match the url (`slug
 
 These four records were filtered out during V2 import.
 
-In addition, dozens of duplicate `parts` and `accessories` subcategories exist but serve only to complicate the relational structure of categories.  Their existence resembles "tags" rather than singular categories, so all `parts` and `accessories` subcategories are removed during V2 import.
+In addition, dozens of duplicate `parts` and `accessories` subcategories exist but serve only to complicate the
+relational structure of categories. Their existence resembles "tags" rather than singular categories, so all `parts`
+and `accessories` subcategories are removed during V2 import.
 
-**NOTE**: To retain the intended purpose of `parts` categorizations within V2 the `ProductImporter` / `ProductVariantImporter` services use V1 categorizations to apply a `part``ProductAttributes` flag where appropriate.
+**NOTE**: To retain the intended purpose of `parts` categorizations within V2 the `ProductImporter`
+/ `ProductVariantImporter` services use V1 categorizations to apply a ` part``ProductAttributes ` flag where
+appropriate.
 
 #### 1.3.4. Extra Data
 
@@ -329,7 +345,7 @@ Transfers all top-level Raritan-v1 `products` records into Sylius `Products` alo
 
 #### 1.4.1. Raritan-v1 Data Export
 
-All `enabled` products with a unique `productnumber` that are *NOT* `trudesign`-related are exported:
+All `enabled` products with a unique `productnumber` that are _NOT_ `trudesign`-related are exported:
 
 ```sql
 SELECT
@@ -390,7 +406,10 @@ ORDER BY
 
 A new `Product` entity is created for each incoming record with a few important mappings:
 
-- `code`: V1 `productnumber`.  V1 `products` data is all flattened and makes no relational distinction between parent products and child product variants.  Put another way, ALL v1 `products` records can be thought of as product variants, with the only distinct parent product field being `productnumber`.  This is why the SQL export only selects a single record for each unique `productnumber`.
+- `code`: V1 `productnumber`. V1 `products` data is all flattened and makes no relational distinction between parent
+  products and child product variants. Put another way, ALL v1 `products` records can be thought of as product variants,
+  with the only distinct parent product field being `productnumber`. This is why the SQL export only selects a single
+  record for each unique `productnumber`.
 - `name`: Titlized v1 `productname`
 - `price`: V1 `punitprice`, converted from dollars to whole cents
 - `shortdescription`: v1 `metadesc`, if exists
@@ -398,9 +417,12 @@ A new `Product` entity is created for each incoming record with a few important 
 
 ##### 1.4.2.1. Attributes
 
-`ProductAttributes` are generated via an [AttributeObject](src/Object/Attribute.php) instance, based on the existence of mapped v1 `products` field values.  For example, a non-empty v1 `pdualvoltage` value is converted to a v2 `dual_voltage` `ProductAttribute` boolean entity with a `true` value.
+`ProductAttributes` are generated via an [AttributeObject](src/Object/Attribute.php) instance, based on the existence of
+mapped v1 `products` field values. For example, a non-empty v1 `pdualvoltage` value is converted to a
+v2 `dual_voltage` `ProductAttribute` boolean entity with a `true` value.
 
-In addition to explicit attribute conversions the `ProductImporter` also determines if the incoming record was assigned to a v1 `parts` or `accessories` subcategory:
+In addition to explicit attribute conversions the `ProductImporter` also determines if the incoming record was assigned
+to a v1 `parts` or `accessories` subcategory:
 
 ```php
 public function getCategoryAttribute($value)
@@ -429,30 +451,70 @@ The `Product` is assigned the appropriate `part` or `accessory` `ProductAttribut
 
 ##### 1.4.2.2. Categorization
 
-Similar to v1 `productsubcategory` the v1 `products` subcategories are listed flat within a given record.  To address this, each imported `Product` determines its primary parent category `Taxon` based on `subcategory_id` and `subcategory_type` within previously-imported `Taxon` entities.  The most-nested `subcatid` of a v1 `products` record indicates the main `Taxon` of the `Product`.  If *no* parent subcategory can be determined then the `Product` is assigned to the `miscellaneous` top-level category.
+Similar to v1 `productsubcategory` the v1 `products` subcategories are listed flat within a given record. To address
+this, each imported `Product` determines its primary parent category `Taxon` based on `subcategory_id`
+and `subcategory_type` within previously-imported `Taxon` entities. The most-nested `subcatid` of a v1 `products` record
+indicates the main `Taxon` of the `Product`. If _no_ parent subcategory can be determined then the `Product` is assigned
+to the `miscellaneous` top-level category.
 
 ##### 1.4.2.3. Images
 
-Raritan-v1 product images are all stored in the local filesystem and indicated by the existence of a relative file path value within a handful of v1 `products` fields (i.e. `pmainimage`, `pmobileimage1`, `p2mainimage`, etc).
+Raritan-v1 product images are all stored in the local filesystem and indicated by the existence of a relative file path
+value within a handful of v1 `products` fields (i.e. `pmainimage`, `pmobileimage1`, `p2mainimage`, etc).
 
-The `ProductImporter` creates normalized and maps existing images to [ProductImageObjects](src/Object/ProductImage.php) then generates the `ProductImage` entity associated with the `Product`.  Depending on the original v1 field name the `ProductImage.type` is set to `main` or `mobile`.
+The `ProductImporter` creates normalized and maps existing images to [ProductImageObjects](src/Object/ProductImage.php)
+then generates the `ProductImage` entity associated with the `Product`. Depending on the original v1 field name
+the `ProductImage.type` is set to `main` or `mobile`.
 
 ##### 1.4.2.4. Taxons
 
-`ProductTaxons` are relational entities that assign the `Product` to a given `Taxon`, also referred to as its **main** `Taxon`.
+`ProductTaxons` are relational entities that assign the `Product` to a given `Taxon`, also referred to as its **
+main** `Taxon`.
 
 ##### 1.4.2.5. Descriptions
 
 Many Raritan-v1 product decriptions contain static, hard-coded, and/or relative URLs, e.g.:
 
 ```html
-The pump draws water from the <a title="Raritan Semi-Custom Holding Tanks" href="../../en/product-categories/holding-tanks">storage tank(s)</a> and fills the water heater tank. Inside the water heater is an electrical <a title="Water Heater Heating Element - PART NUMBER: WH1A" href="../../en/shop/products/water-heater-heating-element">heating element</a> and usually a coiled tube called a heat exchanger. When AC power is available, the electrical element (<a title="Water Heater Thermostat Part Number: WH16" href="../../en/shop/products/water-heater-thermostat">controlled by a thermostat</a>) heats the water. 
+The pump draws water from the
+<a
+  title="Raritan Semi-Custom Holding Tanks"
+  href="../../en/product-categories/holding-tanks"
+  >storage tank(s)</a
+>
+and fills the water heater tank. Inside the water heater is an electrical
+<a
+  title="Water Heater Heating Element - PART NUMBER: WH1A"
+  href="../../en/shop/products/water-heater-heating-element"
+  >heating element</a
+>
+and usually a coiled tube called a heat exchanger. When AC power is available,
+the electrical element (<a
+  title="Water Heater Thermostat Part Number: WH16"
+  href="../../en/shop/products/water-heater-thermostat"
+  >controlled by a thermostat</a
+>) heats the water.
 ```
 
 The import process normalizes descriptions by searching and replacing hard-coded URLs with relative, v2 URLs, e.g.:
 
 ```html
-The pump draws water from the <a title="Raritan Semi-Custom Holding Tanks" href="/en_US/taxons/holding-tanks">storage tank(s)</a> and fills the water heater tank. Inside the water heater is an electrical <a title="Water Heater Heating Element - PART NUMBER: WH1A" href="/en_US/products/water-heater-heating-element">heating element</a> and usually a coiled tube called a heat exchanger. When AC power is available, the electrical element (<a title="Water Heater Thermostat Part Number: WH16" href="/en_US/products/water-heater-thermostat">controlled by a thermostat</a>) heats the water.
+The pump draws water from the
+<a title="Raritan Semi-Custom Holding Tanks" href="/en_US/taxons/holding-tanks"
+  >storage tank(s)</a
+>
+and fills the water heater tank. Inside the water heater is an electrical
+<a
+  title="Water Heater Heating Element - PART NUMBER: WH1A"
+  href="/en_US/products/water-heater-heating-element"
+  >heating element</a
+>
+and usually a coiled tube called a heat exchanger. When AC power is available,
+the electrical element (<a
+  title="Water Heater Thermostat Part Number: WH16"
+  href="/en_US/products/water-heater-thermostat"
+  >controlled by a thermostat</a
+>) heats the water.
 ```
 
 v1 URLs take two forms, as found in the below queries:
@@ -479,7 +541,8 @@ No extra data was added.
 
 #### 1.4.5. Finalized Database Imports
 
-`ProductImporter` creates and touches too many Sylius database tables / records to show here.  However, records are added to the following tables throughout the process:
+`ProductImporter` creates and touches too many Sylius database tables / records to show here. However, records are added
+to the following tables throughout the process:
 
 - `sylius_product`
 - `sylius_product_attribute`
@@ -504,7 +567,7 @@ Transfers child Raritan-v1 `products` records into Sylius `ProductVariants` alon
 
 #### 1.5.1. Raritan-v1 Data Export
 
-All `enabled` products that are *NOT* `trudesign`-related are exported:
+All `enabled` products that are _NOT_ `trudesign`-related are exported:
 
 ```sql
 SELECT
@@ -554,35 +617,42 @@ A new `Product` entity is created for each incoming record with a few important 
 - `code`: V1 `partnumber` (`sku`)
 - `name`: Titlized v1 `productname`
 - `price`: V1 `punitprice`, converted from dollars to whole cents
-- `slug`: Slugified v1 `seourl`, with prefixed `product_id` *if* base `seourl` slug already exists
+- `slug`: Slugified v1 `seourl`, with prefixed `product_id` _if_ base `seourl` slug already exists
 
 ##### 1.5.2.1. Options
 
-`ProductOptions` are generated via an [Option](src/Object/Option.php) instance, based on the existence of mapped v1 `products` field values.  For example, a non-empty v1 `volt` value is converted to a v2 `voltage` `ProductOption` text entity.
+`ProductOptions` are generated via an [Option](src/Object/Option.php) instance, based on the existence of mapped
+v1 `products` field values. For example, a non-empty v1 `volt` value is converted to a v2 `voltage` `ProductOption` text
+entity.
 
-Once the base `ProductOption` is created then `ProductOptionValues` can be created via an [OptionValue](src/Object/OptionValue.php) instance.  There's a subtle but important difference between `ProductOptions` and `ProductOptionValues`.  Each incoming v1 `products` record may indicate a wide range of possible values within a given option field.  Each value is imported as a `ProductOptionValue` with a unique `code`.  Here's a collection of `sylius_product_option_value` records for the `bowl_size` `ProductOption`:
+Once the base `ProductOption` is created then `ProductOptionValues` can be created via
+an [OptionValue](src/Object/OptionValue.php) instance. There's a subtle but important difference
+between `ProductOptions` and `ProductOptionValues`. Each incoming v1 `products` record may indicate a wide range of
+possible values within a given option field. Each value is imported as a `ProductOptionValue` with a unique `code`.
+Here's a collection of `sylius_product_option_value` records for the `bowl_size` `ProductOption`:
 
-| id  | option_id | code                               |
-| --- | --------- | ---------------------------------- |
-| 396 | 9         | bowl_size_household                |
-| 404 | 9         | bowl_size_elongated                |
-| 411 | 9         | bowl_size_marine                   |
-| 441 | 9         | bowl_size_bidet                    |
-| 444 | 9         | bowl_size_tall_bowl                |
-| 446 | 9         | bowl_size_short_bowl               |
-| 467 | 9         | bowl_size_lower_base               |
-| 475 | 9         | bowl_size6_gallon                  |
-| 477 | 9         | bowl_size12_gallon                 |
-| 478 | 9         | bowl_size20_gallon                 |
-| 490 | 9         | bowl_size_marine_size              |
-| 493 | 9         | bowl_size412                       |
-| 495 | 9         | bowl_size312                       |
-| 498 | 9         | bowl_size2                         |
-| 500 | 9         | bowl_size338                       |
+| id  | option_id | code                  |
+| --- | --------- | --------------------- |
+| 396 | 9         | bowl_size_household   |
+| 404 | 9         | bowl_size_elongated   |
+| 411 | 9         | bowl_size_marine      |
+| 441 | 9         | bowl_size_bidet       |
+| 444 | 9         | bowl_size_tall_bowl   |
+| 446 | 9         | bowl_size_short_bowl  |
+| 467 | 9         | bowl_size_lower_base  |
+| 475 | 9         | bowl_size6_gallon     |
+| 477 | 9         | bowl_size12_gallon    |
+| 478 | 9         | bowl_size20_gallon    |
+| 490 | 9         | bowl_size_marine_size |
+| 493 | 9         | bowl_size412          |
+| 495 | 9         | bowl_size312          |
+| 498 | 9         | bowl_size2            |
+| 500 | 9         | bowl_size338          |
 
 ##### 1.5.2.2. Pricing
 
-Sylius manages the price of a given `ProductVariant` through an assigned `Channel`.  At present a single `DEFAULT` `Channel` exists and contains all imported `ProductVariants`.
+Sylius manages the price of a given `ProductVariant` through an assigned `Channel`. At present a
+single `DEFAULT` `Channel` exists and contains all imported `ProductVariants`.
 
 #### 1.5.3. Filtered Data
 
@@ -638,7 +708,7 @@ ORDER BY partnumber ASC
 | 1320 | 414           | SFHC       | Sani/Flex Odor Shield Marine Hose Length         | 1        | Ignored |
 | 827  | 217           | SFHC       | Sani/Flex Odor Shield Marine Hose                | 1        |         |
 
-To resolve these duplicates all `Status: Ignored` records listed above were *NOT* imported into the Raritan-v2 data.
+To resolve these duplicates all `Status: Ignored` records listed above were _NOT_ imported into the Raritan-v2 data.
 
 #### 1.5.4. Extra Data
 
@@ -670,7 +740,8 @@ Transfers all top-level Raritan-v1 `dealers` records into Sylius `Dealers`.
 #### 1.6.1. Prerequisite
 
 - Enabled patching for Composer: `composer require cweagans/composer-patches`
-- Add `force-annotation` option to entity maker: https://github.com/vklux/maker-bundle-force-annotation/blob/master/maker-force-annotation-flag.patch
+- Add `force-annotation` option to entity
+  maker: https://github.com/vklux/maker-bundle-force-annotation/blob/master/maker-force-annotation-flag.patch
 - Ensure `DealerRepository` is auto-wired in `services.yaml`
 
 #### 1.6.2. Entity Fields
@@ -712,15 +783,17 @@ FROM
 
 A new `Dealer` entity is created for each incoming record with a few important mappings:
 
-- Most V1 columns are prefixed with the letter `d`, which has been removed.  Names have also been normalized where appropriate.
-- `slug`: V1 `dealerurl`.  The V1 data is actually a partial URL slug, so mapping adjusted accordingly
-- `url`: V1 `dwebsite`.  This is the real URL of the dealer's website, if applicable.
+- Most V1 columns are prefixed with the letter `d`, which has been removed. Names have also been normalized where
+  appropriate.
+- `slug`: V1 `dealerurl`. The V1 data is actually a partial URL slug, so mapping adjusted accordingly
+- `url`: V1 `dwebsite`. This is the real URL of the dealer's website, if applicable.
 - `country`: Uppercased.
 - `enabled`: V1 `dstatus`. Booleanized.
-- `wholesale`: V1 `wholesaleonly`. Booleanized. 
-- `type`: V1 `dealertype`. Integer value, which is mapped to appropriate string in `DealerEntity` and `DealerController`.
+- `wholesale`: V1 `wholesaleonly`. Booleanized.
+- `type`: V1 `dealertype`. Integer value, which is mapped to appropriate string in `DealerEntity` and `DealerController`
+  .
 
-####  1.6.5. Filtered Data
+#### 1.6.5. Filtered Data
 
 No data was filtered beyond the base SQL query.
 
@@ -728,7 +801,7 @@ No data was filtered beyond the base SQL query.
 
 No extra data was added.
 
-####  1.6.7. Finalized Database Imports
+#### 1.6.7. Finalized Database Imports
 
 Other than data normalization and mapping the V2 `Dealers` table identically matches the V1 `dealers` table.
 
@@ -742,7 +815,8 @@ Imports all taxable zones and tax rates for US states.
 
 #### 1.7.1. Data Source
 
-By default, province data is imported from [seed/province-tax-nj-only.json](seed/province-tax-nj-only.json), which contains New Jersey tax rate data **only**.
+By default, province data is imported from [seed/province-tax-nj-only.json](seed/province-tax-nj-only.json), which
+contains New Jersey tax rate data **only**.
 
 Alternatively, a new import data source can be specified as the first argument to the `import:zone` command.
 
@@ -764,14 +838,15 @@ Each `Province` entity is used to generate a new `Zone`:
 - `name`: Format of `US - <State Name>`
 - `scope`: Set to `tax` to only apply to tax rates.
 - `type`: Set to `province`.
-- `member`: Associated with the appropriate `Province` entity so checkout tax calculator can identify when an address applies to a given zone.
+- `member`: Associated with the appropriate `Province` entity so checkout tax calculator can identify when an address
+  applies to a given zone.
 
 Each `Zone` entity is used to generate a new `TaxRate`:
 
 - `code`: Format of `US-XX`.
-- `amount`: Obtained from original `Province` JSON data object.  
+- `amount`: Obtained from original `Province` JSON data object.
 
-####  1.7.3. Filtered Data
+#### 1.7.3. Filtered Data
 
 No data was filtered.
 
@@ -781,35 +856,48 @@ No extra data was added.
 
 #### 1.7.5. Enabling/Modifying Tax Rates
 
-Sylius does not have a admin-editable way to disable a given State for tax calculation purposes.  Thus, the next best option was implemented:
+Sylius does not have a admin-editable way to disable a given State for tax calculation purposes. Thus, the next best
+option was implemented:
 
 1. Each state has an existing `Zone` and applicable `TaxRate` entity.
-2. By default per Raritan-v1 business logic, all `TaxRate.amount` values are set to `0%` with the exception of New Jersey.
+2. By default per Raritan-v1 business logic, all `TaxRate.amount` values are set to `0%` with the exception of New
+   Jersey.
 3. Thus, checkout for addresses outside of NJ effectively have no tax applied.
 
 ## 2. Shipping
 
-Most shipping logic including FedEx rate requests are handled via the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) library.  This section covers integration into Sylius including pitfalls and implemented workarounds.
+Most shipping logic including FedEx rate requests are handled via
+the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) library. This
+section covers integration into Sylius including pitfalls and implemented workarounds.
 
 ### 2.1. Shipping Methods
 
-Sylius handles shipping logic via one or more **Shipping Methods**.  A Shipping Method contains a few fundemental properties:
+Sylius handles shipping logic via one or more **Shipping Methods**. A Shipping Method contains a few fundemental
+properties:
 
 - `code`: A unique string identifier, e.g `FEDEX_EXPRESS_SAVER`
-- `configuration`: An object containing specific configuration, e.g. `a:2:{s:7:"minimum";i:1000;s:4:"code";s:19:"FEDEX_EXPRESS_SAVER";}`
+- `configuration`: An object containing specific configuration,
+  e.g. `a:2:{s:7:"minimum";i:1000;s:4:"code";s:19:"FEDEX_EXPRESS_SAVER";}`
 - `calculator`: The **Shipping Calculator** class used to calculate shipping rates for this method.
 
 ### 2.2. Shipping Calculator
 
-The custom [FedExRateCalculator](src/Shipping/Calculator/FedExRateCalculator.php) handles all shipping rate retrieval from the FedEx provider API using the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) package.  A handful of Sylius design choices and limitations required some workarounds.
+The custom [FedExRateCalculator](src/Shipping/Calculator/FedExRateCalculator.php) handles all shipping rate retrieval
+from the FedEx provider API using
+the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) package. A
+handful of Sylius design choices and limitations required some workarounds.
 
 ### 2.3. Issue: Handling Multiple Rates
 
-Sylius does not support associated multiple rates with a single **Shipping Method**.  Instead, Sylius assumes rate data will be obtained solely from the defined `configuration` property set within the Admin panel.
+Sylius does not support associated multiple rates with a single **Shipping Method**. Instead, Sylius assumes rate data
+will be obtained solely from the defined `configuration` property set within the Admin panel.
 
-The result is that all shipping related UIs including the checkout shipment method page cannot display more than one shipping method and therefore only a single rate value.  Our use case requires multiple rates depending on what the FedEx API returns.
+The result is that all shipping related UIs including the checkout shipment method page cannot display more than one
+shipping method and therefore only a single rate value. Our use case requires multiple rates depending on what the FedEx
+API returns.
 
-The implemented solution was to add a new shipping method for each of the potential types returned by the FedEx rates request API, e.g.:
+The implemented solution was to add a new shipping method for each of the potential types returned by the FedEx rates
+request API, e.g.:
 
 - FEDEX_EXPRESS_SAVER
 - FEDEX_FIRST_OVERNIGHT
@@ -818,50 +906,55 @@ The implemented solution was to add a new shipping method for each of the potent
 
 ### 2.4. Issue: Provider API Request Throttling
 
-Each active **Shipping Method** invokes the underlying rate calculator logic during processing, which means a potential for half a dozen or more unnecessary provider API requests.
+Each active **Shipping Method** invokes the underlying rate calculator logic during processing, which means a potential
+for half a dozen or more unnecessary provider API requests.
 
-To resolve this a simple local cache was added to keep track of recently obtained rates data for a given object.  The new `Order->rates` property stores a serialized collection of [Rates](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php/-/blob/master/src/Solarix/Shipping/Provider/FedEx/Model/Rate/Rate.php).  When the rates calculator is invoked it checks the Order's rates cache for last updated timestamp.  If updated within a short period of time the cache is returned rather than making a new FedEx provider API request.
+To resolve this a simple local cache was added to keep track of recently obtained rates data for a given object. The
+new `Order->rates` property stores a serialized collection
+of [Rates](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php/-/blob/master/src/Solarix/Shipping/Provider/FedEx/Model/Rate/Rate.php)
+. When the rates calculator is invoked it checks the Order's rates cache for last updated timestamp. If updated within a
+short period of time the cache is returned rather than making a new FedEx provider API request.
 
 ## 3. Static Page Imports
 
-| ID | Title                                           | Category          | Status   | Note                                                   |
-| -- | ----------------------------------------------- | ----------------- | -------- | ------------------------------------------------------ |
-| 1  | About Us                                        | Information       | Imported |                                                        |
-| 2  | Terms of Service                                | Legal             | Imported |                                                        |
-| 3  | Privacy Policy                                  | Legal             | Imported |                                                        |
-| 4  | Digital Millennium Copyright Act Notice         | Legal             | Imported |                                                        |
-| 5  | Anti Spam Policy                                | Legal             | Imported |                                                        |
-| 6  | Refund Policy                                   | Legal             | Imported | Placeholder content requires client update             |
-| 7  | Earnings Disclaimer                             | Legal             | IGNORED  | Unused in Raritan-v1                                   |
-| 10 | Affiliate Disclosure                            | Legal             | IGNORED  | Unused in Raritan-v1                                   |
-| 11 | Repair Shop                                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 12 | Lectra\|San                                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 13 | What the flashing lights mean                   | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 14 | Troubleshooting the “Red light shut down”       | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 15 | Do I need a salt feed unit?                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 16 | Control board replacement                       | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 17 | Atlantes A5, A6                                 | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 18 | Atlastes Intake                                 | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 19 | Atlantes Discharge                              | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 20 | Atlantes Control Board                          | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 21 | Fuse Relay                                      | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 22 | Crown Head (CD Series)                          | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 23 | Replacing the discharge pump wall (part #CH120) | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 24 | Servicing the siphon check valve (part #CH37E)  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 25 | Servicing the intake pump assembly (part G13W)  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 26 | PHII and PHEII                                  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 27 | Icerette                                        | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 28 | Water Heater (1700 Series)                      | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
-| 29 | Need A Part?                                    | Technical Support | Imported | Fixed links                                            |
-| 30 | LIMITED WARRANTY                                | Technical Support | Imported |                                                        |
-| 31 | Identify Your Head                              | Technical Support | Imported | Added images, fixed links                              |
-| 32 | Owner’s Manual / Exploded Parts View / Promos   | Technical Support | Imported | Added images, pdfs, and fixed links                    |
-| 33 | FAQ                                             | Technical Support | Imported | Fixed formatting and links                             |
-| 34 | Shop                                            |                   | IGNORED  | Unused in Raritan-v1                                   |
-| 35 | Ruddermaster                                    | Landing Pages     | IGNORED  | Unused in Raritan-v1                                   |
-| 36 | SeaFresh                                        |                   | IGNORED  | Unused in Raritan-v1                                   |
-| 37 | Not Available At The Moment                     | Information       | IGNORED  | Unused in Raritan-v1                                   |
-| 38 | How To & Informational Videos                   | Technical Support | Imported | Fixed video embeds, added collapse transcript elements |
+| ID  | Title                                           | Category          | Status   | Note                                                   |
+| --- | ----------------------------------------------- | ----------------- | -------- | ------------------------------------------------------ |
+| 1   | About Us                                        | Information       | Imported |                                                        |
+| 2   | Terms of Service                                | Legal             | Imported |                                                        |
+| 3   | Privacy Policy                                  | Legal             | Imported |                                                        |
+| 4   | Digital Millennium Copyright Act Notice         | Legal             | Imported |                                                        |
+| 5   | Anti Spam Policy                                | Legal             | Imported |                                                        |
+| 6   | Refund Policy                                   | Legal             | Imported | Placeholder content requires client update             |
+| 7   | Earnings Disclaimer                             | Legal             | IGNORED  | Unused in Raritan-v1                                   |
+| 10  | Affiliate Disclosure                            | Legal             | IGNORED  | Unused in Raritan-v1                                   |
+| 11  | Repair Shop                                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 12  | Lectra\|San                                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 13  | What the flashing lights mean                   | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 14  | Troubleshooting the “Red light shut down”       | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 15  | Do I need a salt feed unit?                     | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 16  | Control board replacement                       | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 17  | Atlantes A5, A6                                 | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 18  | Atlastes Intake                                 | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 19  | Atlantes Discharge                              | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 20  | Atlantes Control Board                          | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 21  | Fuse Relay                                      | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 22  | Crown Head (CD Series)                          | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 23  | Replacing the discharge pump wall (part #CH120) | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 24  | Servicing the siphon check valve (part #CH37E)  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 25  | Servicing the intake pump assembly (part G13W)  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 26  | PHII and PHEII                                  | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 27  | Icerette                                        | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 28  | Water Heater (1700 Series)                      | Repair Shop       | Imported | Fixed links, images, and pdfs                          |
+| 29  | Need A Part?                                    | Technical Support | Imported | Fixed links                                            |
+| 30  | LIMITED WARRANTY                                | Technical Support | Imported |                                                        |
+| 31  | Identify Your Head                              | Technical Support | Imported | Added images, fixed links                              |
+| 32  | Owner’s Manual / Exploded Parts View / Promos   | Technical Support | Imported | Added images, pdfs, and fixed links                    |
+| 33  | FAQ                                             | Technical Support | Imported | Fixed formatting and links                             |
+| 34  | Shop                                            |                   | IGNORED  | Unused in Raritan-v1                                   |
+| 35  | Ruddermaster                                    | Landing Pages     | IGNORED  | Unused in Raritan-v1                                   |
+| 36  | SeaFresh                                        |                   | IGNORED  | Unused in Raritan-v1                                   |
+| 37  | Not Available At The Moment                     | Information       | IGNORED  | Unused in Raritan-v1                                   |
+| 38  | How To & Informational Videos                   | Technical Support | Imported | Fixed video embeds, added collapse transcript elements |
 
 ## 4. Dealers
 
@@ -869,7 +962,8 @@ Dealer data is managed via the Administration dashboard
 
 ### 4.1. Nearby Dealers (Geolocation)
 
-The V1 nearby dealers list indicated it was displaying nearby dealers, but instead merely showed a list of dealers within the visitor's state lines:
+The V1 nearby dealers list indicated it was displaying nearby dealers, but instead merely showed a list of dealers
+within the visitor's state lines:
 
 ```php
 foreach($Dealers as $ds) {
@@ -879,19 +973,37 @@ foreach($Dealers as $ds) {
 }
 ```
 
-The V2 dealers list resolves this by accurately calculating the distance from the user's IP address geolocation.  Dealers in this nearby list are within `250` miles by default, though this value can be easily adjusted.
+The V2 dealers list resolves this by accurately calculating the distance from the user's IP address geolocation. Dealers
+in this nearby list are within `250` miles by default, though this value can be easily adjusted.
 
-This ensures the list is *actually* showing nearby dealers and the dealers are sorted by distance to the user.
+This ensures the list is _actually_ showing nearby dealers and the dealers are sorted by distance to the user.
 
 ### 4.2. Frontend Dealers Pages
 
 The new V2 Dealers frontend pages closely mimic the V1 look and behavior.
 
-- `/dealers/` shows the same global dealers google map, with local dealer listings immediately below, then the full list at the bottom.
-- Each individual dealer page is located at `/dealers/{slug}/{id}` to use existing slugs while also allowing for proper SEO in the few cases of duplication.
+- `/dealers/` shows the same global dealers google map, with local dealer listings immediately below, then the full list
+  at the bottom.
+- Each individual dealer page is located at `/dealers/{slug}/{id}` to use existing slugs while also allowing for proper
+  SEO in the few cases of duplication.
   - Individual dealer pages contain a pinned Google map followed by a card listing dealer details.
   - The layout improves on V1 by hiding unpopulated fields.
 
-###  4.3. Administration
+### 4.3. Administration
 
 - Visit `/admin/dealers/` section under `Miscellaneous > Dealers` admin dashboard
+
+## Files
+
+- id
+- owner_id
+- enabled
+- type - File type
+- path - path to file
+- created_by - user_id of uploader
+- size - Size, in bytes
+- created_at
+- updated_at
+- checksum - SHA256 hash of file. Checked against upload replacement file to alter `updated_at`.
+  See [hash_file](https://www.php.net/manual/en/function.hash-file.php).
+- version - Auto-incremented on new upload

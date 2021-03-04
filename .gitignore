@@ -355,3 +355,4 @@ yarn-error.log
 /public/bootstrap-theme/
 /packages/solarix/sylius-authorize-net-plugin/
 /public/media/cache/
+/public/uploads/

@@ -1,0 +1,133 @@
+{% set files = product.getFiles %}
+
+<div class="ui tab" data-tab="files">
+  <h3 class="ui top attached header">{{ 'sylius.ui.files.product_file.title'|trans }}</h3>
+
+  <div class="ui attached segment">
+
+    {% if files is iterable and 0 != files|length %}
+      <table class="ui celled padded table">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Version</th>
+          <th>Updated At</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for file in product.getFiles %}
+          <tr>
+            <td class="single line">
+              {{ file.name }}
+            </td>
+            <td>
+              <h2 class="ui center aligned header">{{ file.type }}</h2>
+            </td>
+            <td>
+              {{ format_bytes(file.size) }}
+            </td>
+            <td>
+              {{ file.version }}
+            </td>
+            <td>
+              {{ file.updatedAt|date }}
+            </td>
+            <td class="collapsing">
+              <a class="ui icon button" href="{{ uploads_directory }}{{ file.getName }}" target="_blank">
+                <i class="download icon"></i>
+              </a>
+
+              <button id="delete_file[{{ file.id }}]" class="ui red icon button" type="button"
+                      data-requires-confirmation data-file-id="{{ file.id }}">
+                <i class="icon trash"></i>
+              </button>
+
+              <input type="hidden" id="file_token[{{ file.id }}]" name="file_token[{{ file.id }}]"
+                     value="{{ csrf_token(file.id) }}"/>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    <h4>Add New File(s)</h4>
+
+    <input type="file" id="sylius_product_files[]" name="sylius_product[files][]" required="required"
+           multiple="multiple">
+
+    <input type="hidden" id="current_file_id"/>
+
+    <!-- if needing to split template up based on additional controller logic -->
+    {# {{ render(controller('sylius.controller.admin.product_file:filesAction', { 'id': product.id })) }} #}
+
+    {{ sylius_template_event(['sylius.admin.product.' ~ action ~ '.tab_associations', 'sylius.admin.product.tab_associations'], {'form': form}) }}
+  </div>
+</div>
+<script>
+  /**
+   * JavaScript block here overrides default form submission behavior.  Allows deletion of files within Product > Files
+   * view without triggering Product form update callback.  Fetch DELETE request to /admin/files/{id} deletes selected
+   * File and, therefore, ProductFile association entity.
+   *
+   * Currently selected file is tracked via hidden input when delet button is clicked.  However, final AJAX request is
+   * only made once confirmation button is clicked.  To prevent multiple deletion invocations the listener is tracked
+   * and deleted as necessary.
+   */
+
+  function resetCurrentFileId() {
+    document.getElementById('current_file_id').setAttribute('value', null);
+  }
+
+  function getCurrentFileId() {
+    return document.getElementById('current_file_id').getAttribute('value');
+  }
+
+  function setCurrentFileId(id) {
+    document.getElementById('current_file_id').setAttribute('value', id);
+  }
+
+  async function deleteFile(id) {
+    const token = document.getElementById(`file_token[${id}]`).getAttribute('value').toString();
+    const response = await fetch(`/admin/files/${id}`, {
+      body: JSON.stringify({
+        _csrf_token: token
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE',
+      redirect: 'follow'
+    })
+
+    return response.json();
+  }
+
+  const deleteFiles = document.querySelectorAll('[id^="delete_file"]');
+
+  let confirmationButtonListener = null;
+  deleteFiles.forEach(file => {
+    file.addEventListener('click', (event) => {
+      event.preventDefault();
+      setCurrentFileId(file.dataset.fileId);
+
+      const confirmationButton = document.getElementById('confirmation-button');
+
+      if (confirmationButtonListener) {
+        // Remove existing listener
+        confirmationButton.removeEventListener('click', confirmationButtonListener);
+      }
+
+      confirmationButtonListener = (event) => {
+        event.preventDefault();
+        deleteFile(getCurrentFileId());
+      };
+
+      confirmationButton.addEventListener('click', confirmationButtonListener)
+    })
+  });
+</script>

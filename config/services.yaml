@@ -17,6 +17,7 @@ parameters:
   raritan.email.sales: '%env(string:RARITAN_EMAIL_SALES)%'
   raritan.email.support: '%env(string:RARITAN_EMAIL_SUPPORT)%'
   google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+  upload_directory: '%kernel.project_dir%/public/uploads'
 
 services:
   # Default configuration for services in *this* file
@@ -66,6 +67,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: Sylius\Bundle\ProductBundle\Form\Type\ProductTranslationType, priority: -1 }
 
+  app.form.extension.product:
+    class: App\Form\Extension\ProductTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Sylius\Bundle\ProductBundle\Form\Type\ProductType, priority: -1 }
+
   app.form.extension.taxon:
     class: App\Form\Extension\TaxonTypeExtension
     tags:
@@ -76,10 +82,46 @@ services:
     tags:
       - { name: form.type_extension, extended_type: Sylius\Bundle\TaxonomyBundle\Form\Type\TaxonTranslationType, priority: -1 }
 
+  app.admin.type.form.file:
+    class: App\Form\Type\Admin\FileType
+    tags:
+      - { name: form.type, alias: app_admin_file_type }
+    arguments: [ 'App\Entity\File\File' ]
+
+  app.admin.type.form.product_file:
+    class: App\Form\Type\Admin\Product\ProductFileType
+    tags:
+      - { name: form.type, alias: app_admin_product_file_type }
+    arguments: [ 'App\Entity\Product\Product' ]
+
+  app.listener.admin.file_upload:
+    class: App\Service\Uploader\FileUploader
+    autowire: true
+    public: true
+    tags:
+      - { name: kernel.event_listener, event: app.files.pre_create, method: upload }
+    arguments:
+      $slugger: '@app.slugger'
+
   app.listener.admin.menu_builder:
     class: App\Menu\AdminMenuListener
     tags:
       - { name: kernel.event_listener, event: sylius.menu.admin.main, method: addAdminMenuItems }
+
+  app.listener.admin.product.form.menu_builder:
+    class: App\Menu\AdminProductFormMenuListener
+    tags:
+      - { name: kernel.event_listener, event: sylius.menu.admin.product.form, method: addItems }
+
+  app.slugger:
+    class: Symfony\Component\String\Slugger\AsciiSlugger
+
+  Symfony\Component\String\Slugger\SluggerInterface: '@app.slugger'
+
+  app.generator.uploaded_file_path_generator:
+    class: App\Service\Generator\UploadedFilePathGenerator
+    autowire: false
+    arguments: [ '@app.slugger' ]
 
   solarix.shipping.provider.fedex:
     class: Solarix\Shipping\Provider\FedExProvider
@@ -98,6 +140,11 @@ services:
     arguments: [ '@app.provider.product_variants_codes' ]
     tags:
       - { name: 'templating.helper', alias: 'app_product_variants_codes' }
+
+  sylius.controller.admin.product_file:
+    class: App\Controller\Admin\ProductFilesTabController
+    arguments: [ '@templating' ]
+    tags: [ 'controller.service_arguments' ]
 
   sylius.controller.shop.product:
     class: App\Controller\Shop\ProductController
