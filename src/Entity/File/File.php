@@ -8,6 +8,7 @@ use App\Entity\Product\Product;
 use App\Entity\User\AdminUser;
 use App\Traits\TimestampableTrait;
 use App\Traits\VersionableTrait;
+use App\Validator as AppAssert;
 use Doctrine\ORM\Mapping as ORM;
 use Sylius\Component\Resource\Model\ResourceInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -16,8 +17,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="sylius_file")
- * @UniqueEntity(fields="checksum", message="Checksum already exists.")
- * @UniqueEntity(fields="path", message="Path already exists.")
+ * @UniqueEntity(fields={"checksum"}, message="Checksum already exists.")
+ * @UniqueEntity(fields={"path"}, message="Path already exists.")
  */
 class File implements FileInterface, ResourceInterface
 {
@@ -35,6 +36,7 @@ class File implements FileInterface, ResourceInterface
 
   /**
    * @ORM\Column(type="string", unique=true, nullable=true)
+   * @AppAssert\UniqueChecksum
    * @var string|null
    */
   protected $checksum;
@@ -75,6 +77,12 @@ class File implements FileInterface, ResourceInterface
   protected $size;
 
   /**
+   * @ORM\Column(type="string", nullable=true)
+   * @var string|null
+   */
+  protected $title;
+
+  /**
    * @ORM\Column(type="string")
    * @var string|null
    */
@@ -89,29 +97,116 @@ class File implements FileInterface, ResourceInterface
   /**
    * @return int|null
    */
-  public function getId(): ?int
-  {
+  public function getId(): ?int {
     return $this->id;
   }
 
   /**
    * @return string|null
    */
-  public function getChecksum(): ?string
-  {
+  public function getChecksum(): ?string {
     return $this->checksum;
   }
 
   /**
    * @param string|null $checksum
    */
-  public function setChecksum(?string $checksum): void
-  {
+  public function setChecksum(?string $checksum): void {
     $this->checksum = $checksum;
   }
 
-  public function hasFile(): bool
-  {
+  public function getType(): ?string {
+    return $this->type;
+  }
+
+  public function setType(?string $type): void {
+    $this->type = $type;
+  }
+
+  public function hasType(): bool {
+    return null !== $this->type;
+  }
+
+  /**
+   * @return string|null
+   */
+  public function getUrl(): ?string {
+    return $this->url;
+  }
+
+  /**
+   * @param string|null $url
+   */
+  public function setUrl(?string $url): void {
+    $this->url = $url;
+  }
+
+  /**
+   * @return bool
+   */
+  public function hasUrl(): bool {
+    return null !== $this->url;
+  }
+
+  /**
+   * @return int|null
+   */
+  public function getSize(): ?int {
+    return $this->size;
+  }
+
+  /**
+   * @param int|null $size
+   */
+  public function setSize(?int $size): void {
+    $this->size = $size;
+  }
+
+  /**
+   * @return AdminUser|null
+   */
+  public function getCreatedBy(): ?AdminUser {
+    return $this->createdBy;
+  }
+
+  /**
+   * @param AdminUser|null $createdBy
+   */
+  public function setCreatedBy(?AdminUser $createdBy): void {
+    $this->createdBy = $createdBy;
+  }
+
+  public function getName(): ?string {
+    return $this->name;
+  }
+
+  public function setName(?string $name) {
+    $this->name = $name;
+  }
+
+  /**
+   * Hydrates entity based on underlying UploadedFile object.
+   */
+  public function hydrate() {
+    if (!$this->hasFile()) {
+      return;
+    }
+
+    $this->setName($this->getFile() ? $this->getFile()
+                                           ->getFilename() : null);
+    $this->setType($this->getFile()
+                        ->getExtension());
+    $this->setPath($this->getFile()
+                        ->getPathname());
+    $this->setVersion($this->getVersion() + 1);
+
+    $this->updateChecksum();
+    $this->updateCreatedAt();
+    $this->updateSize();
+    $this->updateUpdatedAt();
+  }
+
+  public function hasFile(): bool {
     if (null === $this->file && $this->hasPath()) {
       $this->updateFile();
     }
@@ -119,117 +214,27 @@ class File implements FileInterface, ResourceInterface
     return null !== $this->file;
   }
 
-  public function getType(): ?string
-  {
-    return $this->type;
-  }
-
-  public function setType(?string $type): void
-  {
-    $this->type = $type;
-  }
-
-  public function hasType(): bool
-  {
-    return null !== $this->type;
-  }
-
-  /**
-   * @return string|null
-   */
-  public function getUrl(): ?string
-  {
-    return $this->url;
-  }
-
-  /**
-   * @param string|null $url
-   */
-  public function setUrl(?string $url): void
-  {
-    $this->url = $url;
-  }
-
-  /**
-   * @return bool
-   */
-  public function hasUrl(): bool
-  {
-    return null !== $this->url;
-  }
-
-  /**
-   * @return int|null
-   */
-  public function getSize(): ?int
-  {
-    return $this->size;
-  }
-
-  /**
-   * @param int|null $size
-   */
-  public function setSize(?int $size): void
-  {
-    $this->size = $size;
-  }
-
-  /**
-   * @return AdminUser|null
-   */
-  public function getCreatedBy(): ?AdminUser
-  {
-    return $this->createdBy;
-  }
-
-  /**
-   * @param AdminUser|null $createdBy
-   */
-  public function setCreatedBy(?AdminUser $createdBy): void
-  {
-    $this->createdBy = $createdBy;
-  }
-
-  /**
-   * @ORM\PrePersist
-   * @ORM\PreUpdate
-   */
-  public function updateChecksum()
-  {
-    if ($this->hasFile()) {
-      $path = $this->getFile()->getPathname();
-      $result = hash_file('sha256', $path);
-      $this->setChecksum($result);
-    }
-  }
-
-  public function hasPath(): bool
-  {
+  public function hasPath(): bool {
     return null !== $this->path;
   }
 
-  public function getPath(): ?string
-  {
+  public function updateFile() {
+    if ($this->getPath()) {
+      $this->file = new \Symfony\Component\HttpFoundation\File\File(
+        $this->getPath()
+      );
+    }
+  }
+
+  public function getPath(): ?string {
     return $this->path;
   }
 
-  public function setPath(?string $path): void
-  {
+  public function setPath(?string $path): void {
     $this->path = $path;
   }
 
-  public function getName(): ?string
-  {
-    return $this->name;
-  }
-
-  public function setName(?string $name)
-  {
-    $this->name = $name;
-  }
-
-  public function getFile(): ?\Symfony\Component\HttpFoundation\File\File
-  {
+  public function getFile(): ?\Symfony\Component\HttpFoundation\File\File {
     return $this->file;
   }
 
@@ -239,12 +244,16 @@ class File implements FileInterface, ResourceInterface
     $this->file = $file;
   }
 
-  public function updateFile()
-  {
-    if ($this->getPath()) {
-      $this->file = new \Symfony\Component\HttpFoundation\File\File(
-        $this->getPath()
-      );
+  /**
+   * @ORM\PrePersist
+   * @ORM\PreUpdate
+   */
+  public function updateChecksum() {
+    if ($this->hasFile()) {
+      $path = $this->getFile()
+                   ->getPathname();
+      $result = hash_file('sha256', $path);
+      $this->setChecksum($result);
     }
   }
 
@@ -252,31 +261,36 @@ class File implements FileInterface, ResourceInterface
    * @ORM\PrePersist
    * @ORM\PreUpdate
    */
-  public function updateSize()
-  {
+  public function updateSize() {
     if ($this->hasFile()) {
-      $size = $this->getFile()->getSize();
+      $size = $this->getFile()
+                   ->getSize();
       $this->setSize($size);
     }
   }
 
   /**
-   * Hydrates entity based on underlying UploadedFile object.
+   * @return string|null
    */
-  public function hydrate()
-  {
-    if (!$this->hasFile()) {
-      return;
+  public function getTitle(): ?string {
+    if ($this->hasTitle()) {
+      return $this->title;
     }
 
-    $this->setName($this->getFile() ? $this->getFile()->getFilename() : null);
-    $this->setType($this->getFile()->getExtension());
-    $this->setPath($this->getFile()->getPathname());
-    $this->setVersion($this->getVersion() + 1);
+    return $this->getName();
+  }
 
-    $this->updateChecksum();
-    $this->updateCreatedAt();
-    $this->updateSize();
-    $this->updateUpdatedAt();
+  /**
+   * @param string|null $title
+   */
+  public function setTitle(?string $title): void {
+    $this->title = $title;
+  }
+
+  /**
+   * @return bool
+   */
+  public function hasTitle(): bool {
+    return $this->title !== null && $this->title !== '';
   }
 }

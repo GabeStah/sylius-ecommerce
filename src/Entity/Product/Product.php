@@ -24,7 +24,7 @@ class Product extends BaseProduct
 {
   /**
    * Many Products have Many Files.
-   * @OneToMany(targetEntity="App\Entity\Product\ProductFile", mappedBy="owner")
+   * @OneToMany(targetEntity="App\Entity\Product\ProductFile", mappedBy="owner", cascade={"persist"})
    *
    * @var Collection|FileInterface[]
    *

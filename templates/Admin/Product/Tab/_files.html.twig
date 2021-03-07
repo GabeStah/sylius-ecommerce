@@ -21,11 +21,11 @@
 
         {% for file in product.getFiles %}
           <tr>
-            <td class="single line">
-              {{ file.name }}
+            <td class="single line red popup" data-tooltip="{{ file.name }}">
+              {{ file.title }}
             </td>
             <td>
-              <h2 class="ui center aligned header">{{ file.type }}</h2>
+              {{ file.type }}
             </td>
             <td>
               {{ format_bytes(file.size) }}
@@ -37,6 +37,10 @@
               {{ file.updatedAt|date }}
             </td>
             <td class="collapsing">
+              <a class="ui icon button success" href="{{ path('app_admin_files_update', { id: file.id }) }}">
+                <i class="edit icon"></i>
+              </a>
+
               <a class="ui icon button" href="{{ uploads_directory }}{{ file.getName }}" target="_blank">
                 <i class="download icon"></i>
               </a>
@@ -55,14 +59,24 @@
       </table>
     {% endif %}
 
-    <h4>Add New File(s)</h4>
+    <h4>Add New Files</h4>
+    <div class="ui form">
+      <div class="two fields">
+        <div class="four wide field required">
+          <label>File</label>
+          <input type="file" id="sylius_product_files[]" name="sylius_product[files][]" required="required"
+                 multiple="multiple">
+          <input type="hidden" id="current_file_id">
+        </div>
+        <div class="twelve wide field">
+          <label>Title</label>
+          <input type="text" id="sylius_product_file_titles[]" name="sylius_product[file_titles][]"
+                 placeholder="Title">
+        </div>
+      </div>
+    </div>
 
-    <input type="file" id="sylius_product_files[]" name="sylius_product[files][]" required="required"
-           multiple="multiple">
-
-    <input type="hidden" id="current_file_id"/>
-
-    <!-- if needing to split template up based on additional controller logic -->
+    <!-- to split template up based on additional controller logic -->
     {# {{ render(controller('sylius.controller.admin.product_file:filesAction', { 'id': product.id })) }} #}
 
     {{ sylius_template_event(['sylius.admin.product.' ~ action ~ '.tab_associations', 'sylius.admin.product.tab_associations'], {'form': form}) }}

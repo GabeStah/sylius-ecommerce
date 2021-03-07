@@ -4,7 +4,7 @@
   <table id="sylius-product-downloads"
          class="table table-hover border-bottom" {{ sylius_test_html_attribute('product-downloads') }}
   >
-    <thead style="font-size: 1.5em;">
+    <thead>
     <tr>
       <th scope="col" class="text-center">File Type</th>
       <th scope="col">File Name</th>
@@ -13,16 +13,15 @@
     <tbody>
     {% for file in product.getFiles %}
       <tr>
-        <td style="font-size: 3em;" class="text-center">
+        <td style="font-size: 1.5em;" class="text-center">
           {% set type = file.type %}
           {% include "/svg/file_icons/#{type}.svg" %}
         </td>
         <td
-          class="text-dark align-middle sylius-product-download-name" {{ sylius_test_html_attribute('product-download-name', file.name) }}
-          style="font-size: 2em;"
+          class="text-dark align-middle sylius-product-download-title" {{ sylius_test_html_attribute('product-download-title', file.title) }}
         >
           <a href="{{ uploads_directory }}{{ file.name }}" target="_blank"
-             aria-describedby="{{ file.name }}">{{ file.name }}</a>
+             aria-describedby="{{ file.title }}">{{ file.title }}</a>
         </td>
       </tr>
     {% endfor %}

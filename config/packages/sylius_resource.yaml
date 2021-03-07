@@ -12,6 +12,7 @@ sylius_resource:
     app.files:
       driver: doctrine/orm
       classes:
+        controller: App\Controller\Admin\FileController
         form: App\Form\Type\Admin\FileType
         model: App\Entity\File\File
         repository: App\Repository\FileRepository

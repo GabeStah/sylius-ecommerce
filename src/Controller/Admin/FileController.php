@@ -2,26 +2,27 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Shop;
+namespace App\Controller\Admin;
 
 use App\Entity\File\File;
 use App\Entity\Product\Product;
 use App\Entity\Product\ProductFile;
+use App\EventListener\FileListener;
 use App\Repository\FileRepository;
 use App\Repository\ProductFileRepository;
 use FOS\RestBundle\View\View;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
-use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
 use Sylius\Component\Resource\Exception\UpdateHandlingException;
 use Sylius\Component\Resource\ResourceActions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class ProductController extends ResourceController
+class FileController extends ResourceController
 {
-  public function createAction(Request $request): Response {
+  public function createAction(Request $request): Response
+  {
     $configuration = $this->requestConfigurationFactory->create(
       $this->metadata,
       $request
@@ -37,8 +38,7 @@ class ProductController extends ResourceController
 
     if (
       $request->isMethod('POST') &&
-      $form->handleRequest($request)
-           ->isValid()
+      $form->handleRequest($request)->isValid()
     ) {
       $newResource = $form->getData();
 
@@ -57,6 +57,12 @@ class ProductController extends ResourceController
         $eventResponse = $event->getResponse();
         if (null !== $eventResponse) {
           return $eventResponse;
+        }
+
+        // Handle file listener response
+        if ($event->getMessageType() === FileListener::TYPE_FILE_EXISTS) {
+          $this->addFlash('error', $event->getMessage());
+          return $this->redirectHandler->redirectToReferer($configuration);
         }
 
         return $this->redirectHandler->redirectToIndex(
@@ -121,21 +127,22 @@ class ProductController extends ResourceController
     }
 
     $view = View::create()
-                ->setData([
-                  'configuration'            => $configuration,
-                  'metadata'                 => $this->metadata,
-                  'resource'                 => $newResource,
-                  $this->metadata->getName() => $newResource,
-                  'form'                     => $form->createView(),
-                ])
-                ->setTemplate(
-                  $configuration->getTemplate(ResourceActions::CREATE . '.html')
-                );
+      ->setData([
+        'configuration' => $configuration,
+        'metadata' => $this->metadata,
+        'resource' => $newResource,
+        $this->metadata->getName() => $newResource,
+        'form' => $form->createView(),
+      ])
+      ->setTemplate(
+        $configuration->getTemplate(ResourceActions::CREATE . '.html')
+      );
 
     return $this->viewHandler->handle($configuration, $view);
   }
 
-  public function indexAction(Request $request): Response {
+  public function indexAction(Request $request): Response
+  {
     $configuration = $this->requestConfigurationFactory->create(
       $this->metadata,
       $request
@@ -160,8 +167,7 @@ class ProductController extends ResourceController
     if ($request->get('_route') === 'sylius_shop_product_index') {
       $foundTaxon = $taxonRepository->findOneBySlug(
         $request->get('slug'),
-        $this->container->get('sylius.context.locale')
-                        ->getLocaleCode()
+        $this->container->get('sylius.context.locale')->getLocaleCode()
       );
       $isProductVisible = $foundTaxon->isProductVisible();
     }
@@ -175,10 +181,10 @@ class ProductController extends ResourceController
         )
         ->setTemplateVar($this->metadata->getPluralName())
         ->setData([
-          'configuration'                  => $configuration,
-          'metadata'                       => $this->metadata,
-          'resources'                      => $resources,
-          'product_visible'                => $isProductVisible,
+          'configuration' => $configuration,
+          'metadata' => $this->metadata,
+          'resources' => $resources,
+          'product_visible' => $isProductVisible,
           $this->metadata->getPluralName() => $resources,
         ]);
     }
@@ -186,7 +192,8 @@ class ProductController extends ResourceController
     return $this->viewHandler->handle($configuration, $view);
   }
 
-  public function showAction(Request $request): Response {
+  public function showAction(Request $request): Response
+  {
     $configuration = $this->requestConfigurationFactory->create(
       $this->metadata,
       $request
@@ -210,9 +217,9 @@ class ProductController extends ResourceController
         )
         ->setTemplateVar($this->metadata->getName())
         ->setData([
-          'configuration'            => $configuration,
-          'metadata'                 => $this->metadata,
-          'resource'                 => $product,
+          'configuration' => $configuration,
+          'metadata' => $this->metadata,
+          'resource' => $product,
           $this->metadata->getName() => $product,
         ]);
     }
@@ -259,17 +266,23 @@ class ProductController extends ResourceController
         $existingFile = $fileRepository->findOneBy([
           'checksum' => $file->getChecksum(),
         ]);
-
         if ($existingFile) {
-          $file = $existingFile;
+          $this->flashHelper->addErrorFlash(
+            $configuration,
+            '"' . $file->getTitle() . '" file already exists in database.'
+          );
         } else {
           // Add new file to database
           $fileRepository->add($file);
+          $this->flashHelper->addSuccessFlash(
+            $configuration,
+            '"' . $file->getTitle() . '" file added to database.'
+          );
         }
 
         if ($resource->hasFile($file)) {
-          $this->addFlash(
-            'error',
+          $this->flashHelper->addErrorFlash(
+            $configuration,
             '"' . $file->getTitle() . '" file already linked to product.'
           );
         } else {
@@ -283,15 +296,9 @@ class ProductController extends ResourceController
           $productFile->setEnabled(true);
           $productFile->setOwner($resource);
           $productFile->setFile($file);
-          $resource->addProductFile($productFile);
-          //          $resource->getFiles()->add($file);
-
-          $productManager = $this->container->get('sylius.manager.product');
-          $productManager->persist($resource);
-          $productManager->flush();
-
-          $this->addFlash(
-            'success',
+          $productFileRepository->add($productFile);
+          $this->flashHelper->addSuccessFlash(
+            $configuration,
             '"' . $file->getTitle() . '" file successfully linked to product.'
           );
         }
@@ -299,7 +306,8 @@ class ProductController extends ResourceController
     }
   }
 
-  public function updateAction(Request $request): Response {
+  public function updateAction(Request $request): Response
+  {
     $configuration = $this->requestConfigurationFactory->create(
       $this->metadata,
       $request
@@ -313,14 +321,12 @@ class ProductController extends ResourceController
 
     if (
       in_array($request->getMethod(), ['POST', 'PUT', 'PATCH'], true) &&
-      $form->handleRequest($request)
-           ->isValid()
+      $form->handleRequest($request)->isValid()
     ) {
-      $this->handleFiles($resource, $request, $configuration);
+      //      $this->handleFiles($resource, $request, $configuration);
 
       $resource = $form->getData();
 
-      /** @var ResourceControllerEvent $event */
       $event = $this->eventDispatcher->dispatchPreEvent(
         ResourceActions::UPDATE,
         $configuration,
@@ -381,8 +387,7 @@ class ProductController extends ResourceController
       );
 
       if (!$configuration->isHtmlRequest()) {
-        $view = $configuration->getParameters()
-                              ->get('return_content', false)
+        $view = $configuration->getParameters()->get('return_content', false)
           ? View::create($resource, Response::HTTP_OK)
           : View::create(null, Response::HTTP_NO_CONTENT);
 
@@ -418,16 +423,16 @@ class ProductController extends ResourceController
     }
 
     $view = View::create()
-                ->setData([
-                  'configuration'            => $configuration,
-                  'metadata'                 => $this->metadata,
-                  'resource'                 => $resource,
-                  $this->metadata->getName() => $resource,
-                  'form'                     => $form->createView(),
-                ])
-                ->setTemplate(
-                  $configuration->getTemplate(ResourceActions::UPDATE . '.html')
-                );
+      ->setData([
+        'configuration' => $configuration,
+        'metadata' => $this->metadata,
+        'resource' => $resource,
+        $this->metadata->getName() => $resource,
+        'form' => $form->createView(),
+      ])
+      ->setTemplate(
+        $configuration->getTemplate(ResourceActions::UPDATE . '.html')
+      );
 
     return $this->viewHandler->handle($configuration, $view);
   }

@@ -156,50 +156,6 @@ sylius_grid:
         comment:
           type: string
           label: "Comment"
-        #        slug:
-        #          enabled: false
-        #          type: string
-        #          label: "Slug"
-        #        address1:
-        #          enabled: false
-        #          type: string
-        #          label: "Address 1"
-        #        address2:
-        #          enabled: false
-        #          type: string
-        #          label: "Address 2"
-        #        city:
-        #          enabled: false
-        #          type: string
-        #          label: "City"
-        #        postal_code:
-        #          enabled: false
-        #          type: string
-        #          label: "Postal Code"
-        #        state:
-        #          enabled: false
-        #          type: string
-        #          label: "State"
-        #        country:
-        #          enabled: false
-        #          type: string
-        #          label: "Country"
-        #        phone:
-        #          enabled: false
-        #          type: string
-        #          label: "Phone"
-        #        fax:
-        #          enabled: false
-        #          type: string
-        #          label: "Fax"
-        #        latitude:
-        #          enabled: false
-        #          type: string
-        #          label: "Latitude"
-        #        longitude:
-        #          enabled: false
-        #          type: string
-        #          label: "Longitude"
       filters:
         search:
           type: string
@@ -235,25 +191,25 @@ sylius_grid:
         options:
           class: App\Entity\File\File
       fields:
-        name:
-          type: string
-          label: sylius.ui.files.fields.name.title
+        title:
+          type: twig
+          label: sylius.ui.files.fields.title.title
+          path: .
+          options:
+            template: 'Admin/File/Field/_title.html.twig'
         size:
           type: twig
           label: sylius.ui.files.fields.size.title
           options:
             template: 'Admin/File/Field/_size.html.twig'
-        created_by:
-          type: twig
-          label: sylius.ui.files.fields.created_by.title
-          options:
-            template: 'Admin/File/Field/_created_by.html.twig'
         type:
           type: string
           label: sylius.ui.files.fields.type.title
         updated_at:
-          type: datetime
+          type: twig
           label: sylius.ui.files.fields.updated_at.title
+          options:
+            template: 'Admin/File/Field/_updated_at.html.twig'
       filters:
         search:
           type: string
@@ -265,8 +221,8 @@ sylius_grid:
           create:
             type: create
         item:
-          #          update:
-          #            type: update
+          update:
+            type: update
           delete:
             type: delete
     app_admin_product_files:

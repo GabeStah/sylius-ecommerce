@@ -7,7 +7,6 @@ namespace App\Service\Uploader;
 use App\Entity\File\FileInterface;
 use App\Service\Generator\FilePathGeneratorInterface;
 use App\Service\Generator\UploadedFilePathGenerator;
-use Gaufrette\Filesystem;
 use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -16,9 +15,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class FileUploader implements FileUploaderInterface
 {
-  /** @var Filesystem */
-  protected $filesystem;
-
   /** @var FilePathGeneratorInterface */
   protected $filePathGenerator;
   /**
@@ -49,10 +45,6 @@ class FileUploader implements FileUploaderInterface
       $filePathGenerator ?? new UploadedFilePathGenerator();
   }
 
-  private function has(string $path): bool {
-    return $this->filesystem->has($path);
-  }
-
   /**
    * Remove file from filesystem.
    *
@@ -60,12 +52,9 @@ class FileUploader implements FileUploaderInterface
    *
    * @return bool
    */
-  public function remove(string $path): bool {
-    if ($this->filesystem->has($path)) {
-      return $this->filesystem->delete($path);
-    }
-
-    return false;
+  public function remove(string $path): bool
+  {
+    return unlink($path);
   }
 
   /**
@@ -77,29 +66,35 @@ class FileUploader implements FileUploaderInterface
    *
    * @return string|null
    */
-  public function upload($subject): ?string {
-    $file = null;
-    $uploadedFile = null;
-    if ($subject instanceof ResourceControllerEvent) {
-      /** @var FileInterface $file */
-      $file = $subject->getSubject();
-      $path = $this->filePathGenerator->fromFile($file);
-      $uploadedFile = $file->getFile();
-    } else {
-      /** @var UploadedFile $uploadedFile */
-      $uploadedFile = $subject;
-      $path = $this->filePathGenerator->fromUploadedFile($subject);
-    }
-
-    $newFile = null;
-
+  public function upload($subject): ?string
+  {
     try {
+      $file = null;
+      $uploadedFile = null;
+      if ($subject instanceof ResourceControllerEvent) {
+        /** @var FileInterface $file */
+        $file = $subject->getSubject();
+        $path = $this->filePathGenerator->fromFile($file);
+        $uploadedFile = $file->getFile();
+      } else {
+        /** @var UploadedFile $uploadedFile */
+        $uploadedFile = $subject;
+        $path = $this->filePathGenerator->fromUploadedFile($subject);
+      }
+
+      $newFile = null;
+
       $newFile = $uploadedFile->move(
-      // Total hack because dependency injection continues to ignore service definition
-      // that explicitly passes `%upload_directory%` parameter to FileUploader service.
+        // Total hack because dependency injection continues to ignore service definition
+        // that explicitly passes `%upload_directory%` parameter to FileUploader service.
         $this->containerBag->get('kernel.project_dir') . '/public/uploads',
         $path
       );
+
+      if ($subject instanceof ResourceControllerEvent) {
+        $file->setFile($newFile);
+        $file->hydrate();
+      }
 
       return $newFile->getPathname();
     } catch (FileException $e) {

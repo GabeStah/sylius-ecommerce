@@ -13,4 +13,13 @@ use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
  */
 class FileRepository extends EntityRepository
 {
+  /**
+   * @param string $checksum
+   *
+   * @return File|null
+   */
+  public function findOneByChecksum(string $checksum): ?File
+  {
+    return $this->findOneBy(['checksum' => $checksum]);
+  }
 }

@@ -28,6 +28,12 @@ interface FileInterface
 
   public function setPath(?string $path): void;
 
+  public function getTitle(): ?string;
+
+  public function hasTitle(): bool;
+
+  public function setTitle(?string $title): void;
+
   public function getType(): ?string;
 
   public function setType(?string $type): void;

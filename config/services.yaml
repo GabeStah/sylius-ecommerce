@@ -94,6 +94,13 @@ services:
       - { name: form.type, alias: app_admin_product_file_type }
     arguments: [ 'App\Entity\Product\Product' ]
 
+  app.listener.file:
+    class: App\EventListener\FileListener
+    arguments: [ '@app.repository.files' ]
+    tags:
+      - { name: kernel.event_listener, event: app.files.pre_create, method: onPreCreate, priority: 99 }
+      - { name: kernel.event_listener, event: app.files.post_delete, method: onPostDelete, priority: 99 }
+
   app.listener.admin.file_upload:
     class: App\Service\Uploader\FileUploader
     autowire: true
@@ -113,6 +120,10 @@ services:
     tags:
       - { name: kernel.event_listener, event: sylius.menu.admin.product.form, method: addItems }
 
+  app.entity.listener.file_unique_constraint_listener:
+    class: App\Entity\Listener\FileUniqueConstraintListener
+    arguments: [ '@app.repository.files' ]
+
   app.slugger:
     class: Symfony\Component\String\Slugger\AsciiSlugger
 
@@ -123,8 +134,11 @@ services:
     autowire: false
     arguments: [ '@app.slugger' ]
 
-  solarix.shipping.provider.fedex:
-    class: Solarix\Shipping\Provider\FedExProvider
+  app.validator.unique.checksum:
+    class: App\Validator\UniqueChecksumValidator
+    arguments: [ '@app.repository.files' ]
+    tags:
+      - { name: validator.constraint_validator, alias: 'validator.unique.checksum' }
 
   app.shipping_calculator.fedex:
     class: App\Shipping\Calculator\FedExRateCalculator
@@ -140,6 +154,15 @@ services:
     arguments: [ '@app.provider.product_variants_codes' ]
     tags:
       - { name: 'templating.helper', alias: 'app_product_variants_codes' }
+
+  solarix.shipping.provider.fedex:
+    class: Solarix\Shipping\Provider\FedExProvider
+
+  sylius.controller.admin.file:
+    class: App\Controller\Admin\FileController
+    arguments: [ '@app.repository.files' ]
+    public: true
+    tags: [ 'controller.service_arguments' ]
 
   sylius.controller.admin.product_file:
     class: App\Controller\Admin\ProductFilesTabController

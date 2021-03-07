@@ -130,6 +130,8 @@ sylius:
           title: 'Path'
         size:
           title: 'Size'
+        title:
+          title: 'Title'
         type:
           title: 'Type'
         updated_at:

@@ -36,7 +36,7 @@ app_admin_files:
     alias: app.files
     section: admin
     templates: "@SyliusAdmin\\Crud"
-    redirect: update
+    redirect: index
     grid: app_admin_files
     vars:
       all:
