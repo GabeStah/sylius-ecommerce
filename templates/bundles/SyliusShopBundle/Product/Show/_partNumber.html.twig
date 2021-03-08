@@ -1,0 +1,10 @@
+{{ sylius_template_event('sylius.shop.product.show.before_part_number') }}
+
+{% include "@SyliusShop/Product/Show/_priceWidget.html.twig" %}
+
+<div class="row mx-auto my-2">
+  <h5>Part Number: <span class="text-primary font-weight-bold" data-js-product-code
+                         id="product-code">{{ product.code }}</span></h5>
+</div>
+
+{{ sylius_template_event('sylius.shop.product.show.after_part_number') }}
