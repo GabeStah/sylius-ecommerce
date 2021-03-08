@@ -22,10 +22,7 @@
       {% endif %}
     {% endif %}
 
-    <div class="row mx-auto my-2">
-      <h5>Part Number: <span class="text-primary font-weight-bold" data-js-product-code
-                             id="product-code">{{ code }}</span></h5>
-    </div>
+    {% include 'bundles/SyliusShopBundle/Product/Show/_partNumber.html.twig' %}
 
     <div class="row align-items-end">
       <div class="col-4">
