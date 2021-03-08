@@ -1,11 +1,24 @@
 sylius_resource:
   resources:
-    app.dealer:
-      driver: doctrine/orm
-      classes:
-        model: App\Entity\Dealer
     app.channel_setting:
       driver: doctrine/orm
       classes:
         model: App\Entity\Channel\ChannelSetting
         repository: App\Repository\ChannelSettingRepository
+    app.dealer:
+      driver: doctrine/orm
+      classes:
+        model: App\Entity\Dealer
+    app.files:
+      driver: doctrine/orm
+      classes:
+        controller: App\Controller\Admin\FileController
+        form: App\Form\Type\Admin\FileType
+        model: App\Entity\File\File
+        repository: App\Repository\FileRepository
+    app.product_file:
+      driver: doctrine/orm
+      classes:
+        form: App\Form\Type\Admin\Product\ProductFileType
+        model: App\Entity\Product\ProductFile
+        repository: App\Repository\ProductFileRepository

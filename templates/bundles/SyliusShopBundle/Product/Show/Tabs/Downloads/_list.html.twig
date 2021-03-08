@@ -1,0 +1,30 @@
+{% if product.getFiles is empty %}
+  <h3>No downloads available</h3>
+{% else %}
+  <table id="sylius-product-downloads"
+         class="table table-hover border-bottom" {{ sylius_test_html_attribute('product-downloads') }}
+  >
+    <thead>
+    <tr>
+      <th scope="col" class="text-center">File Type</th>
+      <th scope="col">File Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for file in product.getFiles %}
+      <tr>
+        <td style="font-size: 1.5em;" class="text-center">
+          {% set type = file.type %}
+          {% include "/svg/file_icons/#{type}.svg" %}
+        </td>
+        <td
+          class="text-dark align-middle sylius-product-download-title" {{ sylius_test_html_attribute('product-download-title', file.title) }}
+        >
+          <a href="{{ uploads_directory }}{{ file.name }}" target="_blank"
+             aria-describedby="{{ file.title }}">{{ file.title }}</a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}

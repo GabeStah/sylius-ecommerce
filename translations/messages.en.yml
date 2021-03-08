@@ -114,6 +114,35 @@ sylius:
     complete: 'Summary'
     dealer:
       title: 'Dealers'
+    files:
+      fields:
+        checksum:
+          title: 'Checksum'
+        created_at:
+          title: 'Created at'
+        created_by:
+          title: 'Created by'
+        file:
+          title: 'File'
+        name:
+          title: 'Name'
+        path:
+          title: 'Path'
+        size:
+          title: 'Size'
+        title:
+          title: 'Title'
+        type:
+          title: 'Type'
+        updated_at:
+          title: 'Updated at'
+        url:
+          title: 'URL'
+        version:
+          title: 'Version'
+      product_file:
+        title: 'Product Files'
+      title: 'Files'
     make_payment: 'Make a payment'
     place_order: 'Proceed to Payment'
     review_and_confirm_your_order: 'Review your order'

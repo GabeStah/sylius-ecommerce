@@ -1,0 +1,9 @@
+knp_gaufrette:
+  adapters:
+    basic:
+      local:
+        directory: /public/uploads
+  filesystems:
+    basic:
+      adapter: basic
+      alias: basic_filesystem
