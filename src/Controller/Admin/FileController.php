@@ -13,6 +13,7 @@ use App\Repository\ProductFileRepository;
 use FOS\RestBundle\View\View;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
+use Sylius\Component\Resource\Exception\DeleteHandlingException;
 use Sylius\Component\Resource\Exception\UpdateHandlingException;
 use Sylius\Component\Resource\ResourceActions;
 use Symfony\Component\HttpFoundation\Request;
@@ -139,6 +140,90 @@ class FileController extends ResourceController
       );
 
     return $this->viewHandler->handle($configuration, $view);
+  }
+
+  public function deleteAction(Request $request): Response
+  {
+    $configuration = $this->requestConfigurationFactory->create(
+      $this->metadata,
+      $request
+    );
+
+    $this->isGrantedOr403($configuration, ResourceActions::DELETE);
+    $resource = $this->findOr404($configuration);
+
+    if (
+      $configuration->isCsrfProtectionEnabled() &&
+      !$this->isCsrfTokenValid(
+        (string) $resource->getId(),
+        $request->request->get('_csrf_token')
+      )
+    ) {
+      throw new HttpException(Response::HTTP_FORBIDDEN, 'Invalid csrf token.');
+    }
+
+    $event = $this->eventDispatcher->dispatchPreEvent(
+      ResourceActions::DELETE,
+      $configuration,
+      $resource
+    );
+
+    if ($event->isStopped() && !$configuration->isHtmlRequest()) {
+      throw new HttpException($event->getErrorCode(), $event->getMessage());
+    }
+    if ($event->isStopped()) {
+      $this->flashHelper->addFlashFromEvent($configuration, $event);
+
+      $eventResponse = $event->getResponse();
+      if (null !== $eventResponse) {
+        return $eventResponse;
+      }
+
+      return $this->redirectHandler->redirectToIndex($configuration, $resource);
+    }
+
+    try {
+      $this->resourceDeleteHandler->handle($resource, $this->repository);
+    } catch (DeleteHandlingException $exception) {
+      if (!$configuration->isHtmlRequest()) {
+        return $this->viewHandler->handle(
+          $configuration,
+          View::create(null, $exception->getApiResponseCode())
+        );
+      }
+
+      $this->flashHelper->addErrorFlash($configuration, $exception->getFlash());
+
+      return $this->redirectHandler->redirectToReferer($configuration);
+    }
+
+    if ($configuration->isHtmlRequest()) {
+      $this->flashHelper->addSuccessFlash(
+        $configuration,
+        ResourceActions::DELETE,
+        $resource
+      );
+    }
+
+    $postEvent = $this->eventDispatcher->dispatchPostEvent(
+      ResourceActions::DELETE,
+      $configuration,
+      $resource
+    );
+
+    if (!$configuration->isHtmlRequest()) {
+      return $this->viewHandler->handle(
+        $configuration,
+        View::create(null, Response::HTTP_NO_CONTENT)
+      );
+    }
+
+    $postEventResponse = $postEvent->getResponse();
+    if (null !== $postEventResponse) {
+      return $postEventResponse;
+    }
+
+    return $this->redirectHandler->redirectToIndex($configuration, $resource);
   }
 
   public function indexAction(Request $request): Response
