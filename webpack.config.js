@@ -37,6 +37,12 @@ Encore.reset();
 Encore.setOutputPath('public/build/admin/')
   .setPublicPath('/build/admin')
   .addEntry('admin-entry', './assets/admin/entry.js')
+  // Copy assets to proper path referenced by /admin/pages view
+  .copyFiles({
+    from: './vendor/bitbag/cms-plugin/src/Resources/public',
+    to:
+      '../../bundles/_themes/sylius/bootstrap-theme/bitbagsyliuscmsplugin/[path][name].[ext]'
+  })
   .disableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
   .enableSourceMaps(!Encore.isProduction())
