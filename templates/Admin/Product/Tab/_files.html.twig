@@ -46,10 +46,11 @@
               </a>
 
               <button id="delete_file[{{ file.id }}]" class="ui red icon button" type="button"
-                      data-requires-confirmation data-file-id="{{ file.id }}">
+                      data-file-id="{{ file.id }}">
                 <i class="icon trash"></i>
               </button>
 
+              <input type="hidden" id="file_deletion[{{ file.id }}]" name="file_deletion[{{ file.id }}]" value="0">
               <input type="hidden" id="file_token[{{ file.id }}]" name="file_token[{{ file.id }}]"
                      value="{{ csrf_token(file.id) }}"/>
             </td>
@@ -84,64 +85,38 @@
 </div>
 <script>
   /**
-   * JavaScript block here overrides default form submission behavior.  Allows deletion of files within Product > Files
-   * view without triggering Product form update callback.  Fetch DELETE request to /admin/files/{id} deletes selected
-   * File and, therefore, ProductFile association entity.
+   * Clicking a file delete button toggles UI and hidden input element to store deletion status and file id.
    *
-   * Currently selected file is tracked via hidden input when delet button is clicked.  However, final AJAX request is
-   * only made once confirmation button is clicked.  To prevent multiple deletion invocations the listener is tracked
-   * and deleted as necessary.
+   * Form submission handles file repository deletion via ProductController.
    */
+  const deleteFileElements = document.querySelectorAll('[id^="delete_file"]');
 
-  function resetCurrentFileId() {
-    document.getElementById('current_file_id').setAttribute('value', null);
+  function toggleDeleteButton(element) {
+    const icon = element.querySelector('i');
+    if (element.classList.contains('red')) {
+      element.classList.remove('red');
+      element.classList.add('green');
+      icon.classList.remove('trash');
+      icon.classList.add('check');
+      icon.classList.add('circle');
+    } else {
+      element.classList.add('red');
+      element.classList.remove('green');
+      icon.classList.add('trash');
+      icon.classList.remove('check');
+      icon.classList.remove('circle');
+    }
   }
 
-  function getCurrentFileId() {
-    return document.getElementById('current_file_id').getAttribute('value');
+  function onFileDeletion() {
+    event.preventDefault();
+    const actionElement = document.querySelector(`[id="file_deletion[${this.dataset.fileId}]"]`);
+    actionElement.setAttribute('value', actionElement.getAttribute('value') === '0' ? '1' : '0');
+    toggleDeleteButton(this);
   }
-
-  function setCurrentFileId(id) {
-    document.getElementById('current_file_id').setAttribute('value', id);
-  }
-
-  async function deleteFile(id) {
-    const token = document.getElementById(`file_token[${id}]`).getAttribute('value').toString();
-    const response = await fetch(`/admin/files/${id}`, {
-      body: JSON.stringify({
-        _csrf_token: token
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: 'DELETE',
-      redirect: 'follow'
-    })
-
-    return response.json();
-  }
-
-  const deleteFiles = document.querySelectorAll('[id^="delete_file"]');
 
   let confirmationButtonListener = null;
-  deleteFiles.forEach(file => {
-    file.addEventListener('click', (event) => {
-      event.preventDefault();
-      setCurrentFileId(file.dataset.fileId);
-
-      const confirmationButton = document.getElementById('confirmation-button');
-
-      if (confirmationButtonListener) {
-        // Remove existing listener
-        confirmationButton.removeEventListener('click', confirmationButtonListener);
-      }
-
-      confirmationButtonListener = (event) => {
-        event.preventDefault();
-        deleteFile(getCurrentFileId());
-      };
-
-      confirmationButton.addEventListener('click', confirmationButtonListener)
-    })
+  deleteFileElements.forEach(deleteFileElement => {
+    deleteFileElement.addEventListener('click', onFileDeletion)
   });
 </script>
