@@ -60,6 +60,7 @@ DirectoryIndex index.php
     RedirectMatch 301 ^/en/product-categories/(.*)$ /en_US/product-categories/$1
     RedirectMatch 301 ^/en/shop/products/(.*)$ /en_US/products/$1
     RedirectMatch 301 ^/en/tech-support/(.*)$ /en_US/page/$1
+    RedirectMatch 301 ^/en/contact-us/(.*)$ /en_US/contact/$1
     # '/en' to '/en_US' locale
     RedirectMatch 301 ^/en/(.*)$ /en_US/$1
 </IfModule>
