@@ -80,13 +80,17 @@ targeted entities.
    container.
 5. An SQL query retrieves data from the Raritan-v1 database table.
 6. The data is normalized in stages to appropriately convert Raritan-v1 keys/value type to a format Raritan-v2 can use.
-  - Normalized data includes attributes, categories (taxons), dimensions, images, meta data, product options, product
-    variants, pricing, and so forth.
+
+- Normalized data includes attributes, categories (taxons), dimensions, images, meta data, product options, product
+  variants, pricing, and so forth.
+
 7. The normalized dataset is mapped and merged with optional extra data.
 8. Mapped data is filtered to remove any exceptional records (i.e. duplicate unique key types).
 9. Then each mapped record is passed through a series of Entity creation steps necessary to generate the appropriate
    Sylius Entity with relevant data, associated Entities, and relationships.
-  - New database records are generated while existing records are updated.
+
+- New database records are generated while existing records are updated.
+
 10. Lastly the new/updated dataset is serialized and exported to the [/exports](/exports) directory.
 
 ### 1.2. `import:category`
@@ -653,6 +657,104 @@ Here's a collection of `sylius_product_option_value` records for the `bowl_size`
 
 Sylius manages the price of a given `ProductVariant` through an assigned `Channel`. At present a
 single `DEFAULT` `Channel` exists and contains all imported `ProductVariants`.
+
+##### Product: Water Heater
+
+- V1 `products` table data:
+
+```sql
+SELECT
+  `partnumber`, `pdescription`, `volt`, `pfitting`, `watersource`, `control`, `prid`
+FROM
+  `products`
+WHERE
+  `productnumber` = 343
+```
+
+| partnumber | pdescription                                                     | volt | pfitting | watersource       | control         | BowlSize  |
+| ---------- | ---------------------------------------------------------------- | ---- | -------- | ----------------- | --------------- | --------- |
+| 170601     | <p>WATER HEATER: 6 GAL., W/O HEAT EXHANGER, 120VOLT</p>          | 115v |          | no heat exchanger |                 | 6 gallon  |
+| 170602     | <p>WATER HEATER: 6 GAL., W/O HEAT EXCHANGER, 240VOLTS</p>        | 220v |          | no heat exchanger |                 | 6 gallon  |
+| 170611     | WATER HEATER: 6 GAL., W/HEAT EXCHANGER, 120VOLTS                 | 115v |          | heat exchanger    |                 | 6 gallon  |
+| 170612     | WATER HEATER: 6 GAL., W/HEAT EXCHANGER, 240VOLTS                 | 220v |          | heat exchanger    |                 | 6 gallon  |
+| 171201     | WATER HEATER: 12 GAL., W/O HEAT EXCHANGER, 120VOLT               | 115v |          | no heat exchanger |                 | 12 gallon |
+| 171202     | WATER HEATER: 12 GAL., W/O HEAT EXCHANGER, 240VOLT               | 220v |          | no heat exchanger |                 | 12 gallon |
+| 171211     | WATER HEATER: 12 GAL., W/HEAT EXCHANGER, 120VOLTS                | 115v |          | heat exchanger    |                 | 12 gallon |
+| 171212     | WATER HEATER: 12 GAL., W/HEAT EXCHANGER, 240VOLTS                | 220v |          | heat exchanger    |                 | 12 gallon |
+| 172002     | WATER HEATER: 20 GAL., W/O HEAT EXCHANGER, 240VOLT               | 220v |          | no heat exchanger |                 | 20 gallon |
+| 172012     | WATER HEATER: 20 GAL., W/HEAT EXCHANGER, 240VOLTS                | 220v |          | heat exchanger    |                 | 20 gallon |
+| 17061201   | WATER HEATER:_CUSTOM_ 170612 W/PL2A-75GW (GAZ SET)               | 115v | GAZ      | heat exchanger    | GAZ fittings    | 6 gallon  |
+| 17061202   | WATER HEATER: _CUSTOM_ 170612 W/PL2A75MW (SET)                   | 220v | GAZ      | heat exchanger    | GAZ fittings    | 6 gallon  |
+| 17120203   | WATER HEATER: 12 GALLON, W/OUT HEAT EXCHANGER, 4500 WATT/240VOLT | 220v |          | no heat exchanger |                 | 12 gallon |
+| 17121101   | HEATER: 171211 WITH PL2A75GW ( GAZ SET) 120 VOLT                 | 115v | GAZ      | heat exchanger    | GAZ fittings    | 12 gallon |
+| 17121102   | WATER HEATER: CUSTOM, 171211 W/PL2A75MW (METRIC SET)             | 115v | METRIC   | heat exchanger    | METRIC fittings | 12 gallon |
+| 17121201   | WATER HEATER: _CUSTOM_ 171212 W/PL2A75GW (GAZ SET)               | 220v | GAZ      | heat exchanger    | GAZ fittings    | 12 gallon |
+| 17121202   | WATER HEATER:_CUSTOM_ 171212 W/PL2A75MW (SET)                    | 220v | METRIC   | heat exchanger    | METRIC fittings | 12 gallon |
+| 17121203   | WATER HEATER: 12 GAL.,4500 WATT,W/HEAT EXCHANGER, 240 VOLT       | 220v |          | heat exchanger    |                 |           |
+| 17200104   | WATER HEATER: 20 GAL , W/O HEAT EXCHANGES, 120VOLT               | 115v |          | no heat exchanger |                 |           |
+| 17200203   | WATER HEATER: _CUSTOM_ 20 GAL.,W/O H.E., 45OOWATTS               | 4500 |          | no heat exchanger |                 |           |
+| 17201104   | WATER HEATER 20 GAL. W/ HEAT EXCHANGER 120V                      | 115v |          | heat exchanger    |                 |           |
+| 17201201   | WATER HEATER:_CUSTOM_ 172012 W/PL2A-75GW (GAZ SET)               |      |          | heat exchanger    |                 |           |
+| 17201202   | WATER HEATER: _CUSTOM_ 172012 W/PL2A75MW (SET)                   |      |          |                   |                 |           |
+| 17201203   | WATER HEATER: 20 GAL. 4500 WATT W/ HEAT EXCHANGER 240 VOLT       | 220v |          | heat exchanger    |                 |           |
+
+- Partnumber/SKU mappings:
+
+| partnumber | code_size | code_exchanger | code_power | code_fittings | actual_size | actual_exchanger    | actual_power | actual_fittings        |
+| ---------- | --------- | -------------- | ---------- | ------------- | ----------- | ------------------- | ------------ | ---------------------- |
+| 170601     | 06        | 0              | 1          |               | 6 gallon    | no heat exchanger   | 120V AC      | N/A                    |
+| 170602     | 06        | 0              | 2          |               | 6 gallon    | no heat exchanger   | 220V AC      | N/A                    |
+| 170611     | 06        | 1              | 1          |               | 6 gallon    | with heat exchanger | 120V AC      | N/A                    |
+| 170612     | 06        | 1              | 2          |               | 6 gallon    | with heat exchanger | 220V AC      | N/A                    |
+| 171201     | 12        | 0              | 1          |               | 12 gallon   | no heat exchanger   | 120V AC      | N/A                    |
+| 171202     | 12        | 0              | 2          |               | 12 gallon   | no heat exchanger   | 220V AC      | N/A                    |
+| 171211     | 12        | 1              | 1          |               | 12 gallon   | with heat exchanger | 120V AC      | N/A                    |
+| 171212     | 12        | 1              | 2          |               | 12 gallon   | with heat exchanger | 220V AC      | N/A                    |
+| 172002     | 20        | 0              | 2          |               | 20 gallon   | no heat exchanger   | 220V AC      | N/A                    |
+| 172012     | 20        | 1              | 2          |               | 20 gallon   | with heat exchanger | 220V AC      | N/A                    |
+| 17061201   | 06        | 1              | 2          | 01            | 6 gallon    | with heat exchanger | 220V AC      | GAZ                    |
+| 17061202   | 06        | 1              | 2          | 02            | 6 gallon    | with heat exchanger | 220V AC      | Metric                 |
+| 17120203   | 12        | 0              | 2          | 03            | 12 gallon   | no heat exchanger   | 220V AC      | 4500 W Heating Element |
+| 17121101   | 12        | 1              | 1          | 01            | 12 gallon   | with heat exchanger | 120V AC      | GAZ                    |
+| 17121102   | 12        | 1              | 1          | 02            | 12 gallon   | with heat exchanger | 120V AC      | Metric                 |
+| 17121201   | 12        | 1              | 2          | 01            | 12 gallon   | with heat exchanger | 220V AC      | GAZ                    |
+| 17121202   | 12        | 1              | 2          | 02            | 12 gallon   | with heat exchanger | 220V AC      | Metric                 |
+| 17121203   | 12        | 1              | 2          | 03            | 12 gallon   | with heat exchanger | 220V AC      | 4500 W Heating Element |
+| 17200104   | 20        | 0              | 1          | 04            | 20 gallon   | no heat exchanger   | 120V AC      | ???                    |
+| 17200203   | 20        | 0              | 2          | 03            | 20 gallon   | no heat exchanger   | 220V AC      | 4500 W Heating Element |
+| 17201104   | 20        | 1              | 1          | 04            | 20 gallon   | with heat exchanger | 120V AC      | ???                    |
+| 17201201   | 20        | 1              | 2          | 01            | 20 gallon   | with heat exchanger | 220V AC      | GAZ                    |
+| 17201202   | 20        | 1              | 2          | 02            | 20 gallon   | with heat exchanger | 220V AC      | Metric                 |
+| 17201203   | 20        | 1              | 2          | 03            | 20 gallon   | with heat exchanger | 220V AC      | 4500 W Heating Element |
+
+- Actual based on promo sheet SKU codes:
+
+| partnumber | code_size | code_exchanger | code_power | code_fittings | actual_size | actual_exchanger    | actual_power | actual_fittings        | pdescription                                                     | volt | pfitting | watersource       | control         | BowlSize  |
+| ---------- | --------- | -------------- | ---------- | ------------- | ----------- | ------------------- | ------------ | ---------------------- | ---------------------------------------------------------------- | ---- | -------- | ----------------- | --------------- | --------- |
+| 170601     | 06        | 0              | 1          |               | 6 gallon    | no heat exchanger   | 120V AC      | N/A                    | WATER HEATER: 6 GAL., W/O HEAT EXHANGER, 120VOLT                 | 115v |          | no heat exchanger |                 | 6 gallon  |
+| 170602     | 06        | 0              | 2          |               | 6 gallon    | no heat exchanger   | 220V AC      | N/A                    | WATER HEATER: 6 GAL., W/O HEAT EXCHANGER, 240VOLTS               | 220v |          | no heat exchanger |                 | 6 gallon  |
+| 170611     | 06        | 1              | 1          |               | 6 gallon    | with heat exchanger | 120V AC      | N/A                    | WATER HEATER: 6 GAL., W/HEAT EXCHANGER, 120VOLTS                 | 115v |          | heat exchanger    |                 | 6 gallon  |
+| 170612     | 06        | 1              | 2          |               | 6 gallon    | with heat exchanger | 220V AC      | N/A                    | WATER HEATER: 6 GAL., W/HEAT EXCHANGER, 240VOLTS                 | 220v |          | heat exchanger    |                 | 6 gallon  |
+| 171201     | 12        | 0              | 1          |               | 12 gallon   | no heat exchanger   | 120V AC      | N/A                    | WATER HEATER: 12 GAL., W/O HEAT EXCHANGER, 120VOLT               | 115v |          | no heat exchanger |                 | 12 gallon |
+| 171202     | 12        | 0              | 2          |               | 12 gallon   | no heat exchanger   | 220V AC      | N/A                    | WATER HEATER: 12 GAL., W/O HEAT EXCHANGER, 240VOLT               | 220v |          | no heat exchanger |                 | 12 gallon |
+| 171211     | 12        | 1              | 1          |               | 12 gallon   | with heat exchanger | 120V AC      | N/A                    | WATER HEATER: 12 GAL., W/HEAT EXCHANGER, 120VOLTS                | 115v |          | heat exchanger    |                 | 12 gallon |
+| 171212     | 12        | 1              | 2          |               | 12 gallon   | with heat exchanger | 220V AC      | N/A                    | WATER HEATER: 12 GAL., W/HEAT EXCHANGER, 240VOLTS                | 220v |          | heat exchanger    |                 | 12 gallon |
+| 172002     | 20        | 0              | 2          |               | 20 gallon   | no heat exchanger   | 220V AC      | N/A                    | WATER HEATER: 20 GAL., W/O HEAT EXCHANGER, 240VOLT               | 220v |          | no heat exchanger |                 | 20 gallon |
+| 172012     | 20        | 1              | 2          |               | 20 gallon   | with heat exchanger | 220V AC      | N/A                    | WATER HEATER: 20 GAL., W/HEAT EXCHANGER, 240VOLTS                | 220v |          | heat exchanger    |                 | 20 gallon |
+| 17061201   | 06        | 1              | 2          | 01            | 6 gallon    | with heat exchanger | 220V AC      | GAZ                    | WATER HEATER:CUSTOM 170612 W/PL2A-75GW (GAZ SET)                 | 115v | GAZ      | heat exchanger    | GAZ fittings    | 6 gallon  |
+| 17061202   | 06        | 1              | 2          | 02            | 6 gallon    | with heat exchanger | 220V AC      | Metric                 | WATER HEATER: CUSTOM 170612 W/PL2A75MW (SET)                     | 220v | GAZ      | heat exchanger    | GAZ fittings    | 6 gallon  |
+| 17120203   | 12        | 0              | 2          | 03            | 12 gallon   | no heat exchanger   | 220V AC      | 4500 W Heating Element | WATER HEATER: 12 GALLON, W/OUT HEAT EXCHANGER, 4500 WATT/240VOLT | 220v |          | no heat exchanger |                 | 12 gallon |
+| 17121101   | 12        | 1              | 1          | 01            | 12 gallon   | with heat exchanger | 120V AC      | GAZ                    | HEATER: 171211 WITH PL2A75GW ( GAZ SET) 120 VOLT                 | 115v | GAZ      | heat exchanger    | GAZ fittings    | 12 gallon |
+| 17121102   | 12        | 1              | 1          | 02            | 12 gallon   | with heat exchanger | 120V AC      | Metric                 | WATER HEATER: CUSTOM, 171211 W/PL2A75MW (METRIC SET)             | 115v | METRIC   | heat exchanger    | METRIC fittings | 12 gallon |
+| 17121201   | 12        | 1              | 2          | 01            | 12 gallon   | with heat exchanger | 220V AC      | GAZ                    | WATER HEATER: CUSTOM 171212 W/PL2A75GW (GAZ SET)                 | 220v | GAZ      | heat exchanger    | GAZ fittings    | 12 gallon |
+| 17121202   | 12        | 1              | 2          | 02            | 12 gallon   | with heat exchanger | 220V AC      | Metric                 | WATER HEATER:CUSTOM 171212 W/PL2A75MW (SET)                      | 220v | METRIC   | heat exchanger    | METRIC fittings | 12 gallon |
+| 17121203   | 12        | 1              | 2          | 03            | 12 gallon   | with heat exchanger | 220V AC      | 4500 W Heating Element | WATER HEATER: 12 GAL.,4500 WATT,W/HEAT EXCHANGER, 240 VOLT       | 220v |          | heat exchanger    |                 |           |
+| 17200104   | 20        | 0              | 1          | 04            | 20 gallon   | no heat exchanger   | 120V AC      | ???                    | WATER HEATER: 20 GAL , W/O HEAT EXCHANGES, 120VOLT               | 115v |          | no heat exchanger |                 |           |
+| 17200203   | 20        | 0              | 2          | 03            | 20 gallon   | no heat exchanger   | 220V AC      | 4500 W Heating Element | WATER HEATER: CUSTOM 20 GAL.,W/O H.E., 45OOWATTS                 | 4500 |          | no heat exchanger |                 |           |
+| 17201104   | 20        | 1              | 1          | 04            | 20 gallon   | with heat exchanger | 120V AC      | ???                    | WATER HEATER 20 GAL. W/ HEAT EXCHANGER 120V                      | 115v |          | heat exchanger    |                 |           |
+| 17201201   | 20        | 1              | 2          | 01            | 20 gallon   | with heat exchanger | 220V AC      | GAZ                    | WATER HEATER:CUSTOM 172012 W/PL2A-75GW (GAZ SET)                 |      |          | heat exchanger    |                 |           |
+| 17201202   | 20        | 1              | 2          | 02            | 20 gallon   | with heat exchanger | 220V AC      | Metric                 | WATER HEATER: CUSTOM 172012 W/PL2A75MW (SET)                     |      |          |                   |                 |           |
+| 17201203   | 20        | 1              | 2          | 03            | 20 gallon   | with heat exchanger | 220V AC      | 4500 W Heating Element | WATER HEATER: 20 GAL. 4500 WATT W/ HEAT EXCHANGER 240 VOLT       | 220v |          | heat exchanger    |                 |           |
 
 #### 1.5.3. Filtered Data
 
