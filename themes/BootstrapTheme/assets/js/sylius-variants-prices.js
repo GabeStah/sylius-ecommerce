@@ -89,8 +89,17 @@ const handleProductVariantsChange = function handleProductVariantsChange() {
           .closest('tr')
           .querySelector('[data-js-product-variant-price]').innerHTML;
         document.querySelector('[data-js-product-price]').innerHTML = price;
+        document.querySelector('#product-code').innerHTML = item.getAttribute(
+          'value'
+        );
       });
     });
+};
+
+const removeAsterisks = function removeAsterisks() {
+  document
+    .querySelectorAll('label[for^="sylius_add_to_cart_cartItem_variant_"]')
+    .forEach(item => item.classList.remove('required'));
 };
 
 const SyliusVariantsPrices = () => {
@@ -104,6 +113,8 @@ const SyliusVariantsPrices = () => {
   } else if (syliusProductVariants) {
     handleProductVariantsChange();
   }
+
+  removeAsterisks();
 };
 
 export default SyliusVariantsPrices;
