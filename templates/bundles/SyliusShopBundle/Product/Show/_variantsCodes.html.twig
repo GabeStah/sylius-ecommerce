@@ -1,6 +1,6 @@
 {% import "@SyliusShop/Common/Macro/money.html.twig" as money %}
 
-<div id="sylius-variants-codes" data-unavailable-text="{{ 'sylius.ui.unavailable'|trans }}">
+<div id="sylius-variants-codes" data-unavailable-text="{{ 'company.contact_raritan'|trans }}">
   {% for code in codes %}
     <div
       {% for option, value in code %}data-{{ option }}="{% if option == 'value' %}{{ value }}{% else %}{{ value|replace({'\"': '\''}) }}{% endif %}" {{ sylius_test_html_attribute('variant-code') }}{% endfor %}></div>

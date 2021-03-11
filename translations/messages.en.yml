@@ -2,6 +2,7 @@ company:
   address: '530 Orange St. Millville, NJ 08332, USA'
   address1: '530 Orange St.'
   address2: 'Millville, NJ 08332, USA'
+  contact_raritan: 'Contact Raritan'
   email:
     sales: 'sales@raritaneng.com'
   hours: '<strong>Monday - Friday</strong>: 08:00AM EST to 05:00PM EST<br/><strong>Saturday</strong>: Closed<br/><strong>Sunday</strong>: Closed'
