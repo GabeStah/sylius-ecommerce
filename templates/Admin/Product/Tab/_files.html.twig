@@ -21,20 +21,20 @@
 
         {% for file in product.getFiles %}
           <tr>
-            <td class="single line red popup" data-tooltip="{{ file.name }}">
-              {{ file.title }}
+            <td class="single line red popup">
+              {% include 'Admin/File/Field/_title.html.twig' with {data: file} %}
             </td>
             <td>
               {{ file.type }}
             </td>
             <td>
-              {{ format_bytes(file.size) }}
+              {% include 'Admin/File/Field/_size.html.twig' with {data: file.size} %}
             </td>
             <td>
               {{ file.version }}
             </td>
             <td>
-              {{ file.updatedAt|date }}
+              {% include 'Admin/File/Field/_updated_at.html.twig' with {data: file.updatedAt} %}
             </td>
             <td class="collapsing">
               <a class="ui icon button success" href="{{ path('app_admin_files_update', { id: file.id }) }}">
@@ -60,20 +60,23 @@
       </table>
     {% endif %}
 
-    <h4>Add New Files</h4>
+    <h4>Add New File</h4>
     <div class="ui form">
       <div class="two fields">
-        <div class="four wide field required">
+        <div class="four wide field">
           <label>File</label>
-          <input type="file" id="sylius_product_files[]" name="sylius_product[files][]" required="required"
-                 multiple="multiple">
+          <input type="file" name="new_file">
           <input type="hidden" id="current_file_id">
         </div>
         <div class="twelve wide field">
           <label>Title</label>
-          <input type="text" id="sylius_product_file_titles[]" name="sylius_product[file_titles][]"
+          <input type="text" name="file_properties[title]"
                  placeholder="Title">
         </div>
+      </div>
+      <div class="field">
+        <label>URL</label>
+        <input type="url" name="file_properties[url]">
       </div>
     </div>
 

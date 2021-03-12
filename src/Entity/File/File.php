@@ -74,7 +74,7 @@ class File implements FileInterface, ResourceInterface
    * @ORM\Column(type="integer")
    * @var int
    */
-  protected $size;
+  protected $size = 0;
 
   /**
    * @ORM\Column(type="string", nullable=true)
@@ -97,116 +97,106 @@ class File implements FileInterface, ResourceInterface
   /**
    * @return int|null
    */
-  public function getId(): ?int {
+  public function getId(): ?int
+  {
     return $this->id;
   }
 
   /**
    * @return string|null
    */
-  public function getChecksum(): ?string {
+  public function getChecksum(): ?string
+  {
     return $this->checksum;
   }
 
   /**
    * @param string|null $checksum
    */
-  public function setChecksum(?string $checksum): void {
+  public function setChecksum(?string $checksum): void
+  {
     $this->checksum = $checksum;
   }
 
-  public function getType(): ?string {
+  public function getType(): ?string
+  {
     return $this->type;
   }
 
-  public function setType(?string $type): void {
+  public function setType(?string $type): void
+  {
     $this->type = $type;
   }
 
-  public function hasType(): bool {
+  public function hasType(): bool
+  {
     return null !== $this->type;
-  }
-
-  /**
-   * @return string|null
-   */
-  public function getUrl(): ?string {
-    return $this->url;
-  }
-
-  /**
-   * @param string|null $url
-   */
-  public function setUrl(?string $url): void {
-    $this->url = $url;
-  }
-
-  /**
-   * @return bool
-   */
-  public function hasUrl(): bool {
-    return null !== $this->url;
   }
 
   /**
    * @return int|null
    */
-  public function getSize(): ?int {
+  public function getSize(): ?int
+  {
     return $this->size;
   }
 
   /**
    * @param int|null $size
    */
-  public function setSize(?int $size): void {
+  public function setSize(?int $size): void
+  {
     $this->size = $size;
   }
 
   /**
    * @return AdminUser|null
    */
-  public function getCreatedBy(): ?AdminUser {
+  public function getCreatedBy(): ?AdminUser
+  {
     return $this->createdBy;
   }
 
   /**
    * @param AdminUser|null $createdBy
    */
-  public function setCreatedBy(?AdminUser $createdBy): void {
+  public function setCreatedBy(?AdminUser $createdBy): void
+  {
     $this->createdBy = $createdBy;
-  }
-
-  public function getName(): ?string {
-    return $this->name;
-  }
-
-  public function setName(?string $name) {
-    $this->name = $name;
   }
 
   /**
    * Hydrates entity based on underlying UploadedFile object.
    */
-  public function hydrate() {
-    if (!$this->hasFile()) {
-      return;
-    }
-
-    $this->setName($this->getFile() ? $this->getFile()
-                                           ->getFilename() : null);
-    $this->setType($this->getFile()
-                        ->getExtension());
-    $this->setPath($this->getFile()
-                        ->getPathname());
-    $this->setVersion($this->getVersion() + 1);
-
+  public function hydrate()
+  {
     $this->updateChecksum();
     $this->updateCreatedAt();
+    $this->updateName();
+    $this->updatePath();
     $this->updateSize();
+    $this->updateType();
     $this->updateUpdatedAt();
+    $this->updateVersion();
   }
 
-  public function hasFile(): bool {
+  /**
+   * @ORM\PrePersist
+   * @ORM\PreUpdate
+   */
+  public function updateChecksum()
+  {
+    if ($this->hasFile()) {
+      $path = $this->getFile()->getPathname();
+      $result = hash_file('sha256', $path);
+      $this->setChecksum($result);
+    } elseif ($this->hasUrl()) {
+      $this->setChecksum(hash('sha256', $this->getUrl()));
+    }
+  }
+
+  public function hasFile(): bool
+  {
     if (null === $this->file && $this->hasPath()) {
       $this->updateFile();
     }
@@ -214,27 +204,32 @@ class File implements FileInterface, ResourceInterface
     return null !== $this->file;
   }
 
-  public function hasPath(): bool {
+  public function hasPath(): bool
+  {
     return null !== $this->path;
   }
 
-  public function updateFile() {
-    if ($this->getPath()) {
+  public function updateFile()
+  {
+    if ($this->hasPath()) {
       $this->file = new \Symfony\Component\HttpFoundation\File\File(
         $this->getPath()
       );
     }
   }
 
-  public function getPath(): ?string {
+  public function getPath(): ?string
+  {
     return $this->path;
   }
 
-  public function setPath(?string $path): void {
+  public function setPath(?string $path): void
+  {
     $this->path = $path;
   }
 
-  public function getFile(): ?\Symfony\Component\HttpFoundation\File\File {
+  public function getFile(): ?\Symfony\Component\HttpFoundation\File\File
+  {
     return $this->file;
   }
 
@@ -245,52 +240,116 @@ class File implements FileInterface, ResourceInterface
   }
 
   /**
-   * @ORM\PrePersist
-   * @ORM\PreUpdate
+   * @return bool
    */
-  public function updateChecksum() {
-    if ($this->hasFile()) {
-      $path = $this->getFile()
-                   ->getPathname();
-      $result = hash_file('sha256', $path);
-      $this->setChecksum($result);
-    }
-  }
-
-  /**
-   * @ORM\PrePersist
-   * @ORM\PreUpdate
-   */
-  public function updateSize() {
-    if ($this->hasFile()) {
-      $size = $this->getFile()
-                   ->getSize();
-      $this->setSize($size);
-    }
+  public function hasUrl(): bool
+  {
+    return null !== $this->url;
   }
 
   /**
    * @return string|null
    */
-  public function getTitle(): ?string {
+  public function getUrl(): ?string
+  {
+    return $this->url;
+  }
+
+  /**
+   * @param string|null $url
+   */
+  public function setUrl(?string $url): void
+  {
+    $this->url = $url;
+  }
+
+  public function updateName()
+  {
+    if ($this->hasFile()) {
+      $this->setName($this->getFile()->getFilename());
+    }
+  }
+
+  public function updatePath()
+  {
+    if ($this->hasFile()) {
+      $this->setPath($this->getFile()->getPathname());
+    }
+  }
+
+  /**
+   * @ORM\PrePersist
+   * @ORM\PreUpdate
+   */
+  public function updateSize()
+  {
+    if ($this->hasFile()) {
+      $size = $this->getFile()->getSize();
+      $this->setSize($size);
+    }
+  }
+
+  public function updateType()
+  {
+    if ($this->hasFile()) {
+      $this->setType($this->getFile()->getExtension());
+    } elseif ($this->hasUrl()) {
+      $this->setType('url');
+    }
+  }
+
+  public function updateVersion()
+  {
+    $this->setVersion($this->getVersion() + 1);
+  }
+
+  /**
+   * @return string|null
+   */
+  public function getTitle(): ?string
+  {
     if ($this->hasTitle()) {
       return $this->title;
     }
 
-    return $this->getName();
+    if ($this->getName()) {
+      return $this->getName();
+    }
+
+    if ($this->getUrl()) {
+      if (strlen($this->getUrl()) <= 50) {
+        return $this->getUrl();
+      }
+      $left = substr($this->getUrl(), 0, 20);
+      $middle = '...';
+      $right = substr($this->getUrl(), -20);
+      return $left . $middle . $right;
+    }
   }
 
   /**
    * @param string|null $title
    */
-  public function setTitle(?string $title): void {
+  public function setTitle(?string $title): void
+  {
     $this->title = $title;
   }
 
   /**
    * @return bool
    */
-  public function hasTitle(): bool {
+  public function hasTitle(): bool
+  {
     return $this->title !== null && $this->title !== '';
+  }
+
+  public function getName(): ?string
+  {
+    return $this->name;
+  }
+
+  public function setName(?string $name)
+  {
+    $this->name = $name;
   }
 }

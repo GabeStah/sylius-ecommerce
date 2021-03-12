@@ -1,1 +1,5 @@
-<span data-tooltip="{{ data.name }}" data-position="top left">{{ data.title }}</span>
+{% if data.name is not empty %}
+  <span data-tooltip="{{ data.name }}" data-position="top left">{{ data.title }}</span>
+{% else %}
+  <span>{{ data.title }}</span>
+{% endif %}

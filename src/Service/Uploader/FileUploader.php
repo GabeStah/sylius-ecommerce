@@ -58,6 +58,17 @@ class FileUploader implements FileUploaderInterface
   }
 
   /**
+   * @param FileInterface $file
+   *
+   * @return string|null
+   */
+  public function handleRemoteFile(FileInterface $file): ?string
+  {
+    $file->hydrate();
+    return $file->getUrl();
+  }
+
+  /**
    * Upload file to filesystem.
    *
    * Accepts either resource event with FileInterface subject or Uploaded File object
@@ -74,6 +85,9 @@ class FileUploader implements FileUploaderInterface
       if ($subject instanceof ResourceControllerEvent) {
         /** @var FileInterface $file */
         $file = $subject->getSubject();
+        if (!$file->hasFile()) {
+          return $this->handleRemoteFile($file);
+        }
         $path = $this->filePathGenerator->fromFile($file);
         $uploadedFile = $file->getFile();
       } else {

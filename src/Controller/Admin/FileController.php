@@ -43,6 +43,8 @@ class FileController extends ResourceController
     ) {
       $newResource = $form->getData();
 
+      //      $shouldDownload = $form->get('download')->getData();
+
       $event = $this->eventDispatcher->dispatchPreEvent(
         ResourceActions::CREATE,
         $configuration,
