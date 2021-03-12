@@ -20,8 +20,13 @@
         <td
           class="text-dark align-middle sylius-product-download-title" {{ sylius_test_html_attribute('product-download-title', file.title) }}
         >
-          <a href="{{ uploads_directory }}{{ file.name }}" target="_blank"
-             aria-describedby="{{ file.title }}">{{ file.title }}</a>
+          {% if file.name is not empty %}
+            <a href="{{ uploads_directory }}{{ file.name }}" target="_blank"
+               aria-describedby="{{ file.title }}">{{ file.title }}</a>
+          {% else %}
+            <a href="{{ file.url }}" target="_blank"
+               aria-describedby="{{ file.title }}">{{ file.title }}</a>
+          {% endif %}
         </td>
       </tr>
     {% endfor %}

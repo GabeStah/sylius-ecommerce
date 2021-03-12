@@ -8,10 +8,8 @@ use App\Entity\File\File;
 use App\Entity\Product\Product;
 use App\Entity\Product\ProductFile;
 use App\Repository\FileRepository;
-use App\Repository\ProductFileRepository;
 use App\Service\Uploader\FileUploader;
 use FOS\RestBundle\View\View;
-use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
 use Sylius\Component\Resource\Exception\UpdateHandlingException;
@@ -255,78 +253,71 @@ class ProductController extends ResourceController
   /**
    * Handles new file upload(s).
    *
-   * @param Product              $resource
-   * @param Request              $request
-   * @param RequestConfiguration $configuration
+   * @param Product $resource
+   * @param Request $request
    */
-  private function handleFiles(
-    Product $resource,
-    Request $request,
-    RequestConfiguration $configuration
-  ) {
-    if ($request->files->count() >= 1) {
-      $uploader = $this->container->get('app.listener.admin.file_upload');
+  private function handleFiles(Product $resource, Request $request)
+  {
+    $uploader = $this->container->get('app.listener.admin.file_upload');
 
-      $titles = $request->request->get('sylius_product')['file_titles'];
+    $temporaryFile = $request->files->get('new_file');
+    $title = $request->request->get('file_properties')['title'];
+    $url = $request->request->get('file_properties')['url'];
 
-      foreach (
-        $request->files->get('sylius_product')['files']
-        as $fileKey => $uploadedFile
-      ) {
-        // Upload file to filesystem
-        $localPath = $uploader->upload($uploadedFile);
+    $file = new File();
 
-        $file = new File();
-        $file->setFile(
-          new \Symfony\Component\HttpFoundation\File\File($localPath)
-        );
-        if ($titles[0] && $titles[0] !== '') {
-          $file->setTitle($titles[$fileKey]);
-        }
-        $file->hydrate();
+    if ($temporaryFile) {
+      // Upload file to filesystem
+      $localPath = $uploader->upload($temporaryFile);
+      $file->setFile(
+        new \Symfony\Component\HttpFoundation\File\File($localPath)
+      );
+    }
 
-        /** @var FileRepository $fileRepository */
-        $fileRepository = $this->container->get('app.repository.files');
-        // Find existing file by matching checksum
-        $existingFile = $fileRepository->findOneBy([
-          'checksum' => $file->getChecksum(),
-        ]);
+    if ($title && $title !== '') {
+      $file->setTitle($title);
+    }
+    if ($url && $url !== '') {
+      $file->setUrl($url);
+    }
+    $file->hydrate();
 
-        if ($existingFile) {
-          $file = $existingFile;
-        } else {
-          // Add new file to database
-          $fileRepository->add($file);
-        }
+    /** @var FileRepository $fileRepository */
+    $fileRepository = $this->container->get('app.repository.files');
+    // Find existing file by matching checksum
+    $existingFile = $fileRepository->findOneBy([
+      'checksum' => $file->getChecksum(),
+    ]);
 
-        if ($resource->hasFile($file)) {
-          $this->addFlash(
-            'error',
-            '"' . $file->getTitle() . '" file already linked to product.'
-          );
-        } else {
-          // Add Product::File association
-          /** @var ProductFileRepository $productFileRepository */
-          $productFileRepository = $this->container->get(
-            'app.repository.product_file'
-          );
-          $productFile = new ProductFile();
-          $productFile->setProduct($resource);
-          $productFile->setEnabled(true);
-          $productFile->setOwner($resource);
-          $productFile->setFile($file);
-          $resource->addProductFile($productFile);
+    if ($existingFile) {
+      $file = $existingFile;
+    } else {
+      // Add new file to database
+      $fileRepository->add($file);
+    }
 
-          $productManager = $this->container->get('sylius.manager.product');
-          $productManager->persist($resource);
-          $productManager->flush();
+    if ($resource->hasFile($file)) {
+      $this->addFlash(
+        'error',
+        '"' . $file->getTitle() . '" file already linked to product.'
+      );
+    } else {
+      // Add Product::File association
+      $productFile = new ProductFile();
+      $productFile->setProduct($resource);
+      $productFile->setEnabled(true);
+      $productFile->setOwner($resource);
+      $productFile->setFile($file);
+      $resource->addProductFile($productFile);
 
-          $this->addFlash(
-            'success',
-            '"' . $file->getTitle() . '" file successfully linked to product.'
-          );
-        }
-      }
+      $productManager = $this->container->get('sylius.manager.product');
+      $productManager->persist($resource);
+      $productManager->flush();
+
+      $this->addFlash(
+        'success',
+        '"' . $file->getTitle() . '" file successfully linked to product.'
+      );
     }
   }
 
@@ -347,7 +338,7 @@ class ProductController extends ResourceController
       in_array($request->getMethod(), ['POST', 'PUT', 'PATCH'], true) &&
       $form->handleRequest($request)->isValid()
     ) {
-      $this->handleFiles($resource, $request, $configuration);
+      $this->handleFiles($resource, $request);
       $this->handleFileDeletion($request);
 
       $resource = $form->getData();
