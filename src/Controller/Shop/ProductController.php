@@ -244,7 +244,9 @@ class ProductController extends ResourceController
         if ($existingFile) {
           // Remove file
           $fileRepository->remove($existingFile);
-          $uploader->remove($existingFile->getPath());
+          if ($existingFile->hasFile()) {
+            $uploader->remove($existingFile->getPath());
+          }
         }
       }
     }
@@ -263,6 +265,11 @@ class ProductController extends ResourceController
     $temporaryFile = $request->files->get('new_file');
     $title = $request->request->get('file_properties')['title'];
     $url = $request->request->get('file_properties')['url'];
+
+    // No files to process
+    if (!$temporaryFile && !$url) {
+      return;
+    }
 
     $file = new File();
 
