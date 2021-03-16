@@ -42,7 +42,7 @@ final class FedExRateCalculator implements CalculatorInterface
     if (!$rate) {
       return 0;
     }
-    $baseCharge = $rate->getBaseCharge() * 100;
+    $baseCharge = $rate->getBaseCharge();
     return (int) intval(
       $configuration['minimum'] > $baseCharge
         ? $configuration['minimum']

@@ -32,6 +32,7 @@
     - [1.5.2. Normalization and Mapping](#152-normalization-and-mapping)
       - [1.5.2.1. Options](#1521-options)
       - [1.5.2.2. Pricing](#1522-pricing)
+      - [1.5.2.3. Product: Water Heater](#1523-product-water-heater)
     - [1.5.3. Filtered Data](#153-filtered-data)
     - [1.5.4. Extra Data](#154-extra-data)
     - [1.5.5. Finalized Database Imports](#155-finalized-database-imports)
@@ -56,11 +57,13 @@
   - [2.2. Shipping Calculator](#22-shipping-calculator)
   - [2.3. Issue: Handling Multiple Rates](#23-issue-handling-multiple-rates)
   - [2.4. Issue: Provider API Request Throttling](#24-issue-provider-api-request-throttling)
+  - [2.5. Issue: Orders w/ Invalid Shipping Methods](#25-issue-orders-w-invalid-shipping-methods)
 - [3. Static Page Imports](#3-static-page-imports)
 - [4. Dealers](#4-dealers)
   - [4.1. Nearby Dealers (Geolocation)](#41-nearby-dealers-geolocation)
   - [4.2. Frontend Dealers Pages](#42-frontend-dealers-pages)
   - [4.3. Administration](#43-administration)
+- [5. Files](#5-files)
 
 ## 1. Import Pipeline
 
@@ -658,7 +661,7 @@ Here's a collection of `sylius_product_option_value` records for the `bowl_size`
 Sylius manages the price of a given `ProductVariant` through an assigned `Channel`. At present a
 single `DEFAULT` `Channel` exists and contains all imported `ProductVariants`.
 
-##### Product: Water Heater
+##### 1.5.2.3. Product: Water Heater
 
 - V1 `products` table data:
 
@@ -1017,6 +1020,19 @@ of [Rates](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shippi
 . When the rates calculator is invoked it checks the Order's rates cache for last updated timestamp. If updated within a
 short period of time the cache is returned rather than making a new FedEx provider API request.
 
+### 2.5. Issue: Orders w/ Invalid Shipping Methods
+
+Checkout should not proceed past "Select Shipping Method" if the selected shipping method has a zero-value base charge. This can be caused by two different scenarios:
+
+- The shipping service API is down/fails to respond
+- Some of the available `ShippingMethods` provided via the Sylius admin dashboard **are not** valid for the requested `Shipment`, which causes the `Rate` to remain at the default `0` base charge value.
+
+The first issue is resolved by adding an event listener that compares the selected `ShippingMethod` value against the API-provided rates data. If the API failed to respond or provided a zero-value base charge for the selected `ShippingMethod`, the listener halts execution, returns to the select shipping page, and displays an error to the user.
+
+The second issue is resolved by adding rates data inline in the DOM when the `selectShipping.html.twig` template is rendered. Any shipping method div with an invalid `data-fee` attribute is hidden from view. Further, if there are **no** valid shipping methods available then the proceed button is disabled and an error message is displayed to the user informing them to contact Raritan for further assistance.
+
+Coupons that reduce shipping charges to zero (i.e. 100% off) are unaffected by these adjustments and still function normally.
+
 ## 3. Static Page Imports
 
 | ID  | Title                                           | Category          | Status   | Note                                                   |
@@ -1095,7 +1111,7 @@ The new V2 Dealers frontend pages closely mimic the V1 look and behavior.
 
 - Visit `/admin/dealers/` section under `Miscellaneous > Dealers` admin dashboard
 
-## Files
+## 5. Files
 
 - id
 - owner_id

@@ -10,6 +10,10 @@ company:
   phone2: '1-954-525-0378'
   name: 'Raritan Engineering'
 
+checkout:
+  select_shipping:
+    zero_shipping_total_error: 'Please choose a valid shipping method or contact Raritan for assistance.'
+
 dealer:
   type:
     domestic: 'Domestic Distributor'

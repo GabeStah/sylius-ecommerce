@@ -5,31 +5,75 @@
 {% block title %}{{ 'sylius.ui.shipping'|trans }} | {{ parent() }}{% endblock %}
 
 {% block content %}
-    {{ sylius_template_event(['sylius.shop.checkout.select_shipping.steps', 'sylius.shop.checkout.steps'], _context|merge({'active': 'select_shipping', 'orderTotal': order.total})) }}
+  {{ sylius_template_event(['sylius.shop.checkout.select_shipping.steps', 'sylius.shop.checkout.steps'], _context|merge({'active': 'select_shipping', 'orderTotal': order.total})) }}
 
-    <div class="row">
-        <div class="col-12 col-lg-8 mb-5">
-            <div>
-                <div id="sylius-shipping-methods">
-                    {{ sylius_template_event('sylius.shop.checkout.select_shipping.before_form', {'order': order}) }}
+  <div class="row">
+    <div class="col-12 col-lg-8 mb-5">
+      <div>
+        <div id="sylius-shipping-methods">
+          {{ sylius_template_event('sylius.shop.checkout.select_shipping.before_form', {'order': order}) }}
 
-                    {{ form_start(form, {'action': path('sylius_shop_checkout_select_shipping'), 'attr': {'class': 'loadable', 'novalidate': 'novalidate'}}) }}
-                        {{ form_errors(form) }}
-                        <input type="hidden" name="_method" value="PUT" />
+          {{ form_start(form, {'action': path('sylius_shop_checkout_select_shipping'), 'attr': {'class': 'loadable', 'novalidate': 'novalidate'}}) }}
+          {{ form_errors(form) }}
+          <div id="shipping_errors" class="alert alert-danger d-none">
+          </div>
+          <input type="hidden" name="_method" value="PUT"/>
 
-                        {% include '@SyliusShop/Checkout/SelectShipping/_form.html.twig' %}
+          {% include '@SyliusShop/Checkout/SelectShipping/_form.html.twig' %}
 
-                        {{ sylius_template_event('sylius.shop.checkout.select_shipping.before_navigation', {'order': order}) }}
+          {{ sylius_template_event('sylius.shop.checkout.select_shipping.before_navigation', {'order': order}) }}
 
-                        {% include '@SyliusShop/Checkout/SelectShipping/_navigation.html.twig' %}
+          {% include '@SyliusShop/Checkout/SelectShipping/_navigation.html.twig' %}
 
-                        {{ form_row(form._token) }}
-                    {{ form_end(form, {'render_rest': false}) }}
-                </div>
-            </div>
+          {{ form_row(form._token) }}
+          {{ form_end(form, {'render_rest': false}) }}
         </div>
-        <div class="col-12 col-lg-4">
-            {{ sylius_template_event(['sylius.shop.checkout.select_shipping.sidebar', 'sylius.shop.checkout.sidebar'], _context) }}
-        </div>
+      </div>
     </div>
+    <div class="col-12 col-lg-4">
+      {{ sylius_template_event(['sylius.shop.checkout.select_shipping.sidebar', 'sylius.shop.checkout.sidebar'], _context) }}
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+
+    function disableForm() {
+      document
+        .querySelector('form[name="sylius_checkout_select_shipping"]')
+        .querySelector('button[type="submit"]')
+        .setAttribute('disabled', 'disabled');
+    }
+
+    function showInvalidShippingError() {
+      // No valid shipping methods
+      const errorElement = document.querySelector('div[id="shipping_errors"]');
+      errorElement.innerHTML = `<span class="d-block">
+            <span class="form-error-icon badge badge-danger text-uppercase">Error</span>
+            <span class="form-error-message">We were unable to retrieve any valid shipping methods.</span>
+            <span class="form-error-message d-block">Please <a href="{{ path('sylius_shop_contact_request') }}">click here</a> or call us at {{ 'company.phone'|trans }} and we'll be happy to assist you.</span>
+        </span>`;
+      errorElement.classList.remove('d-none');
+      errorElement.classList.add('d-block');
+    }
+
+    function validateShippingMethods() {
+      // Hide all non-fee shipping methods
+      document.querySelectorAll('div[data-fee="0"]').forEach(e => e.style.display = 'none');
+
+      // Find valid shipping methods
+      const validShippingMethodGroups = document.querySelectorAll('div[data-fee]:not([data-fee="0"])');
+      if (validShippingMethodGroups.length > 0) {
+        // Set first entry as checked
+        validShippingMethodGroups[0].querySelector('input').setAttribute('checked', 'checked');
+      } else {
+        showInvalidShippingError();
+        disableForm();
+      }
+    }
+
+    validateShippingMethods();
+  </script>
 {% endblock %}
