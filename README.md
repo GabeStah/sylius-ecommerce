@@ -58,6 +58,7 @@
   - [2.3. Issue: Handling Multiple Rates](#23-issue-handling-multiple-rates)
   - [2.4. Issue: Provider API Request Throttling](#24-issue-provider-api-request-throttling)
   - [2.5. Issue: Orders w/ Invalid Shipping Methods](#25-issue-orders-w-invalid-shipping-methods)
+  - [Issue: Expanded International Shipping](#issue-expanded-international-shipping)
 - [3. Static Page Imports](#3-static-page-imports)
 - [4. Dealers](#4-dealers)
   - [4.1. Nearby Dealers (Geolocation)](#41-nearby-dealers-geolocation)
@@ -1032,6 +1033,61 @@ The first issue is resolved by adding an event listener that compares the select
 The second issue is resolved by adding rates data inline in the DOM when the `selectShipping.html.twig` template is rendered. Any shipping method div with an invalid `data-fee` attribute is hidden from view. Further, if there are **no** valid shipping methods available then the proceed button is disabled and an error message is displayed to the user informing them to contact Raritan for further assistance.
 
 Coupons that reduce shipping charges to zero (i.e. 100% off) are unaffected by these adjustments and still function normally.
+
+### Issue: Expanded International Shipping
+
+The following countries are valid shipping destinations:
+
+| Name                     | Code |
+| ------------------------ | ---- |
+| Australia                | AU   |
+| Canada                   | CA   |
+| Denmark                  | DK   |
+| France                   | FR   |
+| Japan                    | JP   |
+| Mexico                   | MX   |
+| Netherlands              | NL   |
+| Panama                   | PA   |
+| Puerto Rico              | PR   |
+| Singapore                | SG   |
+| South Korea              | KR   |
+| Sweden                   | SE   |
+| Turkey                   | TR   |
+| United Arab Emirates     | UA   |
+| United Kingdom           | GB   |
+| United States            | US   |
+| Virgin Islands (British) | VG   |
+| Virgin Islands (U.S.)    | VI   |
+
+FedEx Serviced Countries: https://www.fedex.com/content/dam/fedex/us-united-states/services/CountriesServed_IF_IP_IE.pdf
+
+---
+
+- [x] Add new `FEDEX_INTERNATIONAL_FIRST` shipping method
+- [x] Disable unused countries in **Admin > Countries**
+- [x] Add additional countries to **Admin > Countries**
+- [x] Add `Canada` and `Mexico` to **Admin > Zones > `North America`** `Zone`
+- [x] Add other countries to **Admin > Zones > `World`** `Zone`
+- [x] Test address from each country:
+
+| First Name          | Last Name         | Street Address                                         | State    | City             | Zipcode  |
+| ------------------- | ----------------- | ------------------------------------------------------ | -------- | ---------------- | -------- |
+| Red                 | House             | 37272 Dawson Rd                                        | BC       | Abbotsford       | V3G 2K9  |
+| Copenhagen          | OperaHouse        | Ekvipagemestervej 10                                   |          | København        | 1438     |
+| Musée               | du Louvre         | Rue de Rivoli                                          |          | Paris            | 75001    |
+| Tokyo Medical       | Dental University | 1 Chome-5-45 Yushima                                   | Tokyo    | Bunkyo City      | 113-8510 |
+| Palacio             | de Bellas Artes   | Av. Juárez S/N, Centro Histórico de la Cdad. de México |          | Ciudad de México | 06050    |
+| Informatica         | Nederland B.V.    | Edisonbaan, 14A                                        |          | NIEUWEGEIN       | 3439 MN  |
+| Banco Nacional      | de Panama         | Av 17 de Abril                                         |          | Changuinola      | 0101     |
+| Puertorican         | Apartment         | 1234 Ave Ashford, Apt 1A                               | PR       | San Juan         | 00907    |
+| Singapore Post      | Pte Ltd           | 10 Eunos Road 8                                        |          | Singapore        | 408600   |
+| 홍길동              | 귀하              | Sajik-ro-3-gil 23, Bldg. 102 Unit 304                  | Seoul    | Jongno-gu        | 30174    |
+| Royal               | Palace            | Kungliga slottet                                       |          | Stockholm        | 107 70   |
+| MEHMET              | DEMIR             | AKŞEMSETTİN MAH., GÖKHAN SOK. NO. 1                    | ANKARA   | SİNCAN           | 06934    |
+| Burj                | Khalifa           | 1 Sheikh Mohammed bin Rashid Blvd                      |          | Dubai            | 00000    |
+| Rosewood            | London            | 252 High Holborn                                       |          | London           | WC1V 7EN |
+| BritishVirginIsland | Person            | UPS Cineplex BVI                                       |          | Road Town        | VG1110   |
+| Supersave           | Market            | 39-40 Concordia Rd                                     | St Croix | Frederiksted     | 00840    |
 
 ## 3. Static Page Imports
 
