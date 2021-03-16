@@ -94,6 +94,19 @@ services:
       - { name: form.type, alias: app_admin_product_file_type }
     arguments: [ 'App\Entity\Product\Product' ]
 
+  app.listener.checkout:
+    class: App\EventListener\CheckoutListener
+    arguments: [ '@router', '@sylius.manager.order', '@translator' ]
+    tags:
+      - { name: kernel.event_listener, event: sylius.order.pre_address, method: onPreAddress }
+      - { name: kernel.event_listener, event: sylius.order.post_address, method: onPostAddress }
+      - { name: kernel.event_listener, event: sylius.order.pre_select_shipping, method: onPreSelectShipping }
+      - { name: kernel.event_listener, event: sylius.order.post_select_shipping, method: onPostSelectShipping }
+      - { name: kernel.event_listener, event: sylius.order.pre_payment, method: onPrePayment }
+      - { name: kernel.event_listener, event: sylius.order.post_payment, method: onPostPayment }
+      - { name: kernel.event_listener, event: sylius.order.pre_complete, method: onPreComplete }
+      - { name: kernel.event_listener, event: sylius.order.post_complete, method: onPostComplete }
+
   app.listener.file:
     class: App\EventListener\FileListener
     arguments: [ '@app.repository.files' ]
