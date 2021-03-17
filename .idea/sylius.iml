@@ -280,6 +280,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/bin/.phpunit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/karser/karser-recaptcha3-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/google/recaptcha" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/tgalopin/html-sanitizer-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/tgalopin/html-sanitizer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/masterminds/html5" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
