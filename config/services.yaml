@@ -62,6 +62,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: Sylius\Bundle\CoreBundle\Form\Type\ContactType, priority: -1 }
 
+  app.form.extension.customer_registration:
+    class: App\Form\Extension\CustomerRegistrationTypeExtension
+    tags:
+      - { name: form.type_extension, extended_type: Sylius\Bundle\CoreBundle\Form\Type\Customer\CustomerRegistrationType, priority: -1 }
+
   app.form.extension.product_translation:
     class: App\Form\Extension\ProductTranslationTypeExtension
     tags:
