@@ -213,6 +213,9 @@ services:
     #    arguments: [ '@templating' ]
     tags: [ 'controller.service_arguments' ]
 
+  App\Command\Export\ProductExportCommand:
+    arguments:
+      $name: null
   App\Command\Import\CategoryImportCommand:
     arguments:
       $name: null
