@@ -2,14 +2,13 @@
 
 namespace App\Command\Import;
 
-use App\Service\Importer\AbstractImporterInterface;
-use App\Service\Importer\CategoryImporter;
+use App\Service\Importer\Provider\JsonProvider;
+use App\Service\Importer\Provider\SqlProvider;
+use App\Service\Importer\Traits\ImporterAwareTrait;
 use App\Service\Logger;
-use App\Service\ProductManager;
 use Exception;
 use Swaggest\JsonSchema\Schema;
 use Sylius\Bundle\CoreBundle\Command\AbstractInstallCommand;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,9 +16,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractImportCommand extends AbstractInstallCommand implements
   AbstractImportCommandInterface
 {
+  use ImporterAwareTrait;
+
   protected static $defaultName = 'import:name';
-  private $importer;
   private $logging = false;
+
+  protected $sqlConnectionParams = [];
+  /**
+   * @var string
+   */
+  protected $providerType;
+
+  protected $queryString;
+
+  protected const PROVIDER_TYPE_JSON = 'json';
+  protected const PROVIDER_TYPE_SQL = 'sql';
 
   public function __construct(?string $name)
   {
@@ -30,6 +41,21 @@ abstract class AbstractImportCommand extends AbstractInstallCommand implements
       InputOption::VALUE_OPTIONAL,
       'Logs output.',
       false
+    );
+
+    $this->addOption(
+      'provider',
+      null,
+      InputOption::VALUE_OPTIONAL,
+      'Defines the data provider.',
+      static::PROVIDER_TYPE_SQL
+    );
+
+    $this->addOption(
+      'path',
+      null,
+      InputOption::VALUE_REQUIRED,
+      'Path to JSON data.'
     );
   }
 
@@ -65,8 +91,53 @@ abstract class AbstractImportCommand extends AbstractInstallCommand implements
   {
     $this->setLogging($input->getOption('log') !== false);
     $output->writeln(['==================', get_class(), '==================']);
+
+    $this->setProviderType($input->getOption('provider'));
+    $output->writeln(['Provider Type: ' . strtoupper($this->providerType)]);
+
+    $this->configureProvider($input, $output);
+
     // Should return exit status code
     return 0;
+  }
+
+  private function setProviderType(string $providerType)
+  {
+    $this->providerType = $providerType;
+  }
+
+  private function configureProvider(
+    InputInterface $input,
+    OutputInterface $output
+  ) {
+    if ($this->providerType === static::PROVIDER_TYPE_SQL) {
+      $this->setSqlConnectionParams([
+        'dbname' => $this->getContainer()->getParameter(
+          'raritan.database.name'
+        ),
+        'user' => $this->getContainer()->getParameter('raritan.database.user'),
+        'password' => $this->getContainer()->getParameter(
+          'raritan.database.password'
+        ),
+        'host' => $this->getContainer()->getParameter('raritan.database.host'),
+        'port' => $this->getContainer()->getParameter('raritan.database.port'),
+        'driver' => 'pdo_mysql',
+      ]);
+
+      $provider = new SqlProvider();
+      $provider->setOption('connection', $this->getSqlConnectionParams());
+      $provider->setQuery($this->queryString);
+      $provider->connect();
+      $this->getImporter()->setProvider($provider);
+    } elseif ($this->providerType === static::PROVIDER_TYPE_JSON) {
+      $provider = new JsonProvider();
+      $path = $input->getOption('path');
+      if (!$path) {
+        throw new Exception('Path value invalid, aborting.');
+      }
+      $provider->setOption('path', $path);
+      $this->getImporter()->setProvider($provider);
+    }
   }
 
   public function log($value)
@@ -80,5 +151,24 @@ abstract class AbstractImportCommand extends AbstractInstallCommand implements
   {
     $schema = Schema::import('schema/product-collection.json');
     return $schema->in($data);
+  }
+
+  /**
+   * @param array|null $params
+   *
+   * @return $this
+   */
+  public function setSqlConnectionParams(?array $params): AbstractImportCommand
+  {
+    $this->sqlConnectionParams = $params;
+    return $this;
+  }
+
+  /**
+   * @return array
+   */
+  public function getSqlConnectionParams(): array
+  {
+    return $this->sqlConnectionParams;
   }
 }

@@ -9,15 +9,15 @@ use App\Entity\Product\ProductOptionValue;
 use App\Entity\Product\ProductVariant;
 use App\Object\Option as OptionObject;
 use App\Repository\ProductRepository;
-use App\Service\Logger;
 use App\Service\ProductOptionManager;
-use App\Service\StringNormalizer;
 use Doctrine\DBAL\Exception;
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductOptionRepository;
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductVariantRepository;
+use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
 use Sylius\Bundle\TaxationBundle\Doctrine\ORM\TaxCategoryRepository;
 use Sylius\Bundle\TaxonomyBundle\Doctrine\ORM\TaxonRepository;
 use Sylius\Component\Core\Model\ProductInterface;
+use Sylius\Component\Product\Model\ProductOptionValueInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -33,54 +33,6 @@ class ProductVariantImporter extends ProductImporter
    * @var string
    */
   protected $modelName = 'product-variant';
-
-  /**
-   * Base retrieval query string.
-   *
-   * Retrieves all enabled products that are NOT 'trudesign'
-   *
-   * @var string
-   */
-  protected $queryString = <<<EOF
-SELECT
-  p.*,
-  s1.subcatid subcatid1,
-  s1.subcatname subcatname1,
-  s1.subcaturl subcaturl1,
-  s2.subcatid subcatid2,
-  s2.subcatname subcatname2,
-  s2.subcaturl subcaturl2,
-  s3.subcatid subcatid3,
-  s3.subcatname subcatname3,
-  s3.subcaturl subcaturl3,
-  s4.subcatid subcatid4,
-  s4.subcatname subcatname4,
-  s4.subcaturl subcaturl4
-FROM
-  products p
-LEFT JOIN
-  productsubcategory s1
-  ON
-    p.psubcategory = s1.subcatid
-LEFT JOIN
-  productsubcategory s2
-  ON
-    p.psubcategory3 = s2.subcatid
-LEFT JOIN
-  productsubcategory s3
-  ON
-    p.psubcategory4 = s3.subcatid
-LEFT JOIN
-  productsubcategory s4
-  ON
-    p.psubcategory5 = s4.subcatid
-WHERE
-  seourl NOT LIKE '%trudesign%'
-AND
-  prstatus = 1
-ORDER BY
-  productnumber ASC
-EOF;
 
   /**
    * @var ProductRepository
@@ -103,11 +55,11 @@ EOF;
    */
   private $productOptionManager;
   /**
-   * @var object|\Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository|null
+   * @var object|EntityRepository|null
    */
   private $channelPricingRepository;
   /**
-   * @var object|\Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository|null
+   * @var object|EntityRepository|null
    */
   private $productOptionValueRepository;
   /**
@@ -190,7 +142,11 @@ EOF;
     ];
 
     return array_filter($data, function ($item) use ($invalidProductIds) {
-      if (in_array($item['prid'], $invalidProductIds) || !$item['sku']) {
+      if (
+        (array_key_exists('prid', $item) &&
+          in_array($item['prid'], $invalidProductIds)) ||
+        !$item['sku']
+      ) {
         return false;
       }
       return true;
@@ -218,7 +174,11 @@ EOF;
 
     $entity->setCurrentLocale($this->getLocale());
     $entity->setCode($data['sku']);
-    $entity->setEnabled(is_bool($data['enabled']) ? $data['enabled'] : true);
+    $entity->setEnabled(
+      array_key_exists('enabled', $data) && is_bool($data['enabled'])
+        ? $data['enabled']
+        : true
+    );
     $entity->setName($data['name']);
     $entity->setProduct($product);
     $entity->setDepth($data['depth']);
@@ -274,6 +234,12 @@ EOF;
     if (!$data['options'] || count($data['options']) === 0) {
       return;
     }
+
+    /** @var ProductOptionValueInterface $optionValue */
+    foreach ($entity->getOptionValues() as $optionValue) {
+      $entity->removeOptionValue($optionValue);
+    }
+
     /** @var OptionObject $optionObject */
     foreach ($data['options'] as $optionObject) {
       $option =
@@ -304,64 +270,5 @@ EOF;
       // Add option to product
       $product->addOption($option);
     }
-  }
-
-  /**
-   * Normalize and map product variant data.
-   *
-   * @param mixed $item
-   *
-   * @return array
-   */
-  public function normalizeEntity($item): array
-  {
-    $data = [
-      'prid' => $item['prid'],
-      'enabled' => boolval(
-        is_null($item['prstatus']) ? false : $item['prstatus']
-      ),
-      'product_id' => $item['productnumber'],
-      'images' => [],
-      'options' => [],
-      'price' => $item['punitprice'] ? intval($item['punitprice'] * 100) : 0,
-      'name' => StringNormalizer::toTitle($item['productname']),
-      'sku' => $item['partnumber'],
-      'slug' => StringNormalizer::toSlug($item['seourl']),
-      'timestamp' => time(),
-      'weight' => $item['weight'],
-    ];
-
-    $data['description'] = $item['gendescription'] ?? null;
-    $data['variant_description'] = $item['pdescription'] ?? null;
-
-    $this->normalizeAttributes($data, $item);
-    $this->normalizeCategories($data, $item);
-    $this->normalizeDescription($data, $item);
-    $this->normalizeDimensions($data, $item);
-    $this->normalizeImages($data, $item);
-    $this->normalizeMeta($data, $item);
-    $this->normalizeOptions($data, $item);
-
-    return $data;
-  }
-
-  /**
-   * Normalize and map product options data.
-   *
-   * @param $data
-   * @param $item
-   */
-  public function normalizeOptions(&$data, $item)
-  {
-    $options = [];
-
-    foreach (OptionObject::CONVERSION_MAP as $element) {
-      $value = $item[$element['key']];
-      if ($value) {
-        $options[] = new OptionObject($element['code'], $value);
-      }
-    }
-
-    $data['options'] = $options;
   }
 }

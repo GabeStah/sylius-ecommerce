@@ -3,6 +3,7 @@
 namespace App\Command\Import;
 
 use App\Service\Importer\CategoryImporter;
+use App\Service\Importer\Provider\JsonProviderInterface;
 use App\Service\Importer\SubcategoryImporter;
 use App\Service\Logger;
 use Exception;
@@ -13,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SubcategoryImportCommand extends AbstractImportCommand
 {
   protected static $defaultName = 'import:subcategory';
-  private $importer;
   private $categoryImporter;
 
   public function __construct(
@@ -42,7 +42,16 @@ class SubcategoryImportCommand extends AbstractImportCommand
   {
     parent::execute($input, $output);
 
-    $mappedData = $this->importer->map();
+    $importer = $this->getImporter();
+    $provider = $importer->getProvider();
+
+    // Short circuit if Json
+    if ($provider instanceof JsonProviderInterface) {
+      $output->writeln('Cannot handle JsonProvider, cancelling.');
+      return 0;
+    }
+
+    $mappedData = $this->importer->map($this->importer->execute());
     foreach ($mappedData as $key => $data) {
       $this->importer->fromData($data);
     }

@@ -3,6 +3,7 @@
 namespace App\Command\Import;
 
 use App\Service\Importer\CategoryImporter;
+use App\Service\Importer\Provider\JsonProviderInterface;
 use App\Service\Logger;
 use Exception;
 use Swaggest\JsonSchema\Schema;
@@ -12,11 +13,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CategoryImportCommand extends AbstractImportCommand
 {
   protected static $defaultName = 'import:category';
-  private $importer;
 
   public function __construct(?string $name, CategoryImporter $importer)
   {
-    $this->importer = $importer;
+    $this->setImporter($importer);
     parent::__construct($name);
   }
 
@@ -36,7 +36,16 @@ class CategoryImportCommand extends AbstractImportCommand
   {
     parent::execute($input, $output);
 
-    $mappedData = $this->importer->map();
+    $importer = $this->getImporter();
+    $provider = $importer->getProvider();
+
+    // Short circuit if Json
+    if ($provider instanceof JsonProviderInterface) {
+      $output->writeln('Cannot handle JsonProvider, cancelling.');
+      return 0;
+    }
+
+    $mappedData = $this->importer->map($this->importer->execute());
     usort($mappedData, function ($a, $b) {
       return $a['code'] > $b['code'];
     });

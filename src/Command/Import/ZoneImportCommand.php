@@ -7,6 +7,7 @@ use App\Entity\Addressing\Zone;
 use App\Entity\Addressing\ZoneMember;
 use App\Entity\Taxation\TaxCategory;
 use App\Entity\Taxation\TaxRate;
+use App\Service\Importer\Provider\JsonProviderInterface;
 use App\Service\Logger;
 use Exception;
 use Swaggest\JsonSchema\Schema;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ZoneImportCommand extends AbstractImportCommand
 {
   protected static $defaultName = 'import:zone';
-  private $importer;
+
   /**
    * @var EntityRepository|null
    */
@@ -68,6 +69,15 @@ class ZoneImportCommand extends AbstractImportCommand
   protected function execute(InputInterface $input, OutputInterface $output)
   {
     parent::execute($input, $output);
+
+    $importer = $this->getImporter();
+    $provider = $importer->getProvider();
+
+    // Short circuit if Json
+    if ($provider instanceof JsonProviderInterface) {
+      $output->writeln('Cannot handle JsonProvider, cancelling.');
+      return 0;
+    }
 
     $this->countryRepository = $this->get('sylius.repository.country');
     $this->provinceRepository = $this->get('sylius.repository.province');

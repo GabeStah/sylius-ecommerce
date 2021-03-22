@@ -2,6 +2,8 @@
 
 namespace App\Service\Importer;
 
+use App\Service\Importer\Normalizer\AbstractNormalizerInterface;
+use App\Service\Importer\Provider\AbstractProviderInterface;
 use Doctrine\DBAL\Exception;
 
 interface AbstractImporterInterface
@@ -66,11 +68,13 @@ interface AbstractImporterInterface
   /**
    * Map execution results to array.
    *
+   * @param mixed $data
+   *
    * @return array|array[]
    * @throws Exception
    * @throws \Doctrine\DBAL\Driver\Exception
    */
-  public function map();
+  public function map($data);
 
   /**
    * Execute query.
@@ -83,4 +87,16 @@ interface AbstractImporterInterface
    * @throws \Doctrine\DBAL\Driver\Exception
    */
   public function query(string $query = null, $params = null);
+
+  public function getNormalizer(): AbstractNormalizerInterface;
+
+  public function hasNormalizer(): bool;
+
+  public function setNormalizer(AbstractNormalizerInterface $normalizer);
+
+  public function getProvider(): AbstractProviderInterface;
+
+  public function hasProvider(): bool;
+
+  public function setProvider(AbstractProviderInterface $provider);
 }

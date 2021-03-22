@@ -2,21 +2,20 @@
 
 namespace App\Command\Import;
 
+use App\Service\Importer\Normalizer\v1\ProductNormalizer;
 use App\Service\Importer\ProductImporter;
+use App\Service\Importer\Provider\JsonProviderInterface;
+use App\Service\Importer\Provider\SqlProvider;
 use App\Service\Logger;
 use Exception;
 use Swaggest\JsonSchema\Schema;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ProductImportCommand extends AbstractImportCommand
 {
   protected static $defaultName = 'import:product';
   private $productManager;
-  private $importer;
 
   public function __construct(?string $name, ProductImporter $importer)
   {
@@ -26,18 +25,12 @@ class ProductImportCommand extends AbstractImportCommand
 
   protected function configure()
   {
-    $this->setDescription('Imports a collection of products.')
-      ->setHelp('This command imports a collection of products.')
-      ->setDefinition(
-        new InputDefinition([
-          new InputOption(
-            'path',
-            'p',
-            InputOption::VALUE_REQUIRED,
-            'Path to JSON product data'
-          ),
-        ])
-      );
+    $this->setDescription('Imports a collection of products.')->setHelp(
+      'This command imports a collection of products.'
+    );
+
+    $this->importer->setNormalizer(new ProductNormalizer());
+    $this->importer->setProvider(new SqlProvider());
   }
 
   /**
@@ -52,7 +45,16 @@ class ProductImportCommand extends AbstractImportCommand
   {
     parent::execute($input, $output);
 
-    $mappedData = $this->importer->map();
+    $importer = $this->getImporter();
+    $provider = $importer->getProvider();
+
+    // Short circuit if Json
+    if ($provider instanceof JsonProviderInterface) {
+      $output->writeln('Cannot handle JsonProvider, cancelling.');
+      return 0;
+    }
+
+    $mappedData = $importer->map($importer->execute());
     foreach ($mappedData as $key => $data) {
       $this->log($data);
       $this->importer->fromData($data);
@@ -63,7 +65,7 @@ class ProductImportCommand extends AbstractImportCommand
     Logger::print('Modified ' . count($mappedData) . ' entities.');
 
     // Save to file
-    $this->importer->save();
+    $importer->save();
 
     // Should return exit status code
     return 0;

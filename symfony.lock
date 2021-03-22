@@ -148,6 +148,9 @@
     "egulias/email-validator": {
         "version": "2.1.5"
     },
+    "ezyang/htmlpurifier": {
+        "version": "v4.13.0"
+    },
     "fig/link-util": {
         "version": "1.1.1"
     },
@@ -364,8 +367,17 @@
             "ref": "7f6676627c1ceeeee204553d24a0545d5f918b7b"
         }
     },
+    "maennchen/zipstream-php": {
+        "version": "2.1.0"
+    },
     "marcj/topsort": {
         "version": "1.1.0"
+    },
+    "markbaker/complex": {
+        "version": "2.0.0"
+    },
+    "markbaker/matrix": {
+        "version": "2.1.2"
     },
     "masterminds/html5": {
         "version": "2.7.4"
@@ -387,6 +399,9 @@
     },
     "myclabs/deep-copy": {
         "version": "1.8.1"
+    },
+    "myclabs/php-enum": {
+        "version": "1.8.0"
     },
     "namshi/jose": {
         "version": "7.2.3"
@@ -490,6 +505,9 @@
     "phplang/scope-exit": {
         "version": "1.0.0"
     },
+    "phpoffice/phpspreadsheet": {
+        "version": "1.17.1"
+    },
     "phpoption/phpoption": {
         "version": "1.5.0"
     },
@@ -555,6 +573,9 @@
     },
     "psr/http-client": {
         "version": "1.0.0"
+    },
+    "psr/http-factory": {
+        "version": "1.0.1"
     },
     "psr/http-message": {
         "version": "1.0.1"

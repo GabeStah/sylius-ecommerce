@@ -2,6 +2,10 @@
 
 namespace App\Service\Importer;
 
+use App\Service\Importer\Normalizer\AbstractNormalizerInterface;
+use App\Service\Importer\Traits\NormalizerAwareTrait;
+use App\Service\Importer\Traits\ProviderAwareTrait;
+use App\Utility\JsonUtility;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
@@ -16,6 +20,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class AbstractImporter implements AbstractImporterInterface
 {
+  use NormalizerAwareTrait, ProviderAwareTrait;
+
   protected $channel;
 
   /**
@@ -32,6 +38,11 @@ abstract class AbstractImporter implements AbstractImporterInterface
    * @var string
    */
   protected $modelName = 'abstract-importer';
+
+  /**
+   * @var AbstractNormalizerInterface
+   */
+  protected $normalizer;
 
   /**
    * @var string
@@ -113,15 +124,13 @@ abstract class AbstractImporter implements AbstractImporterInterface
   }
 
   /**
-   * Execute importer query.
+   * Execute importer.
    *
-   * @return array
-   * @throws \Doctrine\DBAL\Driver\Exception
-   * @throws Exception
+   * @return mixed
    */
   public function execute()
   {
-    return $this->query($this->getQuery());
+    return $this->getProvider()->getData();
   }
 
   /**
@@ -161,17 +170,19 @@ abstract class AbstractImporter implements AbstractImporterInterface
   /**
    * Map execution results to array.
    *
+   * @param mixed $data
+   *
    * @return array|array[]
-   * @throws Exception
-   * @throws \Doctrine\DBAL\Driver\Exception
    */
-  public function map()
+  public function map($data)
   {
-    $data = $this->execute();
     return $this->filter(
       array_merge(
         array_map(function ($item) {
-          return $this->normalizeEntity($item);
+          // Backwards compatibility for importers without an explicit normalizer
+          return $this->hasNormalizer()
+            ? $this->getNormalizer()->normalizeEntity($item)
+            : $this->normalizeEntity($item);
         }, $data),
         $this->extra()
       )
@@ -209,12 +220,9 @@ abstract class AbstractImporter implements AbstractImporterInterface
    */
   public function save()
   {
-    file_put_contents(
+    JsonUtility::write(
       'exports/' . $this->getModelName() . '.json',
-      json_encode(
-        $this->map(),
-        \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
-      )
+      $this->map()
     );
   }
 

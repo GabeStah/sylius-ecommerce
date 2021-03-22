@@ -2,13 +2,10 @@
 
 namespace App\Command\Import;
 
-use App\Service\Importer\AbstractImporterInterface;
-
 interface AbstractImportCommandInterface
 {
-  //  public function __construct(?string $name, BaseImporterInterface $importer);
-
   public function log($value);
-
   public function validateSchema($data);
+  public function setSqlConnectionParams(?array $params): AbstractImportCommand;
+  public function getSqlConnectionParams(): array;
 }
