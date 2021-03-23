@@ -2,8 +2,10 @@
 
 namespace App\Service\Importer;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
+use App\Service\Importer\Normalizer\AbstractNormalizerInterface;
+use App\Service\Importer\Traits\NormalizerAwareTrait;
+use App\Service\Importer\Traits\ProviderAwareTrait;
+use App\Utility\JsonUtility;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -16,12 +18,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class AbstractImporter implements AbstractImporterInterface
 {
-  protected $channel;
+  use NormalizerAwareTrait, ProviderAwareTrait;
 
-  /**
-   * @var Connection
-   */
-  protected $connection;
+  protected $channel;
 
   /**
    * @var ContainerInterface
@@ -34,9 +33,9 @@ abstract class AbstractImporter implements AbstractImporterInterface
   protected $modelName = 'abstract-importer';
 
   /**
-   * @var string
+   * @var AbstractNormalizerInterface
    */
-  protected $queryString;
+  protected $normalizer;
 
   /**
    * @return string
@@ -55,39 +54,14 @@ abstract class AbstractImporter implements AbstractImporterInterface
   }
 
   /**
-   * Get query string.
-   *
-   * @return string
-   */
-  public function getQuery()
-  {
-    return $this->queryString;
-  }
-
-  /**
-   * Set query string.
-   *
-   * @param string $query
-   *
-   * @return AbstractImporter
-   */
-  public function setQuery(string $query)
-  {
-    $this->queryString = $query;
-    return $this;
-  }
-
-  /**
    * BaseConverter constructor.
    *
    * @param ContainerInterface $container
    *
-   * @throws Exception
    */
   public function __construct(ContainerInterface $container)
   {
     $this->container = $container;
-    $this->connect();
 
     $this->channel = $this->container
       ->get('sylius.repository.channel')
@@ -95,33 +69,13 @@ abstract class AbstractImporter implements AbstractImporterInterface
   }
 
   /**
-   * Connect to db.
+   * Execute importer.
    *
-   * @throws Exception
-   */
-  public function connect()
-  {
-    $connectionParams = [
-      'dbname' => $this->container->getParameter('raritan.database.name'),
-      'user' => $this->container->getParameter('raritan.database.user'),
-      'password' => $this->container->getParameter('raritan.database.password'),
-      'host' => $this->container->getParameter('raritan.database.host'),
-      'port' => $this->container->getParameter('raritan.database.port'),
-      'driver' => 'pdo_mysql',
-    ];
-    $this->connection = DriverManager::getConnection($connectionParams);
-  }
-
-  /**
-   * Execute importer query.
-   *
-   * @return array
-   * @throws \Doctrine\DBAL\Driver\Exception
-   * @throws Exception
+   * @return mixed
    */
   public function execute()
   {
-    return $this->query($this->getQuery());
+    return $this->getProvider()->getData();
   }
 
   /**
@@ -147,58 +101,25 @@ abstract class AbstractImporter implements AbstractImporterInterface
   }
 
   /**
-   * Normalize entity object.
-   *
-   * @param mixed $item
-   *
-   * @return array
-   */
-  public function normalizeEntity($item)
-  {
-    return [];
-  }
-
-  /**
    * Map execution results to array.
    *
+   * @param mixed $data
+   *
    * @return array|array[]
-   * @throws Exception
-   * @throws \Doctrine\DBAL\Driver\Exception
    */
-  public function map()
+  public function map($data)
   {
-    $data = $this->execute();
     return $this->filter(
       array_merge(
         array_map(function ($item) {
-          return $this->normalizeEntity($item);
+          // Backwards compatibility for importers without an explicit normalizer
+          return $this->hasNormalizer()
+            ? $this->getNormalizer()->normalizeEntity($item)
+            : $item;
         }, $data),
         $this->extra()
       )
     );
-  }
-
-  /**
-   * Execute query.
-   *
-   * @param string|null $query
-   * @param null|array[string, string] $params
-   *
-   * @return array
-   * @throws Exception
-   * @throws \Doctrine\DBAL\Driver\Exception
-   * @example
-   */
-  public function query(string $query = null, $params = null)
-  {
-    $statement = $this->connection->prepare($query ?? $this->getQuery());
-    if ($params) {
-      foreach ($params as $key => $value) {
-        $statement->bindValue($key, $value);
-      }
-    }
-    $statement->execute();
-    return $statement->fetchAllAssociative();
   }
 
   /**
@@ -207,15 +128,9 @@ abstract class AbstractImporter implements AbstractImporterInterface
    * @throws Exception
    * @throws \Doctrine\DBAL\Driver\Exception
    */
-  public function save()
+  public function save($data)
   {
-    file_put_contents(
-      'exports/' . $this->getModelName() . '.json',
-      json_encode(
-        $this->map(),
-        \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
-      )
-    );
+    JsonUtility::write('exports/' . $this->getModelName() . '.json', $data);
   }
 
   /**

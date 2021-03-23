@@ -3,6 +3,7 @@
 use App\Entity\Channel\ChannelPricing;
 use App\Entity\Product\ProductOptionValue;
 use App\Repository\ProductRepository;
+use App\Utility\JsonUtility;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -50,12 +51,9 @@ class ProductExporter extends AbstractExporter implements
   {
     $product = $this->repository->findOneByCode($id);
 
-    file_put_contents(
+    JsonUtility::write(
       'exports/product/code-' . $id . '.json',
-      json_encode(
-        $this->normalizeProduct($product),
-        \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE
-      )
+      $this->normalizeProduct($product)
     );
   }
 

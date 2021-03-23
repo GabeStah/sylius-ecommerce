@@ -1,5 +1,6 @@
 - [1. Import Pipeline](#1-import-pipeline)
   - [1.1. Pipeline Overview](#11-pipeline-overview)
+    - [Import Command Options](#import-command-options)
   - [1.2. `import:category`](#12-importcategory)
     - [1.2.1. Raritan-v1 Data Export](#121-raritan-v1-data-export)
     - [1.2.2. Normalization and Mapping](#122-normalization-and-mapping)
@@ -80,22 +81,26 @@ targeted entities.
 1. A `php bin/console import:<command>` is executed.
 2. An appropriate [ImportCommand](src/Command/Import) class catches the CLI execution.
 3. The `ImportCommand` injects the matching [Importer](src/Service/Importer) class.
-4. The `Importer` class connects to the Raritan-v1 database and retrieves Sylius services, managers, repositories, and
-   container.
-5. An SQL query retrieves data from the Raritan-v1 database table.
-6. The data is normalized in stages to appropriately convert Raritan-v1 keys/value type to a format Raritan-v2 can use.
+4. A [Provider](src/Service/Importer/Provider) is assigned to the `Importer` instance. This `Provider` determines how the importer retrieves data. At present, data providers can be via SQL (i.e. Raritan V1) or JSON.
+5. A [Normalizer](src/Service/Importer/Normalizer) is also assigned to the `Importer` instance. This `Normalizer` determines how data is normalized between the original `Provider` and the expected types within the target `Importer`. For example, the [v1/ProductVariantNormalizer](src/Service/Importer/Normalizer/v1/ProductVariantNormalizer.php) normalizes all the fields passed from the Raritan V1 MySQL database, while the [v2/ProductVariantNormalizer](src/Service/Importer/Normalizer/v2/ProductVariantNormalizer.php) only handles the minimal fields provided in a JSON file.
 
-- Normalized data includes attributes, categories (taxons), dimensions, images, meta data, product options, product
-  variants, pricing, and so forth.
+- Normalized data includes attributes, categories (taxons), dimensions, images, meta data, product options, product variants, pricing, and so forth.
 
-7. The normalized dataset is mapped and merged with optional extra data.
-8. Mapped data is filtered to remove any exceptional records (i.e. duplicate unique key types).
-9. Then each mapped record is passed through a series of Entity creation steps necessary to generate the appropriate
+6. The normalized dataset is mapped and merged with optional extra data.
+7. Mapped data is filtered to remove any exceptional records (i.e. duplicate unique key types).
+8. Then each mapped record is passed through a series of Entity creation steps necessary to generate the appropriate
    Sylius Entity with relevant data, associated Entities, and relationships.
 
 - New database records are generated while existing records are updated.
 
-10. Lastly the new/updated dataset is serialized and exported to the [/exports](/exports) directory.
+9. Lastly the new/updated dataset is serialized and exported to the [/exports](/exports) directory.
+
+#### Import Command Options
+
+Import commands can accept extra arguments, some optional and some required, depending on the desired data `Provider` and `Normalizer`. All arguments are specified using double-dash flag syntax, followed by the parameter value. For example: `--flag value` or `--flag=value`.
+
+- `provider`: Specifies the `Provider` type to use. Current values: `json` or `sql`
+- `path`: Path to the source file. For an SQL `Provider` this is an SQL file path containing the query to execute within the `Provider`. For JSON `Providers` this is the path to the source JSON file.
 
 ### 1.2. `import:category`
 

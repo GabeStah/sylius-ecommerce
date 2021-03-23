@@ -3,6 +3,8 @@
 namespace App\Command\Import;
 
 use App\Service\Importer\CategoryImporter;
+use App\Service\Importer\Provider\JsonProviderInterface;
+use App\Service\Importer\Provider\SqlProviderInterface;
 use App\Service\Importer\SubcategoryImporter;
 use App\Service\Logger;
 use Exception;
@@ -13,7 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SubcategoryImportCommand extends AbstractImportCommand
 {
   protected static $defaultName = 'import:subcategory';
-  private $importer;
   private $categoryImporter;
 
   public function __construct(
@@ -42,7 +43,20 @@ class SubcategoryImportCommand extends AbstractImportCommand
   {
     parent::execute($input, $output);
 
-    $mappedData = $this->importer->map();
+    $importer = $this->getImporter();
+    $provider = $importer->getProvider();
+
+    if ($provider instanceof JsonProviderInterface) {
+      $importer->setNormalizer(
+        new \App\Service\Importer\Normalizer\v2\SubcategoryNormalizer()
+      );
+    } elseif ($provider instanceof SqlProviderInterface) {
+      $importer->setNormalizer(
+        new \App\Service\Importer\Normalizer\v1\SubcategoryNormalizer()
+      );
+    }
+
+    $mappedData = $this->importer->map($this->importer->execute());
     foreach ($mappedData as $key => $data) {
       $this->importer->fromData($data);
     }

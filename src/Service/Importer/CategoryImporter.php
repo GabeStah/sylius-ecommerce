@@ -19,22 +19,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class CategoryImporter extends AbstractImporter implements
   AbstractImporterInterface
 {
-  /**
-   * Base retrieval query string.
-   *
-   * @var string
-   */
-  protected $queryString = <<<EOF
-SELECT
-    *
-FROM
-    productcategory
-WHERE
-    pcategoryurl NOT LIKE "trudesign%"
-AND
-    catstatus = 1
-EOF;
-
   protected $modelName = 'category';
   /**
    * @var TaxonRepository
@@ -153,36 +137,5 @@ EOF;
     }
 
     return $taxon;
-  }
-
-  /**
-   * Normalize and map entity data.
-   *
-   * @param mixed $item
-   *
-   * @return array
-   */
-  public function normalizeEntity($item)
-  {
-    $data = [
-      'category_id' => $item['catid'],
-      'category_type' => 'category',
-      'code' => StringNormalizer::toSnake('category-' . $item['pcategoryurl']),
-      'enabled' => boolval(
-        is_null($item['catstatus']) ? false : $item['catstatus']
-      ),
-      'name' => StringNormalizer::toTitle($item['pcategoryname']),
-      'slug' => StringNormalizer::toSlug($item['pcategoryurl']),
-      'timestamp' => time(),
-      'parent' => [
-        'category_id' => 999,
-        'category_type' => 'menu',
-      ],
-    ];
-    if (array_key_exists('pcategorydescription', $item)) {
-      $data['description'] = $item['pcategorydescription'];
-    }
-
-    return $data;
   }
 }

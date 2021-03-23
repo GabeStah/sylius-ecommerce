@@ -1,19 +1,23 @@
 <?php
 
-namespace App\Command\Conversion;
+namespace App\Command\Convert;
 
 use App\Service\Logger;
-use App\Service\XLSXWriter;
+use App\Utility\ArrayUtility;
+use App\Utility\JsonUtility;
 use Exception;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Sylius\Bundle\CoreBundle\Command\AbstractInstallCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class JsonToSpreadsheetCommand extends AbstractInstallCommand
+class XlsxToJsonCommand extends AbstractInstallCommand
 {
-  protected static $defaultName = 'convert:json2spreadsheet';
+  private static $FILE_SUFFIX = 'json';
+
+  protected static $defaultName = 'convert:xlsx:json';
   private $logging = false;
 
   public function __construct()
@@ -35,8 +39,8 @@ class JsonToSpreadsheetCommand extends AbstractInstallCommand
     );
 
     $this->addOption(
-      'property',
-      'p',
+      'type',
+      't',
       InputOption::VALUE_OPTIONAL,
       'Property path to convert.',
       null
@@ -79,62 +83,48 @@ class JsonToSpreadsheetCommand extends AbstractInstallCommand
     $inputPath = $input->getArgument('input');
     $outputPath =
       $input->getArgument('output') ??
-      'exports/converted/' . pathinfo($inputPath, PATHINFO_FILENAME) . '.xlsx';
+      'exports/converted/' .
+        pathinfo($inputPath, PATHINFO_FILENAME) .
+        '.' .
+        static::$FILE_SUFFIX;
 
-    $property = $input->getOption('property');
+    $type = $input->getOption('type');
 
-    $content = json_decode(file_get_contents($inputPath), true);
-
-    if ($property) {
-      // Get desired content from exploded property path
-      $propertyPaths = explode('.', $property);
-      $content = array_reduce(
-        $propertyPaths,
-        function ($carry, $item) {
-          $carry = $carry[$item];
-          return $carry;
-        },
-        $content
-      );
+    if ($type) {
+      // do something
     }
 
-    // Headers
-    $headers = [];
-    $item = $content[0];
-    foreach ($item as $key => $value) {
-      if (is_array($value)) {
-        foreach ($value as $subkey => $subvalue) {
-          $headers[$key . '.' . $subkey] = gettype($subvalue);
-        }
-      } else {
-        $headers[$key] = gettype($value);
+    $reader = new Xlsx();
+    $spreadsheet = $reader->load($inputPath);
+    $worksheet = $spreadsheet->getActiveSheet();
+    // Convert to array with non-empty cells
+    $maxCell = $worksheet->getHighestRowAndColumn();
+    $data = $worksheet->rangeToArray(
+      'A1:' . $maxCell['column'] . $maxCell['row']
+    );
+
+    // Get headers and remove header row from data set
+    $headers = $data[0];
+    unset($data[0]);
+
+    $outputData = [];
+    foreach ($data as $row) {
+      if (!ArrayUtility::hasData($row)) {
+        break;
       }
-    }
-
-    // Rows
-    $rows = [];
-    foreach ($content as $item) {
-      $row = [];
-      foreach ($item as $key => $value) {
-        if (is_array($value)) {
-          foreach ($value as $subvalue) {
-            $row[] = $subvalue;
-          }
+      $outputRow = [];
+      foreach ($row as $key => $value) {
+        if (str_contains($headers[$key], '.')) {
+          // Generate multi-dimensional array for dot-notated header values
+          ArrayUtility::set($outputRow, $headers[$key], $value);
         } else {
-          $row[] = $value;
+          $outputRow[$headers[$key]] = $value;
         }
       }
-      $rows[] = $row;
+      $outputData[] = $outputRow;
     }
 
-    $writer = new XLSXWriter();
-
-    $writer->writeSheetHeader('Sheet1', $headers);
-    foreach ($rows as $row) {
-      $writer->writeSheetRow('Sheet1', $row);
-    }
-
-    $writer->writeToFile($outputPath);
+    JsonUtility::write($outputPath, $outputData);
 
     // Should return exit status code
     return 0;
