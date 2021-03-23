@@ -20,18 +20,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DealerImporter extends AbstractImporter implements
   AbstractImporterInterface
 {
-  /**
-   * Base retrieval query string.
-   *
-   * @var string
-   */
-  protected $queryString = <<<EOF
-SELECT
-    *
-FROM
-    dealers
-EOF;
-
   protected $modelName = 'dealer';
   /**
    * @var DealerRepository
@@ -122,42 +110,5 @@ EOF;
     );
 
     return $entity;
-  }
-
-  /**
-   * Normalize and map entity data.
-   *
-   * @param mixed $item
-   *
-   * @return array
-   */
-  public function normalizeEntity($item)
-  {
-    $data = [
-      'name' => $item['dealername'],
-      'slug' => StringNormalizer::toSlug($item['dealerurl']),
-      'address1' => $item['daddress1'],
-      'address2' => $item['daddress2'],
-      'city' => $item['dcity'],
-      'postal_code' => $item['dzipcode'],
-      'state' => $item['dstate'],
-      'country' => $item['dcountry'],
-      'phone' => $item['dphone'],
-      'fax' => $item['dfax'],
-      'email' => $item['demail'],
-      'url' => $item['dwebsite'],
-      'enabled' => boolval(
-        is_null($item['dstatus']) ? false : $item['dstatus']
-      ),
-      'type' => $item['dealertype'],
-      'wholesale' => boolval(
-        is_null($item['wholesaleonly']) ? false : $item['wholesaleonly']
-      ),
-      'comment' => $item['dcomment'],
-      'latitude' => $item['gmaplat'],
-      'longitude' => $item['gmaplong'],
-    ];
-
-    return $data;
   }
 }

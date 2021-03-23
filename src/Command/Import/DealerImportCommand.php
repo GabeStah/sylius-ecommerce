@@ -5,6 +5,7 @@ namespace App\Command\Import;
 use App\Service\Importer\DealerImporter;
 use App\Service\Importer\Provider\JsonProviderInterface;
 use App\Service\Importer\Provider\SqlProvider;
+use App\Service\Importer\Provider\SqlProviderInterface;
 use App\Service\Logger;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -42,10 +43,14 @@ class DealerImportCommand extends AbstractImportCommand
     $importer = $this->getImporter();
     $provider = $importer->getProvider();
 
-    // Short circuit if Json
     if ($provider instanceof JsonProviderInterface) {
-      $output->writeln('Cannot handle JsonProvider, cancelling.');
-      return 0;
+      $importer->setNormalizer(
+        new \App\Service\Importer\Normalizer\v2\DealerNormalizer()
+      );
+    } elseif ($provider instanceof SqlProviderInterface) {
+      $importer->setNormalizer(
+        new \App\Service\Importer\Normalizer\v1\DealerNormalizer()
+      );
     }
 
     $mappedData = $this->importer->map($this->importer->execute());

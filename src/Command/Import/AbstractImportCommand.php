@@ -44,18 +44,18 @@ abstract class AbstractImportCommand extends AbstractInstallCommand implements
     );
 
     $this->addOption(
+      'path',
+      null,
+      InputOption::VALUE_OPTIONAL,
+      'Path to source file.'
+    );
+
+    $this->addOption(
       'provider',
       null,
       InputOption::VALUE_OPTIONAL,
       'Defines the data provider.',
       static::PROVIDER_TYPE_SQL
-    );
-
-    $this->addOption(
-      'path',
-      null,
-      InputOption::VALUE_REQUIRED,
-      'Path to JSON data.'
     );
   }
 
@@ -126,7 +126,11 @@ abstract class AbstractImportCommand extends AbstractInstallCommand implements
 
       $provider = new SqlProvider();
       $provider->setOption('connection', $this->getSqlConnectionParams());
-      $provider->setQuery($this->queryString);
+      $sqlFile = $input->getOption('path');
+      if (!$sqlFile) {
+        throw new Exception('Invalid SQL file path provided, aborting.');
+      }
+      $provider->setQuery(file_get_contents($sqlFile));
       $provider->connect();
       $this->getImporter()->setProvider($provider);
     } elseif ($this->providerType === static::PROVIDER_TYPE_JSON) {

@@ -4,6 +4,7 @@ namespace App\Command\Import;
 
 use App\Service\Importer\CategoryImporter;
 use App\Service\Importer\Provider\JsonProviderInterface;
+use App\Service\Importer\Provider\SqlProviderInterface;
 use App\Service\Logger;
 use Exception;
 use Swaggest\JsonSchema\Schema;
@@ -39,10 +40,14 @@ class CategoryImportCommand extends AbstractImportCommand
     $importer = $this->getImporter();
     $provider = $importer->getProvider();
 
-    // Short circuit if Json
     if ($provider instanceof JsonProviderInterface) {
-      $output->writeln('Cannot handle JsonProvider, cancelling.');
-      return 0;
+      $importer->setNormalizer(
+        new \App\Service\Importer\Normalizer\v2\CategoryNormalizer()
+      );
+    } elseif ($provider instanceof SqlProviderInterface) {
+      $importer->setNormalizer(
+        new \App\Service\Importer\Normalizer\v1\CategoryNormalizer()
+      );
     }
 
     $mappedData = $this->importer->map($this->importer->execute());

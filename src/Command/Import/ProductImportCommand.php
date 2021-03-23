@@ -6,6 +6,7 @@ use App\Service\Importer\Normalizer\v1\ProductNormalizer;
 use App\Service\Importer\ProductImporter;
 use App\Service\Importer\Provider\JsonProviderInterface;
 use App\Service\Importer\Provider\SqlProvider;
+use App\Service\Importer\Provider\SqlProviderInterface;
 use App\Service\Logger;
 use Exception;
 use Swaggest\JsonSchema\Schema;
@@ -48,10 +49,14 @@ class ProductImportCommand extends AbstractImportCommand
     $importer = $this->getImporter();
     $provider = $importer->getProvider();
 
-    // Short circuit if Json
     if ($provider instanceof JsonProviderInterface) {
-      $output->writeln('Cannot handle JsonProvider, cancelling.');
-      return 0;
+      $importer->setNormalizer(
+        new \App\Service\Importer\Normalizer\v2\ProductNormalizer()
+      );
+    } elseif ($provider instanceof SqlProviderInterface) {
+      $importer->setNormalizer(
+        new \App\Service\Importer\Normalizer\v1\ProductNormalizer()
+      );
     }
 
     $mappedData = $importer->map($importer->execute());

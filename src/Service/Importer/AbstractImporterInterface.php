@@ -9,29 +9,6 @@ use Doctrine\DBAL\Exception;
 interface AbstractImporterInterface
 {
   /**
-   * Get query string.
-   *
-   * @return string
-   */
-  public function getQuery();
-
-  /**
-   * Set query string.
-   *
-   * @param string $query
-   *
-   * @return AbstractImporter
-   */
-  public function setQuery(string $query);
-
-  /**
-   * Connect to db.
-   *
-   * @throws Exception
-   */
-  public function connect();
-
-  /**
    * Execute importer query.
    *
    * @return array
@@ -57,15 +34,6 @@ interface AbstractImporterInterface
   public function filter($data);
 
   /**
-   * Normalize entity object.
-   *
-   * @param mixed $item
-   *
-   * @return array
-   */
-  public function normalizeEntity($item);
-
-  /**
    * Map execution results to array.
    *
    * @param mixed $data
@@ -75,18 +43,6 @@ interface AbstractImporterInterface
    * @throws \Doctrine\DBAL\Driver\Exception
    */
   public function map($data);
-
-  /**
-   * Execute query.
-   *
-   * @param string|null $query
-   * @param null|array[string, string] $params
-   *
-   * @return array
-   * @throws Exception
-   * @throws \Doctrine\DBAL\Driver\Exception
-   */
-  public function query(string $query = null, $params = null);
 
   public function getNormalizer(): AbstractNormalizerInterface;
 

@@ -6,8 +6,6 @@ use App\Service\Importer\Normalizer\AbstractNormalizerInterface;
 use App\Service\Importer\Traits\NormalizerAwareTrait;
 use App\Service\Importer\Traits\ProviderAwareTrait;
 use App\Utility\JsonUtility;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -25,11 +23,6 @@ abstract class AbstractImporter implements AbstractImporterInterface
   protected $channel;
 
   /**
-   * @var Connection
-   */
-  protected $connection;
-
-  /**
    * @var ContainerInterface
    */
   protected $container;
@@ -43,11 +36,6 @@ abstract class AbstractImporter implements AbstractImporterInterface
    * @var AbstractNormalizerInterface
    */
   protected $normalizer;
-
-  /**
-   * @var string
-   */
-  protected $queryString;
 
   /**
    * @return string
@@ -66,61 +54,18 @@ abstract class AbstractImporter implements AbstractImporterInterface
   }
 
   /**
-   * Get query string.
-   *
-   * @return string
-   */
-  public function getQuery()
-  {
-    return $this->queryString;
-  }
-
-  /**
-   * Set query string.
-   *
-   * @param string $query
-   *
-   * @return AbstractImporter
-   */
-  public function setQuery(string $query)
-  {
-    $this->queryString = $query;
-    return $this;
-  }
-
-  /**
    * BaseConverter constructor.
    *
    * @param ContainerInterface $container
    *
-   * @throws Exception
    */
   public function __construct(ContainerInterface $container)
   {
     $this->container = $container;
-    $this->connect();
 
     $this->channel = $this->container
       ->get('sylius.repository.channel')
       ->findOneByCode('DEFAULT');
-  }
-
-  /**
-   * Connect to db.
-   *
-   * @throws Exception
-   */
-  public function connect()
-  {
-    $connectionParams = [
-      'dbname' => $this->container->getParameter('raritan.database.name'),
-      'user' => $this->container->getParameter('raritan.database.user'),
-      'password' => $this->container->getParameter('raritan.database.password'),
-      'host' => $this->container->getParameter('raritan.database.host'),
-      'port' => $this->container->getParameter('raritan.database.port'),
-      'driver' => 'pdo_mysql',
-    ];
-    $this->connection = DriverManager::getConnection($connectionParams);
   }
 
   /**
@@ -156,18 +101,6 @@ abstract class AbstractImporter implements AbstractImporterInterface
   }
 
   /**
-   * Normalize entity object.
-   *
-   * @param mixed $item
-   *
-   * @return array
-   */
-  public function normalizeEntity($item)
-  {
-    return [];
-  }
-
-  /**
    * Map execution results to array.
    *
    * @param mixed $data
@@ -182,34 +115,11 @@ abstract class AbstractImporter implements AbstractImporterInterface
           // Backwards compatibility for importers without an explicit normalizer
           return $this->hasNormalizer()
             ? $this->getNormalizer()->normalizeEntity($item)
-            : $this->normalizeEntity($item);
+            : $item;
         }, $data),
         $this->extra()
       )
     );
-  }
-
-  /**
-   * Execute query.
-   *
-   * @param string|null $query
-   * @param null|array[string, string] $params
-   *
-   * @return array
-   * @throws Exception
-   * @throws \Doctrine\DBAL\Driver\Exception
-   * @example
-   */
-  public function query(string $query = null, $params = null)
-  {
-    $statement = $this->connection->prepare($query ?? $this->getQuery());
-    if ($params) {
-      foreach ($params as $key => $value) {
-        $statement->bindValue($key, $value);
-      }
-    }
-    $statement->execute();
-    return $statement->fetchAllAssociative();
   }
 
   /**
@@ -218,12 +128,9 @@ abstract class AbstractImporter implements AbstractImporterInterface
    * @throws Exception
    * @throws \Doctrine\DBAL\Driver\Exception
    */
-  public function save()
+  public function save($data)
   {
-    JsonUtility::write(
-      'exports/' . $this->getModelName() . '.json',
-      $this->map()
-    );
+    JsonUtility::write('exports/' . $this->getModelName() . '.json', $data);
   }
 
   /**

@@ -156,14 +156,17 @@ class ProductVariantImporter extends ProductImporter
   /**
    * Create ProductVariant and related entities from model.
    *
-   * @param $data
+   * @param      $data
+   * @param string|null $productCode
    *
    * @return ProductVariant
    */
-  public function fromData($data): ProductVariant
+  public function fromData($data, ?string $productCode): ProductVariant
   {
     // Find base product
-    $product = $this->repository->findOneByCode($data['product_id']);
+    $product = $this->repository->findOneByCode(
+      $productCode ? $productCode : $data['product_id']
+    );
 
     // Find existing product variant or create new instance
     $entity =
@@ -257,7 +260,9 @@ class ProductVariantImporter extends ProductImporter
         ]) ?? new ProductOptionValue();
       $optionValue->setCode($optionObject->getOptionValue()->getCode());
       $optionValue->setCurrentLocale($this->getLocale());
-      $optionValue->setValue($optionObject->getOptionValue()->getValue());
+      $optionValue->setValue(
+        $optionObject->getOptionValue()->getValue() ?? 'N/A'
+      );
       $option->addValue($optionValue);
 
       $this->container

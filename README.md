@@ -1,5 +1,6 @@
 - [1. Import Pipeline](#1-import-pipeline)
   - [1.1. Pipeline Overview](#11-pipeline-overview)
+    - [Import Command Options](#import-command-options)
   - [1.2. `import:category`](#12-importcategory)
     - [1.2.1. Raritan-v1 Data Export](#121-raritan-v1-data-export)
     - [1.2.2. Normalization and Mapping](#122-normalization-and-mapping)
@@ -93,6 +94,13 @@ targeted entities.
 - New database records are generated while existing records are updated.
 
 9. Lastly the new/updated dataset is serialized and exported to the [/exports](/exports) directory.
+
+#### Import Command Options
+
+Import commands can accept extra arguments, some optional and some required, depending on the desired data `Provider` and `Normalizer`. All arguments are specified using double-dash flag syntax, followed by the parameter value. For example: `--flag value` or `--flag=value`.
+
+- `provider`: Specifies the `Provider` type to use. Current values: `json` or `sql`
+- `path`: Path to the source file. For an SQL `Provider` this is an SQL file path containing the query to execute within the `Provider`. For JSON `Providers` this is the path to the source JSON file.
 
 ### 1.2. `import:category`
 
