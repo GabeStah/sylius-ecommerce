@@ -11,6 +11,7 @@ use Solarix\Shipping\Model\Rate\RateInterface;
 use Solarix\Shipping\Provider\FedExProvider;
 use Sylius\Component\Shipping\Calculator\CalculatorInterface;
 use Sylius\Component\Shipping\Model\ShipmentInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class FedExRateCalculator implements CalculatorInterface
 {
@@ -18,13 +19,21 @@ final class FedExRateCalculator implements CalculatorInterface
    * @var FedExProvider
    */
   private $shippingProvider;
+  /**
+   * @var ContainerInterface
+   */
+  private $container;
 
   /**
-   * @param FedExProvider $shippingProvider
+   * @param FedExProvider      $shippingProvider
+   * @param ContainerInterface $container
    */
-  public function __construct(FedExProvider $shippingProvider)
-  {
+  public function __construct(
+    FedExProvider $shippingProvider,
+    ContainerInterface $container
+  ) {
     $this->shippingProvider = $shippingProvider;
+    $this->container = $container;
   }
 
   public function calculate(
@@ -192,6 +201,10 @@ final class FedExRateCalculator implements CalculatorInterface
       'updated_at' => time(),
       'rates' => $rates,
     ]);
+
+    $orderManager = $this->container->get('sylius.manager.order');
+    $orderManager->persist($order);
+    $orderManager->flush();
   }
 
   public function getType(): string
