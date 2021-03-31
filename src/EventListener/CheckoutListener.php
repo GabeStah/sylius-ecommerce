@@ -79,6 +79,12 @@ class CheckoutListener
   public function onPreAddress(ResourceControllerEvent $event)
   {
     $order = $event->getSubject();
+    $rates = $order->getRates();
+
+    if ($rates) {
+      unset($rates['updated_at']);
+      $order->setRates($rates);
+    }
   }
 
   public function onPreSelectShipping(ResourceControllerEvent $event)
