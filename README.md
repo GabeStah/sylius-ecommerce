@@ -1,3 +1,5 @@
+**Note: This file outlines the process required to migrate the client's original ecommerce platform to this new platform, including data imports, shipping handling, etc. Additionally, the use of Sylius was not my decision and was a hard requirement for the project. While I handled every aspect of the project and all custom code, given the choice I would opt for an alternative platform solution.**
+
 - [1. Import Pipeline](#1-import-pipeline)
   - [1.1. Pipeline Overview](#11-pipeline-overview)
     - [Import Command Options](#import-command-options)
@@ -69,14 +71,11 @@
 
 ## 1. Import Pipeline
 
-The pipeline that imports Raritan-v1 data into Raritan-v2/Sylius is executed via a series of custom CLI commands. All
-pipeline commands are fully idempotent, allowing a given command to run multiple times but always producing the same
-imported data result.
+The pipeline that imports Raritan-v1 data into Raritan-v2/Sylius is executed via a series of custom CLI commands. All pipeline commands are fully idempotent, allowing a given command to run multiple times but always producing the same imported data result.
 
 ### 1.1. Pipeline Overview
 
-Each import pipeline command executes the following stages, adjusting as appropriate to the Raritan-v1 data and the
-targeted entities.
+Each import pipeline command executes the following stages, adjusting as appropriate to the Raritan-v1 data and the targeted entities.
 
 1. A `php bin/console import:<command>` is executed.
 2. An appropriate [ImportCommand](src/Command/Import) class catches the CLI execution.
@@ -978,7 +977,7 @@ option was implemented:
 ## 2. Shipping
 
 Most shipping logic including FedEx rate requests are handled via
-the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) library. This
+the [Shipping - PHP](https://www.github.com/GabeStah/shipping-php) library. This
 section covers integration into Sylius including pitfalls and implemented workarounds.
 
 ### 2.1. Shipping Methods
@@ -995,7 +994,7 @@ properties:
 
 The custom [FedExRateCalculator](src/Shipping/Calculator/FedExRateCalculator.php) handles all shipping rate retrieval
 from the FedEx provider API using
-the [Solarix Shipping - PHP](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php) package. A
+the [Shipping - PHP](https://www.github.com/GabeStah/shipping-php) package. A
 handful of Sylius design choices and limitations required some workarounds.
 
 ### 2.3. Issue: Handling Multiple Rates
@@ -1022,7 +1021,7 @@ for half a dozen or more unnecessary provider API requests.
 
 To resolve this a simple local cache was added to keep track of recently obtained rates data for a given object. The
 new `Order->rates` property stores a serialized collection
-of [Rates](https://gitlab.solarixdigital.com/solarix/core/tooling/solarix-shipping-php/-/blob/master/src/Solarix/Shipping/Provider/FedEx/Model/Rate/Rate.php)
+of [Rates](https://www.github.com/GabeStah/shipping-php/blob/main/src/Solarix/Shipping/Provider/FedEx/Model/Rate/Rate.php)
 . When the rates calculator is invoked it checks the Order's rates cache for last updated timestamp. If updated within a
 short period of time the cache is returned rather than making a new FedEx provider API request.
 

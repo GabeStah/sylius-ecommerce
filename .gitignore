@@ -356,3 +356,5 @@ yarn-error.log
 /packages/solarix/sylius-authorize-net-plugin/
 /public/media/cache/
 /public/uploads/
+/backup/production/
+/exports/

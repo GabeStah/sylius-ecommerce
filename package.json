@@ -65,9 +65,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.solarixdigital.com/solarix/voyager/raritan/ecommerce.git"
+    "url": "git+https://github.com/GabeStah/sylius-ecommerce.git"
   },
-  "author": "Gabe Wyatt <gabe@solarixdigital.com>",
+  "author": "Gabe Wyatt <gabe@gabewyatt.com>",
   "license": "MIT",
-  "version": "1.14.2"
+  "version": "1.14.3"
 }
